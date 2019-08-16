@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.browser.dao.mapper.BlAssetMapper" >
+  <resultMap id="BaseResultMap" type="com.browser.dao.entity.BlAsset" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="symbol" property="symbol" jdbcType="VARCHAR" />
+    <result column="asset_id" property="assetId" jdbcType="VARCHAR" />
+    <result column="precision" property="precision" jdbcType="BIGINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, symbol, asset_id, `precision`
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from bl_asset
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from bl_asset
+  </select>
+  <select id="selectByAsset" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from bl_asset
+    where asset_id =#{assetId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectBySymbol" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select
+    <include refid="Base_Column_List" />
+    from bl_asset
+    where symbol =#{symbol,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from bl_asset
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="delete" parameterType="java.lang.Integer" >
+    delete from bl_asset
+  </delete>
+  <insert id="insert" parameterType="com.browser.dao.entity.BlAsset" >
+    insert into bl_asset (id, symbol, asset_id, 
+      `precision`)
+    values (#{id,jdbcType=INTEGER}, #{symbol,jdbcType=VARCHAR}, #{assetId,jdbcType=VARCHAR}, 
+      #{precision,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.browser.dao.entity.BlAsset" >
+    insert into bl_asset
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="symbol != null" >
+        symbol,
+      </if>
+      <if test="assetId != null" >
+        asset_id,
+      </if>
+      <if test="precision != null" >
+        `precision`,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="symbol != null" >
+        #{symbol,jdbcType=VARCHAR},
+      </if>
+      <if test="assetId != null" >
+        #{assetId,jdbcType=VARCHAR},
+      </if>
+      <if test="precision != null" >
+        #{precision,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.browser.dao.entity.BlAsset" >
+    update bl_asset
+    <set >
+      <if test="symbol != null" >
+        symbol = #{symbol,jdbcType=VARCHAR},
+      </if>
+      <if test="assetId != null" >
+        asset_id = #{assetId,jdbcType=VARCHAR},
+      </if>
+      <if test="precision != null" >
+        `precision` = #{precision,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.browser.dao.entity.BlAsset" >
+    update bl_asset
+    set symbol = #{symbol,jdbcType=VARCHAR},
+      asset_id = #{assetId,jdbcType=VARCHAR},
+      `precision` = #{precision,jdbcType=BIGINT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

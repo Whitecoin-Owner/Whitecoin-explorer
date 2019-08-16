@@ -1,0 +1,142 @@
+package com.browser.service.impl;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.browser.config.RealData;
+import com.browser.dao.entity.BlAsset;
+import com.browser.dao.entity.BlContractInfo;
+import com.browser.dao.entity.BlContractStatis;
+import com.browser.dao.entity.BlTransaction;
+import com.browser.dao.mapper.BlContractInfoMapper;
+import com.browser.protocol.EUDataGridResult;
+import com.browser.service.TransactionService;
+import com.browser.tools.Constant;
+import com.browser.tools.common.StringUtil;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+
+@Service
+public class ContractService {
+
+    @Autowired
+    private RealData realData;
+
+    @Autowired
+    private TransactionService transactionService;
+    
+    @Autowired
+    private BlContractInfoMapper blContractInfoMapper;
+
+    private static Map<Integer,String> contractStatusMap = null;
+    static{
+        contractStatusMap = new HashMap<>();
+        contractStatusMap.put(0,"销毁");
+        contractStatusMap.put(1,"临时");
+        contractStatusMap.put(2,"永久");
+    }
+
+    /**
+     * 根据地址查询拥有的合约信息
+     * @param blContractInfo
+     * @return
+     */
+    public EUDataGridResult getContractList(BlContractInfo blContractInfo) {
+    	// 分页处理
+    	PageHelper.startPage(blContractInfo.getPage(), blContractInfo.getRows());
+    	List<BlContractInfo> list = blContractInfoMapper.selectContractList(blContractInfo);
+    	if(list!=null && list.size()>0){
+    		for(BlContractInfo contractInfo:list){
+//				BlContractStatis blContractStatis=new BlContractStatis();
+				contractInfo.setContractAddress(contractInfo.getContractId());
+				contractInfo.setOnwerAddress(contractInfo.getOwnerAddress());
+				contractInfo.setCreateTime(contractInfo.getRegTime());
+
+				BlTransaction transaction =new BlTransaction();
+				transaction.setContractId(contractInfo.getContractId());
+
+				List<BlTransaction> trxList = transactionService.selectCalledContract(transaction);
+				if(trxList!=null && trxList.size()>0){
+					contractInfo.setCallTimes(trxList.size());
+					contractInfo.setLastTime(trxList.get(0).getTrxTime());
+				}else{
+					contractInfo.setCallTimes(0);
+				}
+			}
+    	}
+    	// 创建一个返回值对象
+    	EUDataGridResult result = new EUDataGridResult();
+    	result.setRows(list);
+    	// 取记录总条数
+    	PageInfo<BlContractInfo> pageInfo = new PageInfo<>(list);
+    	result.setTotal(pageInfo.getTotal());
+    	result.setPages(pageInfo.getPages());
+    	return result;
+    }
+    
+    /**
+     * 根据合约地址查询交易里合约被调用的次数
+     * @param
+     * @return
+     */
+    public EUDataGridResult getContractTrxList(BlTransaction transaction) {
+    	// 分页处理
+    	PageHelper.startPage(transaction.getPage(), transaction.getRows());
+		List<BlTransaction> trxList = transactionService.selectCalledContract(transaction);
+		if(trxList!=null && trxList.size()>0){
+			for(BlTransaction trx : trxList) {
+				if (!StringUtil.isEmpty(trx.getAssetId())) {
+					BlAsset blAsset = realData.getSymbolByAssetId(trx.getAssetId());
+					if (null != trx.getAmount() && Constant.SYMBOL.equals(blAsset.getSymbol())) {
+						trx.setAmountStr(trx.getAmount().divide(new BigDecimal(blAsset.getPrecision()))
+								.stripTrailingZeros().toPlainString()  +" " + blAsset.getSymbol());
+					}
+					if (null != trx.getAmount() && !Constant.SYMBOL.equals(blAsset.getSymbol())) {
+						trx.setAmountStr(trx.getAmount().stripTrailingZeros().toPlainString() +" " + blAsset.getSymbol());
+					}
+				}
+				if(StringUtil.isEmpty(trx.getAssetId())&& !StringUtil.isEmpty(trx.getSymbol())) {
+					if (null != trx.getAmount() && !Constant.SYMBOL.equals(trx.getSymbol())) {
+						trx.setAmountStr(trx.getAmount().stripTrailingZeros().toPlainString() +" " + trx.getSymbol());
+					}
+				}
+				if (null!=trx.getFee()) {
+					trx.setFeeStr(trx.getFee().divide(new BigDecimal(Constant.PRECISION))
+							.stripTrailingZeros().toPlainString()  +" " + Constant.SYMBOL);
+				}
+			}
+		}
+    	// 创建一个返回值对象
+    	EUDataGridResult result = new EUDataGridResult();
+    	result.setRows(trxList);
+    	// 取记录总条数
+    	PageInfo<BlTransaction> pageInfo = new PageInfo<>(trxList);
+    	result.setTotal(pageInfo.getTotal());
+    	result.setPages(pageInfo.getPages());
+    	return result;
+    }
+    
+    public JSONObject getAbi(BlContractInfo blContractInfo) {
+    	JSONObject json =new JSONObject();
+    	BlContractInfo contractInfo = blContractInfoMapper.selectByPrimaryKey(blContractInfo.getContractId());
+    	JSONArray abi = JSONObject.parseObject(contractInfo.getCode()).getJSONArray("abi");
+    	json.put("abi", abi);
+    	return json;
+    }
+    
+    public JSONObject getEvents(BlContractInfo blContractInfo) {
+    	JSONObject json =new JSONObject();
+    	BlContractInfo contractInfo = blContractInfoMapper.selectByPrimaryKey(blContractInfo.getContractId());
+    	JSONArray events = JSONObject.parseObject(contractInfo.getCode()).getJSONArray("events");
+    	json.put("events", events);
+    	return json;
+    }
+}

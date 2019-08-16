@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.browser.dao.mapper.ProposalMapper" >
+  <resultMap id="BaseResultMap" type="com.browser.dao.entity.Proposal" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="proposal_id" property="proposalId" jdbcType="VARCHAR" />
+    <result column="proposer_id" property="proposerId" jdbcType="VARCHAR" />
+    <result column="proposer" property="proposer" jdbcType="VARCHAR" />
+    <result column="block" property="block" jdbcType="BIGINT" />
+    <result column="proposal_time" property="proposalTime" jdbcType="TIMESTAMP" />
+    <result column="amonut" property="amonut" jdbcType="DECIMAL" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, proposal_id, proposer_id, proposer, block, proposal_time, amonut, status, create_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from bl_proposal
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectByProposalId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from bl_proposal
+    where proposal_id = #{proposalId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectCurList" resultMap="BaseResultMap" parameterType="com.browser.dao.entity.Proposal" >
+    select
+    <include refid="Base_Column_List" />
+    from bl_proposal
+    where status=1
+    <if test="proposalId != null" >
+      and proposal_id = #{proposalId,jdbcType=VARCHAR}
+    </if>
+  </select>
+  <select id="selectPreList" resultMap="BaseResultMap" parameterType="com.browser.dao.entity.Proposal" >
+    select
+    <include refid="Base_Column_List" />
+    from bl_proposal
+    where 1=1
+    <if test="proposalId != null" >
+      and proposal_id = #{proposalId,jdbcType=VARCHAR}
+    </if>
+    order by id desc
+  </select>
+  <select id="selectId" resultType="java.lang.Integer" parameterType="java.lang.String" >
+    select
+    id
+    from bl_proposal
+    where proposal_id = #{proposalId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectProposalId" resultType="java.lang.String" parameterType="java.lang.String" >
+    select
+    proposal_id
+    from bl_proposal
+    where block is null
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from bl_proposal
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.browser.dao.entity.Proposal" >
+    insert into bl_proposal (id, proposal_id, proposer_id, 
+      proposer, block, proposal_time, 
+      amonut, status, create_time
+      )
+    values (#{id,jdbcType=INTEGER}, #{proposalId,jdbcType=VARCHAR}, #{proposerId,jdbcType=VARCHAR}, 
+      #{proposer,jdbcType=VARCHAR}, #{block,jdbcType=BIGINT}, #{proposalTime,jdbcType=TIMESTAMP}, 
+      #{amonut,jdbcType=DECIMAL}, #{status,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.browser.dao.entity.Proposal" >
+    insert into bl_proposal
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="proposalId != null" >
+        proposal_id,
+      </if>
+      <if test="proposerId != null" >
+        proposer_id,
+      </if>
+      <if test="proposer != null" >
+        proposer,
+      </if>
+      <if test="block != null" >
+        block,
+      </if>
+      <if test="proposalTime != null" >
+        proposal_time,
+      </if>
+      <if test="amonut != null" >
+        amonut,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="proposalId != null" >
+        #{proposalId,jdbcType=VARCHAR},
+      </if>
+      <if test="proposerId != null" >
+        #{proposerId,jdbcType=VARCHAR},
+      </if>
+      <if test="proposer != null" >
+        #{proposer,jdbcType=VARCHAR},
+      </if>
+      <if test="block != null" >
+        #{block,jdbcType=BIGINT},
+      </if>
+      <if test="proposalTime != null" >
+        #{proposalTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="amonut != null" >
+        #{amonut,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.browser.dao.entity.Proposal" >
+    update bl_proposal
+    <set >
+      <if test="proposalId != null" >
+        proposal_id = #{proposalId,jdbcType=VARCHAR},
+      </if>
+      <if test="proposerId != null" >
+        proposer_id = #{proposerId,jdbcType=VARCHAR},
+      </if>
+      <if test="proposer != null" >
+        proposer = #{proposer,jdbcType=VARCHAR},
+      </if>
+      <if test="block != null" >
+        block = #{block,jdbcType=BIGINT},
+      </if>
+      <if test="proposalTime != null" >
+        proposal_time = #{proposalTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="amonut != null" >
+        amonut = #{amonut,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.browser.dao.entity.Proposal" >
+    update bl_proposal
+    set proposal_id = #{proposalId,jdbcType=VARCHAR},
+      proposer_id = #{proposerId,jdbcType=VARCHAR},
+      proposer = #{proposer,jdbcType=VARCHAR},
+      block = #{block,jdbcType=BIGINT},
+      proposal_time = #{proposalTime,jdbcType=TIMESTAMP},
+      amonut = #{amonut,jdbcType=DECIMAL},
+      status = #{status,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateStatus" parameterType="java.util.List" >
+    update bl_proposal
+    set
+      status = -1
+    where  status = 1
+    and proposal_id not in
+    <foreach item="item" index="index" collection="list"
+             open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </update>
+  <update id="updateAll" parameterType="java.lang.Integer" >
+    update bl_proposal
+    set
+      status = -1
+    where  status = 1
+  </update>
+  <update id="updateBlock" parameterType="com.browser.dao.entity.Proposal" >
+    update bl_proposal
+    set
+      block = #{block,jdbcType=BIGINT},
+      proposal_time = #{proposalTime,jdbcType=TIMESTAMP}
+    where  proposal_id = #{proposalId,jdbcType=VARCHAR}
+  </update>
+</mapper>

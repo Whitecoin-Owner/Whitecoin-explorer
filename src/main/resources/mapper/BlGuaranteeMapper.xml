@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.browser.dao.mapper.BlGuaranteeMapper" >
+  <resultMap id="BaseResultMap" type="com.browser.dao.entity.BlGuarantee" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="guarantee_id" property="guaranteeId" jdbcType="VARCHAR" />
+    <result column="owner_addr" property="ownerAddr" jdbcType="VARCHAR" />
+    <result column="asset_orign" property="assetOrign" jdbcType="VARCHAR" />
+    <result column="asset_target" property="assetTarget" jdbcType="VARCHAR" />
+    <result column="rate" property="rate" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, guarantee_id, owner_addr, asset_orign, asset_target, rate
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from bl_guarantee
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectByGuaranteeId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from bl_guarantee
+    where guarantee_id = #{guaranteeId,jdbcType=VARCHAR} LIMIT 1
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from bl_guarantee
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.browser.dao.entity.BlGuarantee" >
+    insert into bl_guarantee (id, guarantee_id, owner_addr, 
+      asset_orign, asset_target, rate
+      )
+    values (#{id,jdbcType=INTEGER}, #{guaranteeId,jdbcType=VARCHAR}, #{ownerAddr,jdbcType=VARCHAR}, 
+      #{assetOrign,jdbcType=VARCHAR}, #{assetTarget,jdbcType=VARCHAR}, #{rate,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.browser.dao.entity.BlGuarantee" >
+    insert into bl_guarantee
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="guaranteeId != null" >
+        guarantee_id,
+      </if>
+      <if test="ownerAddr != null" >
+        owner_addr,
+      </if>
+      <if test="assetOrign != null" >
+        asset_orign,
+      </if>
+      <if test="assetTarget != null" >
+        asset_target,
+      </if>
+      <if test="rate != null" >
+        rate,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="guaranteeId != null" >
+        #{guaranteeId,jdbcType=VARCHAR},
+      </if>
+      <if test="ownerAddr != null" >
+        #{ownerAddr,jdbcType=VARCHAR},
+      </if>
+      <if test="assetOrign != null" >
+        #{assetOrign,jdbcType=VARCHAR},
+      </if>
+      <if test="assetTarget != null" >
+        #{assetTarget,jdbcType=VARCHAR},
+      </if>
+      <if test="rate != null" >
+        #{rate,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.browser.dao.entity.BlGuarantee" >
+    update bl_guarantee
+    <set >
+      <if test="guaranteeId != null" >
+        guarantee_id = #{guaranteeId,jdbcType=VARCHAR},
+      </if>
+      <if test="ownerAddr != null" >
+        owner_addr = #{ownerAddr,jdbcType=VARCHAR},
+      </if>
+      <if test="assetOrign != null" >
+        asset_orign = #{assetOrign,jdbcType=VARCHAR},
+      </if>
+      <if test="assetTarget != null" >
+        asset_target = #{assetTarget,jdbcType=VARCHAR},
+      </if>
+      <if test="rate != null" >
+        rate = #{rate,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.browser.dao.entity.BlGuarantee" >
+    update bl_guarantee
+    set guarantee_id = #{guaranteeId,jdbcType=VARCHAR},
+      owner_addr = #{ownerAddr,jdbcType=VARCHAR},
+      asset_orign = #{assetOrign,jdbcType=VARCHAR},
+      asset_target = #{assetTarget,jdbcType=VARCHAR},
+      rate = #{rate,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.browser.dao.mapper.SenatorPreviousMapper" >
+  <resultMap id="BaseResultMap" type="com.browser.dao.entity.SenatorPrevious" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="senator_id" property="senatorId" jdbcType="VARCHAR" />
+    <result column="senator_name" property="senatorName" jdbcType="VARCHAR" />
+    <result column="lock_asset" property="lockAsset" jdbcType="VARCHAR" />
+    <result column="proposal_id" property="proposalId" jdbcType="VARCHAR" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="pay_back" property="payBack" jdbcType="DECIMAL" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="trx_id" property="trxId" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, senator_id, senator_name, lock_asset, proposal_id, address, pay_back, status, 
+    trx_id
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.browser.dao.entity.SenatorPrevious" >
+    select 
+    <include refid="Base_Column_List" />
+    from bl_senator_previous
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectByName" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from bl_senator_previous
+    where senator_name = #{senatorName,jdbcType=VARCHAR}
+  </select>
+  <select id="selectList" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from bl_senator_previous
+    where 1=1
+    <if test="id != null" >
+      and id = #{id,jdbcType=INTEGER}
+    </if>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from bl_senator_previous
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByName" parameterType="java.lang.String" >
+    delete from bl_senator_previous
+    where senator_name = #{senatorName,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.browser.dao.entity.SenatorPrevious" >
+    insert into bl_senator_previous (id, senator_id, senator_name, 
+      lock_asset, proposal_id, address, 
+      pay_back, status, trx_id
+      )
+    values (#{id,jdbcType=INTEGER}, #{senatorId,jdbcType=VARCHAR}, #{senatorName,jdbcType=VARCHAR}, 
+      #{lockAsset,jdbcType=VARCHAR}, #{proposalId,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 
+      #{payBack,jdbcType=DECIMAL}, #{status,jdbcType=INTEGER}, #{trxId,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.browser.dao.entity.SenatorPrevious" >
+    insert into bl_senator_previous
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="senatorId != null" >
+        senator_id,
+      </if>
+      <if test="senatorName != null" >
+        senator_name,
+      </if>
+      <if test="lockAsset != null" >
+        lock_asset,
+      </if>
+      <if test="proposalId != null" >
+        proposal_id,
+      </if>
+      <if test="address != null" >
+        address,
+      </if>
+      <if test="payBack != null" >
+        pay_back,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="trxId != null" >
+        trx_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="senatorId != null" >
+        #{senatorId,jdbcType=VARCHAR},
+      </if>
+      <if test="senatorName != null" >
+        #{senatorName,jdbcType=VARCHAR},
+      </if>
+      <if test="lockAsset != null" >
+        #{lockAsset,jdbcType=VARCHAR},
+      </if>
+      <if test="proposalId != null" >
+        #{proposalId,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="payBack != null" >
+        #{payBack,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="trxId != null" >
+        #{trxId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.browser.dao.entity.SenatorPrevious" >
+    update bl_senator_previous
+    <set >
+      <if test="senatorId != null" >
+        senator_id = #{senatorId,jdbcType=VARCHAR},
+      </if>
+      <if test="senatorName != null" >
+        senator_name = #{senatorName,jdbcType=VARCHAR},
+      </if>
+      <if test="lockAsset != null" >
+        lock_asset = #{lockAsset,jdbcType=VARCHAR},
+      </if>
+      <if test="proposalId != null" >
+        proposal_id = #{proposalId,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="payBack != null" >
+        pay_back = #{payBack,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="trxId != null" >
+        trx_id = #{trxId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.browser.dao.entity.SenatorPrevious" >
+    update bl_senator_previous
+    set senator_id = #{senatorId,jdbcType=VARCHAR},
+      senator_name = #{senatorName,jdbcType=VARCHAR},
+      lock_asset = #{lockAsset,jdbcType=VARCHAR},
+      proposal_id = #{proposalId,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      pay_back = #{payBack,jdbcType=DECIMAL},
+      status = #{status,jdbcType=INTEGER},
+      trx_id = #{trxId,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateBySenatorId" parameterType="com.browser.dao.entity.SenatorPrevious" >
+    update bl_senator_previous
+    <set >
+      <if test="lockAsset != null" >
+        lock_asset = #{lockAsset,jdbcType=VARCHAR},
+      </if>
+      <if test="proposalId != null" >
+        proposal_id = #{proposalId,jdbcType=VARCHAR},
+      </if>
+      <if test="payBack != null" >
+        pay_back = #{payBack,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="trxId != null" >
+        trx_id = #{trxId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where senator_id = #{senatorId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByAddress" parameterType="com.browser.dao.entity.SenatorPrevious" >
+    update bl_senator_previous
+    <set >
+      <if test="lockAsset != null" >
+        lock_asset = #{lockAsset,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="trxId != null" >
+        trx_id = #{trxId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where address = #{address,jdbcType=VARCHAR}
+  </update>
+</mapper>

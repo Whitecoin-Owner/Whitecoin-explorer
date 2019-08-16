@@ -1,0 +1,67 @@
+version: '3'
+
+services:
+  front:
+    image: node:12-alpine
+    volumes:
+    - "./front:/code"
+    - "./front/node_modules:/code/node_modules"
+    working_dir: /code
+    command: npm run dev
+#/bin/bash ./run_dev.sh
+    ports:
+    - "8081:8080"
+#    networks:
+#      - default
+  redis:
+    image: redis
+    restart: always
+    ports:
+    - "6380:6379"
+    volumes:
+    - "./redis_conf:/usr/local/etc/redis"
+    - "./redis_data:/data"
+    command: redis-server
+    networks:
+      app_net:
+        ipv4_address: 10.10.10.1
+  backend:
+    image: maven:3-jdk-12
+    command: mvn spring-boot:run
+    volumes:
+    - .:/code
+    - ./m2:/root/.m2
+    working_dir: /code
+    ports:
+    - "9008:9007"
+    links:
+    - redis
+    depends_on:
+    - redis
+    networks:
+    - app_net
+  nginx:
+    image: nginx
+    volumes:
+    - "$PWD/front/dist:/usr/share/nginx/html"
+    - "$PWD/nginx_conf:/etc/nginx/conf.d"
+    ports:
+    - "3001:3000"
+    - "3002:80"
+    networks:
+    - app_net
+#    depends_on:
+#    - backend
+#    - front
+
+networks:
+  app_net:
+    driver: bridge
+    ipam:
+      config:
+      - subnet: 10.10.0.0/16
+
+#networks:
+#  default:
+#    # Use a custom driver
+#    driver: custom-driver-1

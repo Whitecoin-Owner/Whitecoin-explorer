@@ -1,0 +1,15 @@
+/.project
+/.settings
+/target
+/.vscode
+/.idea
+/*.iml
+/logs
+/build
+/tmp
+/dist
+/m2
+/redis_data
+/redis_conf
+/nginx_conf
+

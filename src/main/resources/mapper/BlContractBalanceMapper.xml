@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.browser.dao.mapper.BlContractBalanceMapper" >
+  <resultMap id="BaseResultMap" type="com.browser.dao.entity.BlContractBalance" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="contract_id" property="contractId" jdbcType="VARCHAR" />
+    <result column="balance" property="balance" jdbcType="DECIMAL" />
+    <result column="asset_id" property="assetId" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, contract_id, balance, asset_id
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from bl_contract_balance
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <select id="selectByContractId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from bl_contract_balance
+    where contract_id = #{contractId,jdbcType=INTEGER}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from bl_contract_balance
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.browser.dao.entity.BlContractBalance" >
+    insert into bl_contract_balance (id, contract_id, balance, 
+      asset_id)
+    values (#{id,jdbcType=INTEGER}, #{contractId,jdbcType=VARCHAR}, #{balance,jdbcType=DECIMAL}, 
+      #{assetId,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.browser.dao.entity.BlContractBalance" >
+    insert into bl_contract_balance
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="contractId != null" >
+        contract_id,
+      </if>
+      <if test="balance != null" >
+        balance,
+      </if>
+      <if test="assetId != null" >
+        asset_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="contractId != null" >
+        #{contractId,jdbcType=VARCHAR},
+      </if>
+      <if test="balance != null" >
+        #{balance,jdbcType=DECIMAL},
+      </if>
+      <if test="assetId != null" >
+        #{assetId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.browser.dao.entity.BlContractBalance" >
+    update bl_contract_balance
+    <set >
+      <if test="balance != null" >
+        balance = #{balance,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where contract_id = #{contractId,jdbcType=VARCHAR}  and  asset_id = #{assetId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.browser.dao.entity.BlContractBalance" >
+    update bl_contract_balance
+    set contract_id = #{contractId,jdbcType=VARCHAR},
+      balance = #{balance,jdbcType=DECIMAL},
+      asset_id = #{assetId,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

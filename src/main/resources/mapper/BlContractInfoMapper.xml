@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.browser.dao.mapper.BlContractInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.browser.dao.entity.BlContractInfo" >
+    <id column="contract_id" property="contractId" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="owner" property="owner" jdbcType="VARCHAR" />
+    <result column="owner_address" property="ownerAddress" jdbcType="VARCHAR" />
+    <result column="owner_name" property="ownerName" jdbcType="VARCHAR" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="reg_time" property="regTime" jdbcType="TIMESTAMP" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="create_tx" property="createTx" jdbcType="VARCHAR" />
+    <result column="block_num" property="blockNum" jdbcType="BIGINT" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    contract_id, name, owner, owner_address, owner_name, description, reg_time, status, 
+    create_tx, block_num,code
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from bl_contract_info
+    where contract_id = #{contractId,jdbcType=VARCHAR}
+  </select>
+  
+  <!--查询某个地址拥有的合约  -->
+  <select id="selectContractList" resultMap="BaseResultMap" parameterType="com.browser.dao.entity.BlContractInfo" >
+    select 
+    <include refid="Base_Column_List" />
+    from bl_contract_info
+    where 1=1
+    <if test="ownerAddress !=null and ownerAddress !='' ">
+    	and owner_address = #{ownerAddress,jdbcType=VARCHAR}
+    </if>
+    order by reg_time DESC
+  </select>
+  
+  <!-- 统计某个地址拥有的合约量 -->
+  <select id="countContracts" resultType="java.lang.Integer" parameterType="java.lang.String" >
+    select count(contract_id)
+    from bl_contract_info
+    where owner_address = #{address,jdbcType=VARCHAR}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from bl_contract_info
+    where contract_id = #{contractId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.browser.dao.entity.BlContractInfo" >
+    insert into bl_contract_info (contract_id, name, owner, 
+      owner_address, owner_name, description, 
+      reg_time, status, create_tx, 
+      block_num, code)
+    values (#{contractId,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{owner,jdbcType=VARCHAR}, 
+      #{ownerAddress,jdbcType=VARCHAR}, #{ownerName,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
+      #{regTime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, #{createTx,jdbcType=VARCHAR}, 
+      #{blockNum,jdbcType=BIGINT}, #{code,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.browser.dao.entity.BlContractInfo" >
+    insert into bl_contract_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="contractId != null" >
+        contract_id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="owner != null" >
+        owner,
+      </if>
+      <if test="ownerAddress != null" >
+        owner_address,
+      </if>
+      <if test="ownerName != null" >
+        owner_name,
+      </if>
+      <if test="description != null" >
+        description,
+      </if>
+      <if test="regTime != null" >
+        reg_time,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="createTx != null" >
+        create_tx,
+      </if>
+      <if test="blockNum != null" >
+        block_num,
+      </if>
+      <if test="code != null" >
+        code,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="contractId != null" >
+        #{contractId,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="owner != null" >
+        #{owner,jdbcType=VARCHAR},
+      </if>
+      <if test="ownerAddress != null" >
+        #{ownerAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="ownerName != null" >
+        #{ownerName,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="regTime != null" >
+        #{regTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createTx != null" >
+        #{createTx,jdbcType=VARCHAR},
+      </if>
+      <if test="blockNum != null" >
+        #{blockNum,jdbcType=BIGINT},
+      </if>
+      <if test="code != null" >
+        #{code,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.browser.dao.entity.BlContractInfo" >
+    update bl_contract_info
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="owner != null" >
+        owner = #{owner,jdbcType=VARCHAR},
+      </if>
+      <if test="ownerAddress != null" >
+        owner_address = #{ownerAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="ownerName != null" >
+        owner_name = #{ownerName,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="regTime != null" >
+        reg_time = #{regTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createTx != null" >
+        create_tx = #{createTx,jdbcType=VARCHAR},
+      </if>
+      <if test="blockNum != null" >
+        block_num = #{blockNum,jdbcType=BIGINT},
+      </if>
+      <if test="code != null" >
+        code = #{code,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where contract_id = #{contractId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.browser.dao.entity.BlContractInfo" >
+    update bl_contract_info
+    set name = #{name,jdbcType=VARCHAR},
+      owner = #{owner,jdbcType=VARCHAR},
+      owner_address = #{ownerAddress,jdbcType=VARCHAR},
+      owner_name = #{ownerName,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      reg_time = #{regTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=INTEGER},
+      create_tx = #{createTx,jdbcType=VARCHAR},
+      block_num = #{blockNum,jdbcType=BIGINT},
+      code = #{code,jdbcType=LONGVARCHAR}
+    where contract_id = #{contractId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.browser.dao.entity.BlContractInfo" >
+    update bl_contract_info
+    set name = #{name,jdbcType=VARCHAR},
+      owner = #{owner,jdbcType=VARCHAR},
+      owner_address = #{ownerAddress,jdbcType=VARCHAR},
+      owner_name = #{ownerName,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      reg_time = #{regTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=INTEGER},
+      create_tx = #{createTx,jdbcType=VARCHAR},
+      block_num = #{blockNum,jdbcType=BIGINT}
+    where contract_id = #{contractId,jdbcType=VARCHAR}
+  </update>
+</mapper>

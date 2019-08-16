@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.browser.dao.mapper.ProposalContentMapper" >
+  <resultMap id="BaseResultMap" type="com.browser.dao.entity.ProposalContent" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="proposal_id" property="proposalId" jdbcType="VARCHAR" />
+    <result column="referee_id" property="refereeId" jdbcType="VARCHAR" />
+    <result column="referee" property="referee" jdbcType="VARCHAR" />
+    <result column="replaced_id" property="replacedId" jdbcType="VARCHAR" />
+    <result column="replaced_person" property="replacedPerson" jdbcType="VARCHAR" />
+    <result column="vote_rate" property="voteRate" jdbcType="DECIMAL" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="flag" property="flag" jdbcType="INTEGER" />
+    <result column="symbol" property="symbol" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, proposal_id, referee_id, referee, replaced_id, replaced_person, vote_rate, status, 
+    address,flag,symbol
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from bl_proposal_content
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectList" resultMap="BaseResultMap" parameterType="com.browser.dao.entity.ProposalContent" >
+    select
+    <include refid="Base_Column_List" />
+    from bl_proposal_content
+    where 1=1
+    <if test="proposalId != null" >
+      and proposal_id = #{proposalId,jdbcType=VARCHAR}
+    </if>
+    <if test="status != null" >
+      and status = #{status,jdbcType=INTEGER}
+    </if>
+    <if test="address != null" >
+      and address = #{address,jdbcType=VARCHAR}
+    </if>
+    <if test="flag != null" >
+      and flag = #{flag,jdbcType=INTEGER}
+    </if>
+  </select>
+
+  <select id="selectJoinSenator" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    a1.id,a1.proposal_id, a1.referee, a1.vote_rate, a1.status,a1.symbol,a2.block,a2.proposal_time as proposalTime,a2.amonut
+    from bl_proposal_content a1,bl_proposal a2
+    where a1.proposal_id=a2.proposal_id
+    and a1.status = 0
+    and a1.referee = #{referee}
+  </select>
+
+  <select id="selectJoinList" resultMap="BaseResultMap" parameterType="com.browser.dao.entity.ProposalContent" >
+    select
+    a1.id,a1.proposal_id, a1.referee, a1.vote_rate, a1.status,a1.symbol,a2.block,a2.proposal_time as proposalTime,a2.amonut,a2.proposer
+    from bl_proposal_content a1,bl_proposal a2
+    where a1.proposal_id=a2.proposal_id
+    and a1.status != 0
+    and a1.symbol = 1
+    <if test="proposalId != null" >
+      AND proposal_id = #{proposalId,jdbcType=VARCHAR}
+    </if>
+    <if test="referee != null" >
+      AND referee = #{referee,jdbcType=VARCHAR}
+    </if>
+    order by a1.id desc
+  </select>
+
+  <select id="selectReferee" resultMap="BaseResultMap" parameterType="com.browser.dao.entity.ProposalContent" >
+    select id,referee,replaced_person
+    from bl_proposal_content
+    where status = #{status,jdbcType=INTEGER}
+    <if test="ids != null and ids.size>0" >
+      and referee not in
+      <foreach item="item" index="index" collection="ids"
+               open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+  </select>
+  <select id="selectId" resultType="java.lang.Integer" parameterType="java.lang.String" >
+    select
+    id
+    from bl_proposal_content
+    where proposal_id = #{proposalId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectRelationId" resultType="java.lang.String" parameterType="java.lang.String" >
+    SELECT referee_id FROM `bl_proposal_content`
+    WHERE proposal_id = #{proposalId,jdbcType=VARCHAR}
+    limit 1
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from bl_proposal_content
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.browser.dao.entity.ProposalContent" >
+    insert into bl_proposal_content (id, proposal_id, referee_id, 
+      referee, replaced_id, replaced_person, 
+      vote_rate, status, address,flag,symbol
+      )
+    values (#{id,jdbcType=INTEGER}, #{proposalId,jdbcType=VARCHAR}, #{refereeId,jdbcType=VARCHAR}, 
+      #{referee,jdbcType=VARCHAR}, #{replacedId,jdbcType=VARCHAR}, #{replacedPerson,jdbcType=VARCHAR},
+      #{voteRate,jdbcType=DECIMAL}, #{status,jdbcType=INTEGER}, #{address,jdbcType=VARCHAR}, #{flag,jdbcType=INTEGER},
+      #{symbol,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.browser.dao.entity.ProposalContent" >
+    insert into bl_proposal_content
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="proposalId != null" >
+        proposal_id,
+      </if>
+      <if test="refereeId != null" >
+        referee_id,
+      </if>
+      <if test="referee != null" >
+        referee,
+      </if>
+      <if test="replacedId != null" >
+        replaced_id,
+      </if>
+      <if test="replacedPerson != null" >
+        replaced_person,
+      </if>
+      <if test="voteRate != null" >
+        vote_rate,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="address != null" >
+        address,
+      </if>
+      <if test="flag != null" >
+        flag,
+      </if>
+      <if test="symbol != null" >
+        symbol,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="proposalId != null" >
+        #{proposalId,jdbcType=VARCHAR},
+      </if>
+      <if test="refereeId != null" >
+        #{refereeId,jdbcType=VARCHAR},
+      </if>
+      <if test="referee != null" >
+        #{referee,jdbcType=VARCHAR},
+      </if>
+      <if test="replacedId != null" >
+        #{replacedId,jdbcType=VARCHAR},
+      </if>
+      <if test="replacedPerson != null" >
+        #{replacedPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="voteRate != null" >
+        #{voteRate,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="address != null" >
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="flag != null" >
+        #{flag,jdbcType=INTEGER},
+      </if>
+      <if test="symbol != null" >
+        #{symbol,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.browser.dao.entity.ProposalContent" >
+    update bl_proposal_content
+    <set >
+      <if test="proposalId != null" >
+        proposal_id = #{proposalId,jdbcType=VARCHAR},
+      </if>
+      <if test="refereeId != null" >
+        referee_id = #{refereeId,jdbcType=VARCHAR},
+      </if>
+      <if test="referee != null" >
+        referee = #{referee,jdbcType=VARCHAR},
+      </if>
+      <if test="replacedId != null" >
+        replaced_id = #{replacedId,jdbcType=VARCHAR},
+      </if>
+      <if test="replacedPerson != null" >
+        replaced_person = #{replacedPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="voteRate != null" >
+        vote_rate = #{voteRate,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="address != null" >
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="flag != null" >
+        flag = #{flag,jdbcType=INTEGER},
+      </if>
+      <if test="symbol != null" >
+        symbol = #{symbol,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByProposalIdSelective" parameterType="com.browser.dao.entity.ProposalContent" >
+    update bl_proposal_content
+    <set >
+      <if test="voteRate != null" >
+        vote_rate = #{voteRate,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+    </set>
+    where proposal_id = #{proposalId,jdbcType=VARCHAR}
+  </update>
+
+  <update id="updateFlag" parameterType="com.browser.dao.entity.ProposalContent" >
+    update bl_proposal_content
+    set
+        flag = #{flag,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.browser.dao.entity.ProposalContent" >
+    update bl_proposal_content
+    set proposal_id = #{proposalId,jdbcType=VARCHAR},
+      referee_id = #{refereeId,jdbcType=VARCHAR},
+      referee = #{referee,jdbcType=VARCHAR},
+      replaced_id = #{replacedId,jdbcType=VARCHAR},
+      replaced_person = #{replacedPerson,jdbcType=VARCHAR},
+      vote_rate = #{voteRate,jdbcType=DECIMAL},
+      status = #{status,jdbcType=INTEGER},
+      address = #{address,jdbcType=VARCHAR},
+      flag = #{flag,jdbcType=INTEGER},
+      symbol = #{symbol,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateSuccStatus" parameterType="com.browser.dao.entity.ProposalContent" >
+    update bl_proposal_content
+    set
+      status = 1
+    where proposal_id = #{proposalId,jdbcType=VARCHAR}
+    and status = #{status,jdbcType=INTEGER}
+  </update>
+  <update id="updateFailStatus" parameterType="com.browser.dao.entity.ProposalContent" >
+    update bl_proposal_content
+    set
+      status = -1
+    where proposal_id = #{proposalId,jdbcType=VARCHAR}
+    and status = #{status,jdbcType=INTEGER}
+  </update>
+</mapper>

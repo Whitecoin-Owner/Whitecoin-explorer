@@ -1,0 +1,626 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.browser.dao.mapper.BlTransactionMapper">
+	<resultMap id="BaseResultMap"
+		type="com.browser.dao.entity.BlTransaction">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="trx_id" property="trxId" jdbcType="VARCHAR" />
+		<result column="block_id" property="blockId" jdbcType="VARCHAR" />
+		<result column="block_num" property="blockNum"
+			jdbcType="BIGINT" />
+		<result column="from_account" property="fromAccount"
+			jdbcType="VARCHAR" />
+		<result column="to_account" property="toAccount"
+			jdbcType="VARCHAR" />
+		<result column="miner_address" property="minerAddress"
+			jdbcType="VARCHAR" />
+		<result column="symbol" property="symbol" jdbcType="VARCHAR" />
+		<result column="asset_id" property="assetId" jdbcType="VARCHAR" />
+		<result column="amount" property="amount" jdbcType="DECIMAL" />
+		<result column="fee" property="fee" jdbcType="DECIMAL" />
+		<result column="trx_time" property="trxTime"
+			jdbcType="TIMESTAMP" />
+		<result column="extra_trx_id" property="extraTrxId"
+			jdbcType="VARCHAR" />
+		<result column="guarantee_id" property="guaranteeId"
+			jdbcType="VARCHAR" />
+		<result column="op_type" property="opType" jdbcType="INTEGER" />
+		<result column="parent_op_type" property="parentOpType" jdbcType="INTEGER" />
+		<result column="gas_limit" property="gasLimit"
+			jdbcType="INTEGER" />
+		<result column="gas_cost" property="gasCost" jdbcType="INTEGER" />
+		<result column="gas_price" property="gasPrice"
+			jdbcType="DECIMAL" />
+		<result column="contract_id" property="contractId"
+			jdbcType="VARCHAR" />
+		<result column="created_time" property="createdTime"
+			jdbcType="TIMESTAMP" />
+		<result column="called_abi" property="calledAbi"
+			jdbcType="VARCHAR" />
+		<result column="abi_params" property="abiParams"
+			jdbcType="VARCHAR" />
+		<result column="memo" property="memo"
+			jdbcType="VARCHAR" />
+		<result column="extension" property="extension"
+			jdbcType="VARCHAR" />
+		<result column="extension1" property="extension1"
+			jdbcType="INTEGER" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		id, trx_id, block_id, block_num, from_account, to_account, miner_address,
+		symbol,asset_id, amount, fee,
+		trx_time, extra_trx_id,guarantee_id, op_type, parent_op_type, gas_limit, gas_cost, gas_price,
+		contract_id,
+		created_time, called_abi, abi_params,memo,extension,extension1
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from bl_transaction
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+
+	<select id="getTransactionList" resultMap="BaseResultMap"
+		parameterType="com.browser.dao.entity.BlTransaction">
+		select
+		<include refid="Base_Column_List" />
+		from bl_transaction
+		where 1=1
+		<if test="trxId != null">
+			and trx_id =#{trxId,jdbcType=INTEGER}
+		</if>
+		<if test="opType != null">
+			and op_type =#{opType,jdbcType=INTEGER}
+		</if>
+		<if test="parentOpType != null">
+			and parent_op_type =#{parentOpType,jdbcType=INTEGER}
+		</if>
+		order by ID DESC
+	</select>
+	
+	<!-- 根据交易id和op类型查询交易信息-->
+	<select id="getTransactionByTxId" resultMap="BaseResultMap"
+		parameterType="com.browser.dao.entity.BlTransaction">
+		select
+		<include refid="Base_Column_List" />
+		from bl_transaction
+		where
+		trx_id = #{trxId,jdbcType=VARCHAR}
+		and op_type =#{opType,jdbcType=INTEGER}
+	</select>
+	
+	<!-- 根据区块高度查询区块交易信息 -->
+	<select id="queryBlockTxNum" resultMap="BaseResultMap"
+		parameterType="java.lang.Long">
+		select trx_id,op_type,amount,fee
+		<include refid="Base_Column_List" />
+		from bl_transaction
+		where block_num=#{blockNum}
+	</select>
+
+	<!-- 查询最新的信息 -->
+	<select id="selectNewTrxInfo" resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM bl_transaction a ORDER BY a.id DESC LIMIT 0,10
+	</select>
+
+	<!-- 查询矿工交易信息 -->
+	<select id="selectMinerTrxList" resultMap="BaseResultMap"
+			parameterType="java.lang.String">
+		(SELECT
+		id, trx_id, block_num, from_account, to_account, miner_address,
+		symbol,asset_id, amount, fee,
+		trx_time, extra_trx_id,guarantee_id, op_type, parent_op_type
+		FROM bl_transaction
+		where from_account =#{minerAddress,jdbcType=VARCHAR}
+		ORDER BY id DESC)
+		union
+		(SELECT
+		id, trx_id, block_num, from_account, to_account, miner_address,
+		symbol,asset_id, amount, fee,
+		trx_time, extra_trx_id,guarantee_id, op_type, parent_op_type
+		FROM bl_transaction
+		where  to_account =#{minerAddress,jdbcType=VARCHAR}
+		ORDER BY id DESC)
+		ORDER BY id DESC
+	</select>
+	
+	<!-- 根据地址统计交易量 -->
+	<select id="countAddrTrxNum" resultType="java.lang.Integer"
+		parameterType="java.lang.String">
+		select sum(num)from (
+ 		SELECT
+ 		COUNT(DISTINCT a.trx_id) as num
+ 		FROM bl_transaction a
+ 		where from_account =#{address,jdbcType=VARCHAR}
+ 		union all
+		SELECT
+ 		COUNT(DISTINCT a.trx_id) as num
+ 		FROM bl_transaction a
+ 		where to_account =#{address,jdbcType=VARCHAR} )a
+	</select>
+	<!-- 根据地址统计交易量 -->
+	<select id="judgeAddr" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		SELECT
+		id
+		FROM bl_transaction a
+		where from_account =#{address,jdbcType=VARCHAR} or to_account
+		=#{address,jdbcType=VARCHAR}
+		limit 1
+	</select>
+
+	<!-- 查询非注册合约交易 -->
+	<select id="selectCalledContract" resultMap="BaseResultMap"
+		parameterType="com.browser.dao.entity.BlTransaction">
+		SELECT
+		trx_time
+		FROM bl_transaction a
+		where 1=1
+		<if test="contractId!=null and contractId!='' ">
+			and contract_id =#{contractId,jdbcType=VARCHAR}
+		</if>
+		and op_type in (77,79,81)
+		ORDER BY a.id DESC
+	</select>
+	
+	<!-- 统计合约交易量 -->
+	<select id="countContractTrxNum" resultType="java.lang.Integer"
+		parameterType="java.lang.String">
+		SELECT count(id)
+		FROM bl_transaction a
+		where contract_id =#{contractId,jdbcType=VARCHAR}
+	</select>
+	
+	<!-- 查询合约创建交易id-->
+	<select id="getContractCreateTxId" resultType="java.lang.String"
+		parameterType="java.lang.String">
+		SELECT a.trx_id
+		FROM bl_transaction a
+		where a.contract_id =#{contractId,jdbcType=VARCHAR}
+		and a.op_type=76
+	</select>
+
+	<!-- 统计交易数量 -->
+	<select id="countTrxNum" resultType="java.lang.Integer">
+		SELECT COUNT(DISTINCT a.trx_id) AS num FROM bl_transaction a
+	</select>
+	
+	<!-- 统计每天交易数量 -->
+	<select id="countTrxNumByDate" resultMap="BaseResultMap"
+		parameterType="com.browser.dao.entity.BlTransaction">
+		SELECT COUNT(DISTINCT a.trx_id) AS trxNum,
+          date_format( a.trx_time,'%Y-%m-%d' ) AS queryTime
+		FROM bl_transaction a 
+		where
+		a.trx_time &lt; str_to_date(#{endTime,jdbcType=VARCHAR}, '%Y-%m-%d %H:%i:%s')
+		and a.trx_time &gt;  str_to_date(#{startTime,jdbcType=VARCHAR}, '%Y-%m-%d %H:%i:%s')
+		GROUP BY date_format( a.trx_time,'%Y-%m-%d' )
+	</select>
+	<!-- 按每天小时统计交易数量 -->
+	<select id="countTrxNumByHour" resultMap="BaseResultMap"
+		parameterType="com.browser.dao.entity.BlTransaction">
+		select t.trxNum as trxNum, date_format( t.queryTime,'%Y-%m-%d %H:00:00') as queryTime from 
+	(SELECT COUNT(DISTINCT a.trx_id) AS trxNum,
+          date_format( a.trx_time,'%Y-%m-%d %H' ) AS queryTime
+		FROM bl_transaction a 
+		where
+		a.trx_time &lt; str_to_date(#{endTime,jdbcType=VARCHAR}, '%Y-%m-%d %H:%i:%s')
+		and a.trx_time &gt;  str_to_date(#{startTime,jdbcType=VARCHAR}, '%Y-%m-%d %H:%i:%s')
+		GROUP BY date_format( a.trx_time,'%Y-%m-%d %H' ))t
+	</select>
+	
+	<!-- 根据交易ID和交易类型 查extra_trx_id-->
+	<select id="selectextraTrxId" resultType="java.lang.String"
+		parameterType="com.browser.dao.entity.BlTransaction">
+		SELECT extra_trx_id
+		FROM bl_transaction a
+		where  
+		trx_id =#{trxId,jdbcType=VARCHAR}
+		and op_type =#{opType,jdbcType=INTEGER}
+	</select>
+	
+	<!-- 根据交易ID和交易类型 查跨链地址-->
+	<select id="selectCrossAddr" resultType="java.lang.String"
+		parameterType="com.browser.dao.entity.BlTransaction">
+		SELECT from_account
+		FROM bl_transaction a
+		where  
+		trx_id =#{trxId,jdbcType=VARCHAR}
+		and op_type =#{opType,jdbcType=INTEGER}
+	</select>
+
+	<!-- 根据op类型以及toAddress查询奖励-->
+	<select id="selectRewards" resultType="java.math.BigDecimal"
+		parameterType="com.browser.dao.entity.BlTransaction">
+		SELECT sum(amount)
+		FROM bl_transaction a
+		where
+		to_account =#{toAccount,jdbcType=VARCHAR}
+		and op_type =73
+	</select>
+
+	<!-- 根据交易ID和交易类型更新提现状态-->
+	<update id="updateByTxIdAndType"
+		parameterType="com.browser.dao.entity.BlTransaction">
+		update bl_transaction
+		set extension1 = #{extension1,jdbcType=INTEGER}
+		where trx_id = #{trxId,jdbcType=VARCHAR}
+		and op_type = 61
+	</update>
+	
+	<!-- 根据地址和类型更新手续费承兑单状态-->
+	<update id="updateGuranteeStatus"
+		parameterType="com.browser.dao.entity.BlTransaction">
+		update bl_transaction
+		set extension1 = #{extension1,jdbcType=INTEGER}
+		where from_account = #{fromAccount,jdbcType=VARCHAR}
+		and op_type = 82
+	</update>
+	
+	<!-- 根据extra_trx_id和交易类型 查扩展字段-->
+	<select id="selectExtension" resultType="java.lang.String"
+		parameterType="com.browser.dao.entity.BlTransaction">
+		SELECT extension
+		FROM bl_transaction a
+		where  
+		extra_trx_id =#{extraTrxId,jdbcType=VARCHAR}
+		and op_type =#{opType,jdbcType=INTEGER}
+	</select>
+
+	<select id="selectCurDay" resultType="java.lang.String"
+		parameterType="com.browser.dao.entity.BlTransaction">
+		SELECT LEFT(MAX(trx_time),10) FROM `bl_transaction`;
+	</select>
+
+	<select id="selectLockTrxId" resultType="java.lang.String"
+		parameterType="com.browser.dao.entity.BlTransaction">
+		SELECT trx_id FROM `bl_transaction`
+		where from_account = #{fromAccount,jdbcType=VARCHAR}
+		and to_account = #{toAccount,jdbcType=VARCHAR}
+		and called_abi = #{calledAbi,jdbcType=VARCHAR}
+		order by id desc
+	</select>
+
+	<delete id="deleteByPrimaryKey"
+		parameterType="java.lang.Integer">
+		delete from bl_transaction
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+	
+	<insert id="insert"
+		parameterType="com.browser.dao.entity.BlTransaction">
+		insert into bl_transaction (id, trx_id, block_id,
+		block_num, from_account, to_account, miner_address,symbol,
+		asset_id, amount, fee,
+		trx_time, extra_trx_id, guarantee_id,
+		op_type, parent_op_type, gas_limit, gas_cost,
+		gas_price, contract_id, created_time,
+		called_abi, abi_params, memo,extension,extension1
+		)
+		values (#{id,jdbcType=INTEGER}, #{trxId,jdbcType=VARCHAR},
+		#{blockId,jdbcType=VARCHAR},
+		#{blockNum,jdbcType=BIGINT}, #{fromAccount,jdbcType=VARCHAR},
+		#{toAccount,jdbcType=VARCHAR},#{minerAddress,jdbcType=VARCHAR},#{symbol,jdbcType=VARCHAR}
+		#{assetId,jdbcType=VARCHAR}, #{amount,jdbcType=DECIMAL},
+		#{fee,jdbcType=DECIMAL},
+		#{trxTime,jdbcType=TIMESTAMP}, #{extraTrxId,jdbcType=VARCHAR},#{guaranteeId,jdbcType=VARCHAR},
+		#{opType,jdbcType=INTEGER},#{parentOpType,jdbcType=INTEGER}, #{gasLimit,jdbcType=INTEGER},
+		#{gasCost,jdbcType=INTEGER},
+		#{gasPrice,jdbcType=DECIMAL}, #{contractId,jdbcType=VARCHAR}, #{createdTime,jdbcType=TIMESTAMP},
+		#{calledAbi,jdbcType=VARCHAR}, #{abiParams,jdbcType=VARCHAR},#{memo,jdbcType=VARCHAR},
+		#{extension,jdbcType=VARCHAR},#{extension1,jdbcType=INTEGER}
+		)
+	</insert>
+	<insert id="insertBatch" parameterType="java.util.List">
+		insert into bl_transaction (id, trx_id, block_id,
+		block_num, from_account, to_account, miner_address, symbol,
+		asset_id, amount, fee,
+		trx_time, extra_trx_id,guarantee_id,
+		op_type, parent_op_type, gas_limit, gas_cost,
+		gas_price, contract_id, created_time,
+		called_abi, abi_params,memo, extension,extension1
+		)
+		values
+		<foreach collection="list" item="item" index="index"
+			separator=",">
+			(#{item.id,jdbcType=INTEGER}, #{item.trxId,jdbcType=VARCHAR}, #{item.blockId,jdbcType=VARCHAR},
+			#{item.blockNum,jdbcType=BIGINT},
+			#{item.fromAccount,jdbcType=VARCHAR},
+			#{item.toAccount,jdbcType=VARCHAR},	#{item.minerAddress,jdbcType=VARCHAR},
+			#{item.symbol,jdbcType=VARCHAR},
+			#{item.assetId,jdbcType=VARCHAR}, #{item.amount,jdbcType=DECIMAL}, #{item.fee,jdbcType=DECIMAL},
+			#{item.trxTime,jdbcType=TIMESTAMP},
+			#{item.extraTrxId,jdbcType=VARCHAR},#{item.guaranteeId,jdbcType=VARCHAR},
+			#{item.opType,jdbcType=INTEGER},#{item.parentOpType,jdbcType=INTEGER}, #{item.gasLimit,jdbcType=INTEGER},
+			#{item.gasCost,jdbcType=INTEGER},
+			#{item.gasPrice,jdbcType=DECIMAL}, #{item.contractId,jdbcType=VARCHAR},
+			#{item.createdTime,jdbcType=TIMESTAMP},
+			#{item.calledAbi,jdbcType=VARCHAR},
+			#{item.abiParams,jdbcType=VARCHAR},
+			#{item.memo,jdbcType=VARCHAR},
+			#{item.extension,jdbcType=VARCHAR},
+			#{item.extension1,jdbcType=INTEGER}
+			)
+		</foreach>
+	</insert>
+	<insert id="insertSelective"
+		parameterType="com.browser.dao.entity.BlTransaction">
+		insert into bl_transaction
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="trxId != null">
+				trx_id,
+			</if>
+			<if test="blockId != null">
+				block_id,
+			</if>
+			<if test="blockNum != null">
+				block_num,
+			</if>
+			<if test="fromAccount != null">
+				from_account,
+			</if>
+			<if test="toAccount != null">
+				to_account,
+			</if>
+			<if test="minerAddress != null">
+				miner_address,
+			</if>
+			<if test="symbol != null">
+				symbol,
+			</if>
+			<if test="assetId != null">
+				asset_id,
+			</if>
+			<if test="amount != null">
+				amount,
+			</if>
+			<if test="fee != null">
+				fee,
+			</if>
+			<if test="trxTime != null">
+				trx_time,
+			</if>
+			<if test="extraTrxId != null">
+				extra_trx_id,
+			</if>
+			<if test="guaranteeId != null">
+				guarantee_id,
+			</if>
+			<if test="opType != null">
+				op_type,
+			</if>
+			<if test="parentOpType != null">
+				parent_op_type,
+			</if>
+			<if test="gasLimit != null">
+				gas_limit,
+			</if>
+			<if test="gasCost != null">
+				gas_cost,
+			</if>
+			<if test="gasPrice != null">
+				gas_price,
+			</if>
+			<if test="contractId != null">
+				contract_id,
+			</if>
+			<if test="createdTime != null">
+				created_time,
+			</if>
+			<if test="calledAbi != null">
+				called_abi,
+			</if>
+			<if test="abiParams != null">
+				abi_params,
+			</if>
+			<if test="memo != null">
+				memo,
+			</if>
+			<if test="extension != null">
+				extension,
+			</if>
+			<if test="extension1 != null">
+				extension1,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="trxId != null">
+				#{trxId,jdbcType=VARCHAR},
+			</if>
+			<if test="blockId != null">
+				#{blockId,jdbcType=VARCHAR},
+			</if>
+			<if test="blockNum != null">
+				#{blockNum,jdbcType=BIGINT},
+			</if>
+			<if test="fromAccount != null">
+				#{fromAccount,jdbcType=VARCHAR},
+			</if>
+			<if test="toAccount != null">
+				#{toAccount,jdbcType=VARCHAR},
+			</if>
+			<if test="minerAddress != null">
+				#{minerAddress,jdbcType=VARCHAR},
+			</if>
+			<if test="symbol != null">
+				#{symbol,jdbcType=VARCHAR},
+			</if>
+			<if test="assetId != null">
+				#{assetId,jdbcType=VARCHAR},
+			</if>
+			<if test="amount != null">
+				#{amount,jdbcType=DECIMAL},
+			</if>
+			<if test="fee != null">
+				#{fee,jdbcType=DECIMAL},
+			</if>
+			<if test="trxTime != null">
+				#{trxTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="extraTrxId != null">
+				#{extraTrxId,jdbcType=VARCHAR},
+			</if>
+			<if test="guaranteeId != null">
+				#{guaranteeId,jdbcType=VARCHAR},
+			</if>
+			<if test="opType != null">
+				#{opType,jdbcType=INTEGER},
+			</if>
+			<if test="parentOpType != null">
+				#{parentOpType,jdbcType=INTEGER},
+			</if>
+			<if test="gasLimit != null">
+				#{gasLimit,jdbcType=INTEGER},
+			</if>
+			<if test="gasCost != null">
+				#{gasCost,jdbcType=INTEGER},
+			</if>
+			<if test="gasPrice != null">
+				#{gasPrice,jdbcType=DECIMAL},
+			</if>
+			<if test="contractId != null">
+				#{contractId,jdbcType=VARCHAR},
+			</if>
+			<if test="createdTime != null">
+				#{createdTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="calledAbi != null">
+				#{calledAbi,jdbcType=VARCHAR},
+			</if>
+			<if test="abiParams != null">
+				#{abiParams,jdbcType=VARCHAR},
+			</if>
+			<if test="memo != null">
+				#{memo,jdbcType=VARCHAR},
+			</if>
+			<if test="extension != null">
+				#{extension,jdbcType=VARCHAR},
+			</if>
+			<if test="extension1 != null">
+				#{extension1,jdbcType=INTEGER},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective"
+		parameterType="com.browser.dao.entity.BlTransaction">
+		update bl_transaction
+		<set>
+			<if test="trxId != null">
+				trx_id = #{trxId,jdbcType=VARCHAR},
+			</if>
+			<if test="blockId != null">
+				block_id = #{blockId,jdbcType=VARCHAR},
+			</if>
+			<if test="blockNum != null">
+				block_num = #{blockNum,jdbcType=BIGINT},
+			</if>
+			<if test="fromAccount != null">
+				from_account = #{fromAccount,jdbcType=VARCHAR},
+			</if>
+			<if test="toAccount != null">
+				to_account = #{toAccount,jdbcType=VARCHAR},
+			</if>
+			<if test="minerAddress != null">
+				miner_address = #{minerAddress,jdbcType=VARCHAR},
+			</if>
+			<if test="symbol != null">
+				symbol = #{symbol,jdbcType=VARCHAR},
+			</if>
+			<if test="assetId != null">
+				asset_id = #{assetId,jdbcType=VARCHAR},
+			</if>
+			<if test="amount != null">
+				amount = #{amount,jdbcType=DECIMAL},
+			</if>
+			<if test="fee != null">
+				fee = #{fee,jdbcType=DECIMAL},
+			</if>
+			<if test="trxTime != null">
+				trx_time = #{trxTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="extraTrxId != null">
+				extra_trx_id = #{extraTrxId,jdbcType=VARCHAR},
+			</if>
+			<if test="guaranteeId != null">
+				guarantee_id = #{guaranteeId,jdbcType=VARCHAR},
+			</if>
+			<if test="opType != null">
+				op_type = #{opType,jdbcType=INTEGER},
+			</if>
+			<if test="parentOpType != null">
+				parent_op_type = #{parentOpType,jdbcType=INTEGER},
+			</if>
+			<if test="gasLimit != null">
+				gas_limit = #{gasLimit,jdbcType=INTEGER},
+			</if>
+			<if test="gasCost != null">
+				gas_cost = #{gasCost,jdbcType=INTEGER},
+			</if>
+			<if test="gasPrice != null">
+				gas_price = #{gasPrice,jdbcType=DECIMAL},
+			</if>
+			<if test="contractId != null">
+				contract_id = #{contractId,jdbcType=VARCHAR},
+			</if>
+			<if test="createdTime != null">
+				created_time = #{createdTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="calledAbi != null">
+				called_abi = #{calledAbi,jdbcType=VARCHAR},
+			</if>
+			<if test="abiParams != null">
+				abi_params = #{abiParams,jdbcType=VARCHAR},
+			</if>
+			<if test="memo != null">
+				memo = #{memo,jdbcType=VARCHAR},
+			</if>
+			<if test="extension != null">
+				extension = #{extension,jdbcType=VARCHAR},
+			</if>
+			<if test="extension1 != null">
+				extension1 = #{extension1,jdbcType=INTEGER},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey"
+		parameterType="com.browser.dao.entity.BlTransaction">
+		update bl_transaction
+		set trx_id = #{trxId,jdbcType=VARCHAR},
+		block_id = #{blockId,jdbcType=VARCHAR},
+		block_num = #{blockNum,jdbcType=BIGINT},
+		from_account = #{fromAccount,jdbcType=VARCHAR},
+		to_account = #{toAccount,jdbcType=VARCHAR},
+		miner_address = #{minerAddress,jdbcType=VARCHAR},
+		symbol = #{symbol,jdbcType=VARCHAR},
+		asset_id = #{assetId,jdbcType=VARCHAR},
+		amount = #{amount,jdbcType=DECIMAL},
+		fee = #{fee,jdbcType=DECIMAL},
+		trx_time = #{trxTime,jdbcType=TIMESTAMP},
+		extra_trx_id = #{extraTrxId,jdbcType=VARCHAR},
+		guarantee_id = #{guaranteeId,jdbcType=VARCHAR},
+		op_type = #{opType,jdbcType=INTEGER},
+		parent_op_type = #{parentOpType,jdbcType=INTEGER},
+		gas_limit = #{gasLimit,jdbcType=INTEGER},
+		gas_cost = #{gasCost,jdbcType=INTEGER},
+		gas_price = #{gasPrice,jdbcType=DECIMAL},
+		contract_id = #{contractId,jdbcType=VARCHAR},
+		created_time = #{createdTime,jdbcType=TIMESTAMP},
+		called_abi = #{calledAbi,jdbcType=VARCHAR},
+		abi_params = #{abiParams,jdbcType=VARCHAR},
+		memo = #{memo,jdbcType=VARCHAR},
+		extension = #{extension,jdbcType=VARCHAR},
+		extension1 = #{extension1,jdbcType=INTEGER}
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+</mapper>

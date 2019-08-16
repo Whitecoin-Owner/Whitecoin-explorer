@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.browser.dao.mapper.BlBlockMapper" >
+  <resultMap id="BaseResultMap" type="com.browser.dao.entity.BlBlock" >
+    <id column="block_num" property="blockNum" jdbcType="BIGINT" />
+    <result column="block_id" property="blockId" jdbcType="VARCHAR" />
+    <result column="block_size" property="blockSize" jdbcType="BIGINT" />
+    <result column="miner_name" property="minerName" jdbcType="VARCHAR" />
+    <result column="miner_address" property="minerAddress" jdbcType="VARCHAR" />
+    <result column="previous" property="previous" jdbcType="VARCHAR" />
+    <result column="prev_hash" property="prevHash" jdbcType="VARCHAR" />
+    <result column="next_hash" property="nextHash" jdbcType="VARCHAR" />
+    <result column="block_time" property="blockTime" jdbcType="TIMESTAMP" />
+    <result column="trx_count" property="trxCount" jdbcType="INTEGER" />
+    <result column="amount" property="amount" jdbcType="BIGINT" />
+    <result column="fee" property="fee" jdbcType="DECIMAL" />
+    <result column="reward" property="reward" jdbcType="DECIMAL" />
+    <result column="merkle_root" property="merkleRoot" jdbcType="VARCHAR" />
+    <result column="created_time" property="createdTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    block_id, block_num, block_size, miner_name, miner_address, previous, prev_hash, 
+    next_hash, block_time, trx_count, amount, fee, reward, merkle_root, created_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from bl_block
+    where block_num = #{blockNum,jdbcType=BIGINT}
+  </select>
+  <select id="getBlockInfoList" resultMap="BaseResultMap" parameterType="com.browser.dao.entity.BlBlock" >
+    select 
+    block_num, miner_name, block_time, trx_count,reward
+    from bl_block order by block_num DESC
+  </select>
+  
+  <!-- 获取最大的快号 -->
+  <select id="queryBlockNum" resultType="java.lang.Long">
+  	SELECT MAX(a.block_num) AS num FROM bl_block a
+  </select>
+  
+  <!-- 获取区块总的奖励-->
+  <select id="queryBlockRewards" resultType="java.math.BigDecimal">
+  	SELECT sum(reward) AS num FROM bl_block a 
+  </select>
+  
+  <!-- 根据快号查询快的信息 -->
+  <select id="selectByBlockNum" resultMap="BaseResultMap" parameterType="java.lang.Long">
+  	 select 
+    <include refid="Base_Column_List" />
+    from bl_block
+    where block_num = #{blockNum}
+  </select>
+  
+  <!-- 根据矿工名统计 -->
+  <select id="statisByMinerName" resultMap="BaseResultMap" parameterType="java.lang.String">
+  	 select sum(trx_count) as transactions,miner_name,miner_address,sum(reward) as countRewards
+    from bl_block
+    where miner_name = #{minerName,jdbcType=VARCHAR}
+    group by miner_name,miner_address
+  </select>
+  
+  <!-- 查询最新的信息 -->
+   <select id="selectNewBlockInfo" resultMap="BaseResultMap">
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM bl_block a ORDER BY a.block_num DESC LIMIT 0,10
+  </select>
+  
+  <!-- 查询矿工名 -->
+   <select id="getMinerName" resultType="java.lang.String">
+    SELECT miner_name
+    FROM bl_block a 
+    where miner_address =#{address,jdbcType=VARCHAR} LIMIT 1
+  </select>
+  
+  <!-- 根据矿工地址奖励-->
+   <select id="getBlockByAddr" resultMap="BaseResultMap">
+   SELECT sum(reward) as countRewards,miner_name
+    from bl_block
+    where miner_address =#{address,jdbcType=VARCHAR} 
+    group by miner_address,miner_name LIMIT 1
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from bl_block
+    where block_num = #{block_num,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.browser.dao.entity.BlBlock" >
+    insert into bl_block (block_id, block_num, block_size, 
+      miner_name, miner_address, previous, 
+      prev_hash, next_hash, block_time, 
+      trx_count, amount, fee, 
+      reward, merkle_root, created_time
+      )
+    values (#{blockId,jdbcType=VARCHAR}, #{blockNum,jdbcType=BIGINT}, #{blockSize,jdbcType=BIGINT}, 
+      #{minerName,jdbcType=VARCHAR}, #{minerAddress,jdbcType=VARCHAR}, #{previous,jdbcType=VARCHAR}, 
+      #{prevHash,jdbcType=VARCHAR}, #{nextHash,jdbcType=VARCHAR}, #{blockTime,jdbcType=TIMESTAMP}, 
+      #{trxCount,jdbcType=INTEGER}, #{amount,jdbcType=BIGINT}, #{fee,jdbcType=DECIMAL}, 
+      #{reward,jdbcType=DECIMAL}, #{merkleRoot,jdbcType=VARCHAR}, #{createdTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+   <insert id="insertBatch" parameterType="java.util.List">
+     insert into bl_block (block_id, block_num, block_size, 
+      miner_name, miner_address, previous, 
+      prev_hash, next_hash, block_time, 
+      trx_count, amount, fee, 
+      reward, merkle_root, created_time)
+    values
+    <foreach collection="list" item="item" index="index" separator=",">
+    	(#{item.blockId,jdbcType=VARCHAR}, #{item.blockNum,jdbcType=BIGINT}, #{item.blockSize,jdbcType=BIGINT}, 
+      #{item.minerName,jdbcType=VARCHAR}, #{item.minerAddress,jdbcType=VARCHAR}, #{item.previous,jdbcType=VARCHAR}, 
+      #{item.prevHash,jdbcType=VARCHAR}, #{item.nextHash,jdbcType=VARCHAR}, #{item.blockTime,jdbcType=TIMESTAMP}, 
+      #{item.trxCount,jdbcType=INTEGER}, #{item.amount,jdbcType=BIGINT}, #{item.fee,jdbcType=DECIMAL}, 
+      #{item.reward,jdbcType=DECIMAL}, #{item.merkleRoot,jdbcType=VARCHAR}, #{item.createdTime,jdbcType=TIMESTAMP}
+      )
+    </foreach>
+  </insert>
+  <insert id="insertSelective" parameterType="com.browser.dao.entity.BlBlock" >
+    insert into bl_block
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="blockId != null" >
+        block_id,
+      </if>
+      <if test="blockNum != null" >
+        block_num,
+      </if>
+      <if test="blockSize != null" >
+        block_size,
+      </if>
+      <if test="minerName != null" >
+        miner_name,
+      </if>
+      <if test="minerAddress != null" >
+        miner_address,
+      </if>
+      <if test="previous != null" >
+        previous,
+      </if>
+      <if test="prevHash != null" >
+        prev_hash,
+      </if>
+      <if test="nextHash != null" >
+        next_hash,
+      </if>
+      <if test="blockTime != null" >
+        block_time,
+      </if>
+      <if test="trxCount != null" >
+        trx_count,
+      </if>
+      <if test="amount != null" >
+        amount,
+      </if>
+      <if test="fee != null" >
+        fee,
+      </if>
+      <if test="reward != null" >
+        reward,
+      </if>
+      <if test="merkleRoot != null" >
+        merkle_root,
+      </if>
+      <if test="createdTime != null" >
+        created_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="blockId != null" >
+        #{blockId,jdbcType=VARCHAR},
+      </if>
+      <if test="blockNum != null" >
+        #{blockNum,jdbcType=BIGINT},
+      </if>
+      <if test="blockSize != null" >
+        #{blockSize,jdbcType=BIGINT},
+      </if>
+      <if test="minerName != null" >
+        #{minerName,jdbcType=VARCHAR},
+      </if>
+      <if test="minerAddress != null" >
+        #{minerAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="previous != null" >
+        #{previous,jdbcType=VARCHAR},
+      </if>
+      <if test="prevHash != null" >
+        #{prevHash,jdbcType=VARCHAR},
+      </if>
+      <if test="nextHash != null" >
+        #{nextHash,jdbcType=VARCHAR},
+      </if>
+      <if test="blockTime != null" >
+        #{blockTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="trxCount != null" >
+        #{trxCount,jdbcType=INTEGER},
+      </if>
+      <if test="amount != null" >
+        #{amount,jdbcType=BIGINT},
+      </if>
+      <if test="fee != null" >
+        #{fee,jdbcType=DECIMAL},
+      </if>
+      <if test="reward != null" >
+        #{reward,jdbcType=DECIMAL},
+      </if>
+      <if test="merkleRoot != null" >
+        #{merkleRoot,jdbcType=VARCHAR},
+      </if>
+      <if test="createdTime != null" >
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.browser.dao.entity.BlBlock" >
+    update bl_block
+    <set >
+      <if test="blockNum != null" >
+        block_num = #{blockNum,jdbcType=BIGINT},
+      </if>
+      <if test="blockSize != null" >
+        block_size = #{blockSize,jdbcType=BIGINT},
+      </if>
+      <if test="minerName != null" >
+        miner_name = #{minerName,jdbcType=VARCHAR},
+      </if>
+      <if test="minerAddress != null" >
+        miner_address = #{minerAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="previous != null" >
+        previous = #{previous,jdbcType=VARCHAR},
+      </if>
+      <if test="prevHash != null" >
+        prev_hash = #{prevHash,jdbcType=VARCHAR},
+      </if>
+      <if test="nextHash != null" >
+        next_hash = #{nextHash,jdbcType=VARCHAR},
+      </if>
+      <if test="blockTime != null" >
+        block_time = #{blockTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="trxCount != null" >
+        trx_count = #{trxCount,jdbcType=INTEGER},
+      </if>
+      <if test="amount != null" >
+        amount = #{amount,jdbcType=BIGINT},
+      </if>
+      <if test="fee != null" >
+        fee = #{fee,jdbcType=DECIMAL},
+      </if>
+      <if test="reward != null" >
+        reward = #{reward,jdbcType=DECIMAL},
+      </if>
+      <if test="merkleRoot != null" >
+        merkle_root = #{merkleRoot,jdbcType=VARCHAR},
+      </if>
+      <if test="createdTime != null" >
+        created_time = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where block_num = #{blockNum,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.browser.dao.entity.BlBlock" >
+    update bl_block
+    set block_num = #{blockNum,jdbcType=BIGINT},
+      block_size = #{blockSize,jdbcType=BIGINT},
+      miner_name = #{minerName,jdbcType=VARCHAR},
+      miner_address = #{minerAddress,jdbcType=VARCHAR},
+      previous = #{previous,jdbcType=VARCHAR},
+      prev_hash = #{prevHash,jdbcType=VARCHAR},
+      next_hash = #{nextHash,jdbcType=VARCHAR},
+      block_time = #{blockTime,jdbcType=TIMESTAMP},
+      trx_count = #{trxCount,jdbcType=INTEGER},
+      amount = #{amount,jdbcType=BIGINT},
+      fee = #{fee,jdbcType=DECIMAL},
+      reward = #{reward,jdbcType=DECIMAL},
+      merkle_root = #{merkleRoot,jdbcType=VARCHAR},
+      created_time = #{createdTime,jdbcType=TIMESTAMP}
+    where block_num = #{blockNum,jdbcType=BIGINT}
+  </update>
+</mapper>
