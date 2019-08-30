@@ -103,7 +103,7 @@ public class SyncService {
             }
 
             JSONObject blockJson = JSONObject.parseObject(blockMsg);
-            String minerId = blockJson.getString("candidate");
+            String minerId = blockJson.getString("miner");
 
             JSONObject jsonObject = redisService.getMinerInfo(minerId);
             if (jsonObject == null) {
@@ -113,7 +113,7 @@ public class SyncService {
                     return;
                 }
                 String accountInfo = requestWalletService
-                        .getAccount(JSONObject.parseObject(minerInfo).getString("candidate_account"));// 获取矿工地址
+                        .getAccount(JSONObject.parseObject(minerInfo).getString("miner_account"));// 获取矿工地址
                 if (StringUtils.isEmpty(accountInfo)) {
                     return;
                 }
@@ -351,7 +351,7 @@ public class SyncService {
             blTransaction.setAssetId(json.getString("asset_id"));
             blTransaction.setFromAccount(json.getJSONObject("cross_chain_trx").getString("from_account"));
             blTransaction.setToAccount(json.getString("deposit_address"));
-            blTransaction.setMinerAddress(json.getString("candidate_address"));
+            blTransaction.setMinerAddress(json.getString("miner_address"));
             blTransaction.setParentOpType(Constant.PARENT_RECHARGE);
         }
         return blTransaction;
@@ -448,7 +448,7 @@ public class SyncService {
                 withdrawTransaction.setToAccount(cross.getString("to_account"));
                 withdrawTransaction.setAmount(cross.getBigDecimal("amount"));
                 withdrawTransaction.setSymbol(cross.getString("asset_symbol"));
-                withdrawTransaction.setMinerAddress(json.getString("candidate_address"));
+                withdrawTransaction.setMinerAddress(json.getString("miner_address"));
                 withdrawTransaction.setExtraTrxId(cross.getString("trx_id"));
                 withdrawTransaction.setExtension(LengthCheck(json.toJSONString()));
 
@@ -525,7 +525,7 @@ public class SyncService {
         if (Constant.ASSET_MORGAGE == opType) {
             blTransaction.setParentOpType(Constant.PARENT_MORTGAGE);
             blTransaction.setFromAccount(json.getString("lock_balance_addr"));
-            JSONObject jsonObject = getMinerAddr(json.getString("lockto_candidate_account"));
+            JSONObject jsonObject = getMinerAddr(json.getString("lockto_miner_account"));
             if(jsonObject!=null){
                 blTransaction.setToAccount(jsonObject.getString("addr"));
                 blTransaction.setExtension(jsonObject.getString("name"));
@@ -544,7 +544,7 @@ public class SyncService {
         //赎回
         if (Constant.ASSET_REDEEM == opType) {
             blTransaction.setParentOpType(Constant.PARENT_FORECLOSE);
-            JSONObject jsonObject = getMinerAddr(json.getString("foreclose_candidate_account"));
+            JSONObject jsonObject = getMinerAddr(json.getString("foreclose_miner_account"));
             if(jsonObject!=null){
                 blTransaction.setFromAccount(jsonObject.getString("addr"));
                 blTransaction.setExtension(jsonObject.getString("name"));

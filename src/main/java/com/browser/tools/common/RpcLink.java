@@ -15,7 +15,7 @@ public class RpcLink {
 	public static final String GET_ASSET_IMP = "get_asset_imp";
 
 	// 获取矿工信息
-	public static final String GET_MINER = "get_candidate";
+	public static final String GET_MINER = "get_miner";
 	
 	// 获取矿工地址
 	public static final String GET_ACCOUNT = "get_account";
@@ -59,7 +59,7 @@ public class RpcLink {
 	//调合约获取锁仓数量
 	public static final String INVOKE_CONTRACT_OFFLINE = "invoke_contract_offline";
 	//查询所有citizen
-	public static final String LIST_CITIZENS = "list_candidates";
+	public static final String LIST_CITIZENS = "list_miners";
 }
 
 
