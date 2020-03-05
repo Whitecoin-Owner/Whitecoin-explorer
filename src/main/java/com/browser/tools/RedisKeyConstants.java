@@ -6,6 +6,11 @@ package com.browser.tools;
 public class RedisKeyConstants {
 
     /**
+     * 币种价格,a_b
+     */
+    public static final String LINK_PRICE_INFO = "link:price_info:";
+
+    /**
      * link链提现状态
      */
     public static final String LINK_WITHDRAW_STATUS = "link:withdraw:txId:";

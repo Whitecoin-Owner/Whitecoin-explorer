@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.*;
 
 import com.browser.config.CitizenWeightsInit;
+import com.browser.task.plugins.UpdateBalanceSyncPlugin;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,13 +62,16 @@ public class SyncService {
     @Autowired
     private CitizenWeightsInit citizenWeightsInit;
 
+    @Autowired
+    private UpdateBalanceSyncPlugin updateBalanceSyncPlugin;
+
     // @Autowired
     // private BlContractBalanceMapper blContractBalanceMapper;
 
     private static Set<Integer> typeSet = new HashSet<Integer>();
 
     static {
-        // TODO
+        // TODO: magic number change
         typeSet.add(0);
         typeSet.add(60);
         typeSet.add(61);
@@ -79,6 +83,8 @@ public class SyncService {
         typeSet.add(77);
         typeSet.add(79);
         typeSet.add(81);
+
+//        typeSet.add(Constant.NAME_TRANSFER_OPERATION);
     }
 
     public void blockSync(Long blockNum) {
@@ -146,6 +152,7 @@ public class SyncService {
                     if (operations != null && operations.size() > 0) {
                         for (int j = 0; j < operations.size(); j++) {
                             Integer opType = operations.getJSONArray(j).getInteger(0);
+                            String opTypeName = "TODO"; // TODO
                             JSONObject json = operations.getJSONArray(j).getJSONObject(1);
 //                            fee = fee.add(json.getJSONObject("fee").getBigDecimal("amount"));
                             if (typeSet.contains(opType)) {
@@ -185,14 +192,25 @@ public class SyncService {
                                     trx.setTrxTime(bc.getBlockTime());
                                     transactionList.add(trx);
                                 }
+
+                                // 账户改名交易处理
+                                if(Constant.NAME_TRANSFER_OPERATION == opType) {
+                                    // TODO
+                                }
+
                             } else {// 其他类型交易处理
                                 BlTransaction trx = unparsedTransaction(json, opType);
                                 trx.setTrxId(txId);
+                                trx.setOpType(opType);
                                 trx.setBlockId(bc.getBlockId());
                                 trx.setBlockNum(bc.getBlockNum());
                                 trx.setTrxTime(bc.getBlockTime());
                                 transactionList.add(trx);
                             }
+
+                            JSONObject opReceipt = null;
+
+                            updateBalanceSyncPlugin.applyOperation(blockJson, txId, j, opType, opTypeName, json, opReceipt);
                         }
                     }
                 }
@@ -203,6 +221,7 @@ public class SyncService {
             }
             BigDecimal reward = blockJson.getBigDecimal("reward");
             bc.setReward(reward);// 区块奖励
+
         } catch (Exception e) {
             logger.error("{}块处理数据出错", blockNum, e);
         } finally {
@@ -213,6 +232,17 @@ public class SyncService {
             // 保存合约信息
             commonService.insertBatchContractData();
         }
+    }
+
+    /**
+     * 账户改名交易信息解析
+     * @param jsa
+     * @param trxId
+     * @param opType
+     * @return
+     */
+    private BlTransaction nameTransferTransaction(JSONObject jsa, String trxId, Integer opType) {
+        return null; // TODO
     }
 
     /**
@@ -229,8 +259,8 @@ public class SyncService {
         contractTrx.setFee(jsa.getJSONObject("fee").getBigDecimal("amount"));
 
         String contractId = jsa.getString("contract_id");
-        if("HXCR5GhXG8eaQjXCz1YRgYUzzHA3eF9teWgo".equals(contractId)){
-            contractId = "HXCGzXcFfPDwd1BHQj8VzBS9roLjkCdaGwUN";
+        if("XWCCZxWGXvncYcemJB52ZyreHAQDUtRshjmky".equals(contractId)){
+            contractId = "XWCCZebgCspNfXZ6tzv7bWYzs7Yj6FYiucHJd";
         }
         contractTrx.setContractId(contractId);
         contractTrx.setGuaranteeId(jsa.getString("guarantee_id"));

@@ -33,7 +33,7 @@ public class IndexEchartsTask {
         try {
             statisService.indexEcharts();
         } catch (Exception e) {
-            logger.error("首页图表数据缓存异常：{}",e);
+            logger.error("首页图表数据缓存异常：",e);
         }
     }
 }

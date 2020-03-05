@@ -249,7 +249,7 @@ public class RealData implements InitializingBean {
     }
 
     private void IndexStatis(){
-        statisService.newXwcStatic();
+        statisService.newBlockLinkStatic();
     }
 
     private void indexEcharts(){

@@ -16,7 +16,7 @@ public interface StatisService {
 
 	List<BlTransaction> newTransactionStatic();
 	
-	BlStatis newXwcStatic();
+	BlStatis newBlockLinkStatic();
 	
 	JSONArray newTrxNumByDateStatic(BlTransaction record);
 	

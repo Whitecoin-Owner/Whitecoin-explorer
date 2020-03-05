@@ -66,6 +66,9 @@ public class Constant {
 	// 提案交易
 	public static final int PROPOSAL_COMPETITION_OPERATION = 102;
 
+	// 账户改名交易
+	public static final int NAME_TRANSFER_OPERATION = 125;
+
 	// 合约状态
 	public static final int DESTROY_STATE = 0;
 	public static final int TEMP_STATE = 1;

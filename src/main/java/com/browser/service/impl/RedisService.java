@@ -2,6 +2,7 @@ package com.browser.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.browser.task.vo.PriceInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -49,7 +50,39 @@ public class RedisService {
         }
     }
 
-       public void putAccountName(String addr,String accountName) {
+    public void putMainCoinUsdtPrice(PriceInfo price) {
+        if(price == null) {
+            return;
+        }
+        redisTemplate.opsForValue().set(RedisKeyConstants.LINK_PRICE_INFO + "XWC_USDT", price);
+    }
+
+    public PriceInfo getMainCoinUsdtPrice() {
+        Object result = redisTemplate.opsForValue().get(RedisKeyConstants.LINK_PRICE_INFO + "XWC_USDT");
+        if(result == null) {
+            return null;
+        } else {
+            return (PriceInfo) result;
+        }
+    }
+
+    public void putMainCoinBtcPrice(PriceInfo price) {
+        if(price == null) {
+            return;
+        }
+        redisTemplate.opsForValue().set(RedisKeyConstants.LINK_PRICE_INFO + "XWC_BTC", price);
+    }
+
+    public PriceInfo getMainCoinBtcPrice() {
+        Object result = redisTemplate.opsForValue().get(RedisKeyConstants.LINK_PRICE_INFO + "XWC_BTC");
+        if(result == null) {
+            return null;
+        } else {
+            return (PriceInfo) result;
+        }
+    }
+
+    public void putAccountName(String addr,String accountName) {
         redisTemplate.opsForValue().set(RedisKeyConstants.LINK_REGISTER_ADDR + addr, accountName);
     }
 

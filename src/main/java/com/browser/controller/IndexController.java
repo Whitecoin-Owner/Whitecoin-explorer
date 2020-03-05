@@ -1,25 +1,24 @@
 package com.browser.controller;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.alibaba.fastjson.JSONObject;
 import com.browser.config.RealData;
+import com.browser.dao.entity.*;
+import com.browser.service.impl.AddressBalanceServiceImpl;
+import com.browser.service.impl.RedisService;
+import com.browser.task.vo.PriceInfo;
 import com.browser.tools.common.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import com.alibaba.fastjson.JSONArray;
-import com.browser.dao.entity.BlBlock;
-import com.browser.dao.entity.BlStatis;
-import com.browser.dao.entity.BlTransaction;
-import com.browser.dao.entity.ResultMsg;
 import com.browser.service.StatisService;
 import com.browser.tools.common.StringUtil;
 import com.browser.tools.controller.BaseController;
@@ -29,6 +28,10 @@ public class IndexController extends BaseController {
 
 	@Autowired
 	private StatisService statisService;
+	@Autowired
+    private AddressBalanceServiceImpl addressBalanceService;
+	@Autowired
+	private RedisService redisService;
 
 	@Autowired
 	private RealData realData;
@@ -38,6 +41,26 @@ public class IndexController extends BaseController {
 	@RequestMapping("")
 	public String index() {
 		return "index";
+	}
+
+	@ResponseBody
+	@GetMapping("mainCoinPrice")
+	public ResultMsg mainCoinPrice() {
+		ResultMsg resultMsg = new ResultMsg();
+		try {
+			PriceInfo mainCoinUsdtPriceInfo = redisService.getMainCoinUsdtPrice();
+			PriceInfo mainCoinBtcPriceInfo = redisService.getMainCoinBtcPrice();
+			JSONObject coinPriceInfo = new JSONObject();
+			coinPriceInfo.put("in_usdt", mainCoinUsdtPriceInfo);
+			coinPriceInfo.put("in_btc", mainCoinBtcPriceInfo);
+			resultMsg.setRetCode(ResultMsg.HTTP_OK);
+			resultMsg.setData(coinPriceInfo);
+		} catch (Exception e) {
+			logger.error("系统错误", e);
+			resultMsg.setRetCode(ResultMsg.HTTP_ERROR);
+			resultMsg.setRetMsg(e.getMessage());
+		}
+		return resultMsg;
 	}
 
 	/**
@@ -60,6 +83,22 @@ public class IndexController extends BaseController {
 		}
 		return resultMsg;
 	}
+
+	@ResponseBody
+    @RequestMapping(value = "richlist", method = RequestMethod.GET)
+    public ResultMsg richList() {
+        ResultMsg resultMsg = new ResultMsg();
+        try {
+            List<BLAddressBalance> topBalances = addressBalanceService.selectTopTichList("1.3.0", 100);
+            resultMsg.setRetCode(ResultMsg.HTTP_OK);
+            resultMsg.setData(topBalances);
+        } catch (Exception e) {
+            logger.error("系统错误", e);
+            resultMsg.setRetCode(ResultMsg.HTTP_ERROR);
+            resultMsg.setRetMsg(e.getMessage());
+        }
+        return resultMsg;
+    }
 
 	/**
 	 * 获取最新区块信息

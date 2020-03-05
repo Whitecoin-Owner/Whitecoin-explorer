@@ -26,6 +26,9 @@ public class InvokeContractTask {
 
     @Scheduled(cron = "0/60 * * * * ? ")
     public void syncData() {
+        if(true) {
+            return;
+        }
         logger.info("同步锁仓数据开始");
         try {
             syncSenatorService.lockBalance();

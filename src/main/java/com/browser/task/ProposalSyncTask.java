@@ -26,6 +26,9 @@ public class ProposalSyncTask {
 
     @Scheduled(cron = "0/30 * * * * ? ")
     public void syncData() {
+        if(true) {
+            return;
+        }
         logger.info("同步提案数据开始");
         try {
             proposalService.dealProposal();

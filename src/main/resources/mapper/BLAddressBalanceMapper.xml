@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.browser.dao.mapper.BLAddressBalanceMapper" >
+    <resultMap id="BaseResultMap" type="com.browser.dao.entity.BLAddressBalance" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="addr" property="addr" jdbcType="VARCHAR" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="amount" property="amount" jdbcType="DECIMAL" />
+        <result column="asset_id" property="assetId" jdbcType="VARCHAR" />
+        <result column="asset_symbol" property="assetSymbol" jdbcType="VARCHAR" />
+        <result column="extra" property="extra" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+    id, addr, name, amount, asset_id, asset_symbol, extra
+  </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+        select
+        <include refid="Base_Column_List" />
+        from bl_address_balance
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <select id="selectByAsset" resultMap="BaseResultMap"  parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List" />
+        from bl_address_balance
+        where asset_id =#{assetId,jdbcType=VARCHAR}
+        order by amount desc
+        limit 100
+    </select>
+    <select id="selectByAddrAndAssetId" resultMap="BaseResultMap"  parameterType="com.browser.dao.entity.BLAddressBalance">
+        select
+        <include refid="Base_Column_List" />
+        from bl_address_balance
+        where addr=#{addr,jdbcType=VARCHAR} and asset_id =#{assetId,jdbcType=VARCHAR}
+        limit 1
+    </select>
+    <select id="selectTopTichList" resultMap="BaseResultMap" parameterType="java.util.Map">
+        select
+        <include refid="Base_Column_List" />
+        from bl_address_balance
+        where asset_id =#{assetId,jdbcType=VARCHAR}
+        order by `amount` desc
+        limit #{n,jdbcType=INTEGER}
+    </select>
+    <select id="selectAllAddressInTransactionsNotInAddressBalance" resultType="java.lang.String">
+        select distinct r.addr from (
+(select distinct t.from_account as
+addr from bl_transaction t where t.from_account is not null)
+union
+(select distinct t.to_account as addr from bl_transaction t where t.to_account is not null)
+) r where r.addr not in (select addr from bl_address_balance)
+    </select>
+    <select id="selectAllAddressInTransactions" resultType="java.lang.String">
+        select distinct r.addr from (
+(select distinct t.from_account as
+addr from bl_transaction t where t.from_account is not null)
+union
+(select distinct t.to_account as addr from bl_transaction t where t.to_account is not null)
+) r
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from bl_address_balance
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+    <delete id="delete" parameterType="java.lang.Long" >
+    delete from bl_address_balance
+  </delete>
+    <insert id="insert" parameterType="com.browser.dao.entity.BLAddressBalance" >
+    insert into bl_address_balance (id, addr, `name`, amount, asset_id, asset_symbol, extra)
+    values (#{id,jdbcType=INTEGER}, #{addr,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{amount,jdbcType=DECIMAL},
+     #{assetId,jdbcType=VARCHAR},#{assetSymbol,jdbcType=VARCHAR}, #{extra,jdbcType=VARCHAR})
+  </insert>
+    <insert id="insertSelective" parameterType="com.browser.dao.entity.BLAddressBalance" >
+        insert into bl_address_balance
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                id,
+            </if>
+            <if test="addr != null" >
+                addr,
+            </if>
+            <if test="name != null" >
+                `name`,
+            </if>
+            <if test="amount != null" >
+                amount,
+            </if>
+            <if test="assetId != null" >
+                asset_id,
+            </if>
+            <if test="assetSymbol != null" >
+                `asset_symbol`,
+            </if>
+            <if test="extra != null" >
+                `extra`,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="addr != null" >
+                #{addr,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null" >
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="amount != null" >
+                #{amount,jdbcType=DECIMAL},
+            </if>
+            <if test="assetId != null" >
+                #{assetId,jdbcType=VARCHAR},
+            </if>
+            <if test="assetSymbol != null" >
+                #{assetSymbol,jdbcType=VARCHAR},
+            </if>
+            <if test="extra != null" >
+                #{extra,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.browser.dao.entity.BLAddressBalance" >
+        update bl_address_balance
+        <set >
+            <if test="addr != null" >
+                addr = #{addr,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null" >
+                `name` = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="amount != null" >
+                amount = #{amount,jdbcType=DECIMAL},
+            </if>
+            <if test="assetId != null" >
+                asset_id = #{assetId,jdbcType=VARCHAR},
+            </if>
+            <if test="assetSymbol != null" >
+                `asset_symbol` = #{assetSymbol,jdbcType=VARCHAR},
+            </if>
+            <if test="extra != null" >
+                `extra` = #{extra,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.browser.dao.entity.BLAddressBalance" >
+    update bl_address_balance
+    set addr = #{addr,jdbcType=VARCHAR},
+      `name` = #{name,jdbcType=VARCHAR},
+      amount = #{amount,jdbcType=DECIMAL},
+      asset_id = #{assetId,jdbcType=VARCHAR},
+      asset_symbol = #{assetSymbol,jdbcType=VARCHAR},
+      `extra` = #{extra,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,10 +1,7 @@
 package com.browser.service.impl;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import com.alibaba.fastjson.JSONArray;
 import com.browser.tools.Constant;
@@ -247,6 +244,20 @@ public class RequestWalletService {
         List<Object> params = new ArrayList<Object>();
         params.add(accountName);
         return send(RpcLink.LOCK_BALANCE, params);
+    }
+
+    /**
+     * 根据地址获取账户名
+     * @param addr
+     * @return
+     */
+    public String getAccountNameByAddr(String addr) {
+        JSONObject obj = JSONObject.parseObject(send(RpcLink.GET_ACCOUNT_BY_ADDR, Arrays.asList(addr)));
+        if(obj != null && obj.containsKey("name")) {
+            return obj.getString("name");
+        } else {
+            return null;
+        }
     }
 
     /**

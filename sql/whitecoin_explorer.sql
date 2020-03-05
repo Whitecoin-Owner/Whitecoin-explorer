@@ -195,7 +195,7 @@ CREATE TABLE `bl_transaction` (
   `op_type` int(5) DEFAULT '0' COMMENT '0 - 普通转账1 - 代理领工资2 - 注册账户3 - 注册代理10 - 注册合约11 - 合约充值12 - 合约升级',
   `gas_limit` int(11) DEFAULT NULL,
   `gas_cost` int(10) DEFAULT NULL,
-  `gas_price` decimal(10,2) DEFAULT NULL,
+  `gas_price` decimal(36,18) DEFAULT NULL,
   `extension` text,
   `memo` text,
   `contract_id` varchar(64) DEFAULT NULL COMMENT '如果是合约交易则记录合约ID',
@@ -243,4 +243,32 @@ CREATE TABLE `wallet_asset1` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='钱包地址表';
 
 
+DROP TABLE IF EXISTS `bl_address_balance`;
+CREATE TABLE `bl_address_balance` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `addr` varchar(50) NOT NULL,
+  `name` varchar(100) DEFAULT NULL,
+  `amount` decimal(36,18) NOT NULL,
+  `asset_id` varchar(50) NOT NULL,
+  `asset_symbol` varchar(50) NOT NULL,
+  `extra` text,
+  PRIMARY KEY (`id`),
+  KEY `bl_address_balance_idx_addr` (`addr`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+drop index bl_address_balance_idx_addr on bl_address_balance ;
+create index bl_address_balance_idx_addr on bl_address_balance (addr);
+
+drop index bl_address_balance_idx_asset_id on bl_address_balance ;
+create index bl_address_balance_idx_asset_id on bl_address_balance (asset_id);
+
+drop index bl_address_balance_idx_asset_symbol on bl_address_balance ;
+create index bl_address_balance_idx_asset_symbol on bl_address_balance (asset_symbol);
+
+drop index bl_address_balance_idx_amount on bl_address_balance ;
+create index bl_address_balance_idx_amount on bl_address_balance (amount);
+
+drop index bl_address_balance_idx_addr_asset_id on bl_address_balance ;
+create index bl_address_balance_idx_addr_asset_id on bl_address_balance (addr, asset_id);
 -- 2019-08-06 07:32:15

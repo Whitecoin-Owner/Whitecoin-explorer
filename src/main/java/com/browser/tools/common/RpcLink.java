@@ -23,6 +23,9 @@ public class RpcLink {
 	// 地址余额
 	public static final String ADDR_BALANCES = "get_addr_balances";
 
+	// 根据地址获取账户名
+	public static final String GET_ACCOUNT_BY_ADDR = "get_account_by_addr";
+
 	// 质押资产
 	public static final String LOCK_BALANCE = "get_account_lock_balance";
 

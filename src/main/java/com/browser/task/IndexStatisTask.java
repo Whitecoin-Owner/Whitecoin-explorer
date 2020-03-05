@@ -28,7 +28,7 @@ public class IndexStatisTask {
     public void syncData() {
         logger.info("【首页数据缓存】");
         try {
-            statisService.newXwcStatic();
+            statisService.newBlockLinkStatic();
         } catch (Exception e) {
             logger.error("首页数据缓存异常：{}",e);
         }

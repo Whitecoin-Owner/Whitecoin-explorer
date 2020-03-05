@@ -87,7 +87,7 @@ public class StatisServiceImpl implements StatisService {
     }
 
     @Override
-    public BlStatis newXwcStatic() {
+    public BlStatis newBlockLinkStatic() {
         BlStatis blStatis = new BlStatis();
 
         BigDecimal totalReward = redisService.getTotalReward();
@@ -476,62 +476,78 @@ public class StatisServiceImpl implements StatisService {
 
 
         String accountName = redisService.getAccountName(addrStatis.getAddress());
-        if(addrStatis.getName()==null && accountName!=null){
+
+        if(accountName == null || accountName.isEmpty()) {
+            try {
+                String foundAccountName = requestWalletService.getAccountNameByAddr(addrStatis.getAddress());
+                if(foundAccountName!=null && !foundAccountName.isEmpty()) {
+                    accountName = foundAccountName;
+                    redisService.putAccountName(addrStatis.getAddress(), accountName);
+                }
+            } catch (Exception e) {
+
+            }
+        }
+
+        if(addrStatis.getName()==null && accountName!=null && accountName.length()>0){
             addrStatis.setName(accountName);
         }
 
         List<String> lockList = new ArrayList<>();
-        Map<String, BigDecimal> map = new HashMap<>();
-        String lockBalanceStr = requestWalletService.getLockBalance(accountName);
-        if (lockBalanceStr != null) {
-            JSONArray balances = JSONObject.parseArray(lockBalanceStr);
-            for (int i = 0; i < balances.size(); i++) {
-                JSONObject jsonObject = balances.getJSONObject(i);
-                String assetId = jsonObject.getString("lock_asset_id");
+        if(accountName!=null&&accountName.length()>0) {
+            Map<String, BigDecimal> map = new HashMap<>();
+            String lockBalanceStr = requestWalletService.getLockBalance(accountName);
+            if (lockBalanceStr != null) {
+                JSONArray balances = JSONObject.parseArray(lockBalanceStr);
+                for (int i = 0; i < balances.size(); i++) {
+                    JSONObject jsonObject = balances.getJSONObject(i);
+                    String assetId = jsonObject.getString("lock_asset_id");
 
-                BlAsset blAsset = realData.getSymbolByAssetId(assetId);
-                BigDecimal balance = jsonObject.getBigDecimal("lock_asset_amount").
-                        divide(new BigDecimal(blAsset.getPrecision()), 8, BigDecimal.ROUND_HALF_UP);
+                    BlAsset blAsset = realData.getSymbolByAssetId(assetId);
+                    BigDecimal balance = jsonObject.getBigDecimal("lock_asset_amount").
+                            divide(new BigDecimal(blAsset.getPrecision()), 8, BigDecimal.ROUND_HALF_UP);
 
-                if (!map.containsKey(blAsset.getSymbol())) {
-                    map.put(blAsset.getSymbol(), balance);
-                } else {
-                    map.put(blAsset.getSymbol(), map.get(blAsset.getSymbol()).add(balance));
+                    if (!map.containsKey(blAsset.getSymbol())) {
+                        map.put(blAsset.getSymbol(), balance);
+                    } else {
+                        map.put(blAsset.getSymbol(), map.get(blAsset.getSymbol()).add(balance));
+                    }
+
+                }
+
+                for (Map.Entry<String, BigDecimal> entry : map.entrySet()) {
+                    lockList.add(entry.getValue().stripTrailingZeros().toPlainString() + " " + entry.getKey());
                 }
 
             }
-
-            for (Map.Entry<String, BigDecimal> entry : map.entrySet()) {
-                lockList.add(entry.getValue().stripTrailingZeros().toPlainString() + " " + entry.getKey());
-            }
-
         }
-
         List<String> paybackList = new ArrayList<>();
-        Map<String, BigDecimal> paybackMap = new HashMap<>();
-        String paybackStr = requestWalletService.getPaybackBalance(addrStatis.getAddress());
-        if (paybackStr != null) {
-            JSONArray balances = JSONObject.parseArray(paybackStr);
-            for (int i = 0; i < balances.size(); i++) {
-                JSONObject jsonObject = balances.getJSONArray(i).getJSONObject(1);
-                String assetId = jsonObject.getString("asset_id");
+        if(accountName!=null&&accountName.length()>0) {
+            Map<String, BigDecimal> paybackMap = new HashMap<>();
+            String paybackStr = requestWalletService.getPaybackBalance(addrStatis.getAddress());
+            if (paybackStr != null) {
+                JSONArray balances = JSONObject.parseArray(paybackStr);
+                for (int i = 0; i < balances.size(); i++) {
+                    JSONObject jsonObject = balances.getJSONArray(i).getJSONObject(1);
+                    String assetId = jsonObject.getString("asset_id");
 
-                BlAsset blAsset = realData.getSymbolByAssetId(assetId);
-                BigDecimal balance = jsonObject.getBigDecimal("amount").
-                        divide(new BigDecimal(blAsset.getPrecision()), 8, BigDecimal.ROUND_HALF_UP);
+                    BlAsset blAsset = realData.getSymbolByAssetId(assetId);
+                    BigDecimal balance = jsonObject.getBigDecimal("amount").
+                            divide(new BigDecimal(blAsset.getPrecision()), 8, BigDecimal.ROUND_HALF_UP);
 
-                if (!paybackMap.containsKey(blAsset.getSymbol())) {
-                    paybackMap.put(blAsset.getSymbol(), balance);
-                } else {
-                    paybackMap.put(blAsset.getSymbol(), paybackMap.get(blAsset.getSymbol()).add(balance));
+                    if (!paybackMap.containsKey(blAsset.getSymbol())) {
+                        paybackMap.put(blAsset.getSymbol(), balance);
+                    } else {
+                        paybackMap.put(blAsset.getSymbol(), paybackMap.get(blAsset.getSymbol()).add(balance));
+                    }
+
+                }
+
+                for (Map.Entry<String, BigDecimal> entry : paybackMap.entrySet()) {
+                    paybackList.add(entry.getValue().stripTrailingZeros().toPlainString() + " " + entry.getKey());
                 }
 
             }
-
-            for (Map.Entry<String, BigDecimal> entry : paybackMap.entrySet()) {
-                paybackList.add(entry.getValue().stripTrailingZeros().toPlainString() + " " + entry.getKey());
-            }
-
         }
 
         addrStatis.setBalances(balanceList);
