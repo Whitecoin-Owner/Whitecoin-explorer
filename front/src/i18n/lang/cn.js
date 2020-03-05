@@ -4,7 +4,8 @@ const cn = {
     home: '主页',
     blocks: '区块',
     transactions: '交易记录',
-    contracts: '合约'
+    contracts: '合约',
+    richlist: '富豪榜'
   },
   alert: {
     noSpace:'没有足够空间',
@@ -169,6 +170,12 @@ const cn = {
     total_span_before: '一共发现',
     total_span_after: '个合约'
   },
+  richlist: {
+    title: '富豪榜',
+    address: '地址',
+    accountName: '账户名',
+    amount: '金额'
+  },
   contractOverview: {
     title: '合约概览',
     contractAddress: '合约地址:',
@@ -256,7 +263,8 @@ const cn = {
       rewards: '奖励:',
       balances: '余额:',
       lockBalance:'投票资产:',
-      paybackBalances: '奖励金额:'
+      paybackBalances: '奖励金额:',
+      abnormal_address: '异常地址'
     },
     myTransactions: {
       title: '我的交易',

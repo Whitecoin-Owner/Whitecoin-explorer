@@ -8,6 +8,7 @@ import Blocks from '@/view/Blocks';
 import BlockDetails from '@/view/BlockDetails';
 import Transaction from '@/view/Transaction';
 import Address from '@/view/Address';
+import Richlist from '@/view/Richlist';
 
 Vue.use(Router)
 export default new Router({
@@ -44,6 +45,10 @@ export default new Router({
     {
       path: '/address',
       component: Address
+    },
+    {
+      path: '/richlist',
+      component: Richlist
     }
   ],
   scrollBehavior (to, from, savedPosition) {

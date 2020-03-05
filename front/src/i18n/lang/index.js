@@ -1,6 +1,8 @@
 import en from './en';
 import cn from './cn';
+import korea from './korea';
 export default {
-  en: en,
-  cn: cn
+  en,
+  cn,
+  korea
 }

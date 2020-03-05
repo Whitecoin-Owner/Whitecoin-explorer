@@ -4,7 +4,8 @@ const en = {
     home: 'Home',
     blocks: 'Blocks',
     transactions: 'Transactions',
-    contracts: 'Contracts'
+    contracts: 'Contracts',
+    richlist: 'Richlist'
   },
   alert: {
     noSpace:'No space can be available',
@@ -12,7 +13,7 @@ const en = {
     notSearch:'Not searching for relevant content'
   },
   search: {
-    placeholder: 'Address/TxHash/Contract Address/Height/Account Name'
+    placeholder: 'Address/TxHash/Contract/Height/Account Name'
   },
   home: {
     blockchinaInfo: {
@@ -35,7 +36,7 @@ const en = {
       height: 'Height',
       age: 'Age',
       transactions: 'Transactions',
-      miner: 'Candidate',
+      miner: 'Miner',
       size: 'Size',
       reward: 'Reward'
     },
@@ -97,8 +98,8 @@ const en = {
       contractName:'Contract Name',
       description:'Description:',
       crosschainRecord:'Crosschain Record',
-      minerName:'Candidate Name:',
-      minerAddress:'Candidate Address:',
+      minerName:'Miner Name:',
+      minerAddress:'Miner Address:',
       fee:'Fee:',
       to:'To:',
       crosschainWithdraw:'Crosschain Withdraw',
@@ -112,8 +113,8 @@ const en = {
       cancelledTxHash:'Cancelled TxHash:',
       accountCreate:'Account Create',
       name:'Name',
-      minerCreate:'Candidate Create',
-      minerGenerateMultiAsset:'Candidate Generate Multi Asset',
+      minerCreate:'Miner Create',
+      minerGenerateMultiAsset:'Miner Generate Multi Asset',
       hotAddress:'Hot Address:',
       coldAddress:'Cold Address:',
       payBack:'Pay Back',
@@ -128,7 +129,7 @@ const en = {
   },
   miner: {
     overview: {
-      title: 'Candidate Overview',
+      title: 'Miner Overview',
       name: 'Name:',
       address: 'Address:',
       contracts: 'Contracts:',
@@ -166,6 +167,12 @@ const en = {
     total_span_before: 'A Total Of',
     total_span_after: 'verified contract source codes found'
   },
+  richlist: {
+    title: 'Rich List',
+    address: 'Address',
+    accountName: 'Account Name',
+    amount: 'Amount'
+  },
   contractOverview: {
     title: 'Contract Overview',
     contractAddress: 'Contract Address:',
@@ -187,7 +194,7 @@ const en = {
     height: 'Height',
     age: 'Age',
     txn: 'txn',
-    miner: 'Candidate',
+    miner: 'Miner',
     size: 'Size',
     reward: 'Reward',
     total_span_before: 'A Total Of',
@@ -199,7 +206,7 @@ const en = {
       height: 'Height:',
       timeStamp: "TimeStamp:",
       transactions: 'Transactions:',
-      miner: 'Candidate:',
+      miner: 'Miner:',
       size: 'Size:',
       rewards: 'Rewards:',
       version: 'Version:',
@@ -253,7 +260,8 @@ const en = {
       rewards: 'Rewards:',
       balances: 'Balances:',
       lockBalance:'Mortgaged assets:',
-      paybackBalances: 'Payback:'
+      paybackBalances: 'Payback:',
+      abnormal_address: 'Abnormal Address'
     },
     myTransactions: {
       title: 'My Transactions',

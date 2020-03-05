@@ -32,15 +32,24 @@
               <ul>
                 <li class="clear" style="border-bottom: 0; border-top: 0;">
                   <div class="name left">{{$t('home.valueInfo.price')}}</div>
-                  <div class="value right">- -</div>
+                  <div class="value right">
+                    <span v-if="mainCoinPrice.in_usdt">{{mainCoinPrice.in_usdt.price}} USDT</span>
+                    <span v-if="!mainCoinPrice.in_usdt">- -</span>
+                  </div>
                 </li>
                 <li class="clear" style="border-bottom: 0; border-top: 0;">
                   <div class="name left">{{$t('home.valueInfo.priceBTC')}}</div>
-                  <div class="value right">- -</div>
+                  <div class="value right">
+                    <span v-if="mainCoinPrice.in_btc">{{mainCoinPrice.in_btc.price}} BTC</span>
+                    <span v-if="!mainCoinPrice.in_btc">- -</span>
+                  </div>
                 </li>
                 <li class="clear" style="border-bottom: 0; border-top: 0;">
                   <div class="name left">{{$t('home.valueInfo.change')}}</div>
-                  <div class="value right">- -</div>
+                  <div class="value right">
+                    <span v-if="mainCoinPrice.in_usdt">{{mainCoinPrice.in_usdt.change}} %</span>
+                    <span v-if="!mainCoinPrice.in_usdt">- -</span>
+                  </div>
                 </li>
               </ul>
             </div>
@@ -190,6 +199,10 @@ export default {
         totalTxNum: null, //交易总量
         reward: null //奖金
       },
+      mainCoinPrice: {
+        in_usdt: null, // 主链资产以USDT计价的价格
+        in_btc: null, // 主链资产以BTC计价的价格
+      },
       blocks: [],
       transaction: [],
       timeChoice: 1,
@@ -324,6 +337,12 @@ export default {
       let data = res.data;
       if (data.retCode === 200) {
         that.transaction = data.data;
+      }
+    });
+    this.$axios.get('/mainCoinPrice').then((res) => {
+      let data = res.data;
+      if(data.retCode === 200) {
+        that.mainCoinPrice = data.data;
       }
     });
   },

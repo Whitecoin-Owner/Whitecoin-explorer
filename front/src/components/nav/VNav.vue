@@ -2,7 +2,7 @@
   <div class="wrap">
     <div class="background"></div>
     <aside>
-      <img class="logo" src="../../assets/img/logo.png" @click="logoClick">
+      <a href="https://www.whitecoin.info/"><img class="logo" src="../../assets/img/logo.png" @click="logoClick"></a>
 
       <ul>
         <router-link to="/">
@@ -19,6 +19,9 @@
         </router-link>
         <router-link to="/contracts">
           <li :class="{'choice':getChoiceIndex === 3}" @click="navChange(3)">{{$t('nav.contracts')}}</li>
+        </router-link>
+        <router-link to="/richlist">
+          <li :class="{'choice':getChoiceIndex === 4}" @click="navChange(4)">{{$t('nav.richlist')}}</li>
         </router-link>
         <el-select
           v-model="selectedLang"
@@ -56,7 +59,8 @@ export default {
       selectedLang: "en",
       langOptions: [
         { label: "中文", value: "cn" },
-        { label: "Engish", value: "en" }
+        { label: "Engish", value: "en" },
+        { label: "한국어", value: "korea"}
       ]
     };
   },

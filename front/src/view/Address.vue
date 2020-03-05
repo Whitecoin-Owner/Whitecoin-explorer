@@ -22,8 +22,9 @@
                   {{$t('address.overview.address')}}
                 </span>
               <span>
-                  {{minerInfo.address}}
-                </span>
+                  {{minerInfo.address}} 
+                  <span style="color: red;" v-if="minerInfo.address==='XWCNWKLUcsybWt4bW5EXV1CfdaSNHiSKj4Hzw' || minerInfo.address==='XWCNi146ffqUffGJk3tTjnY1MdVGJn3m8jH29'">({{$t('address.overview.abnormal_address')}})</span>
+              </span>
             </li>
             <li>
                 <span>
