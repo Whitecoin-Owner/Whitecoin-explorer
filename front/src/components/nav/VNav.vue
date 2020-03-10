@@ -60,7 +60,8 @@ export default {
       langOptions: [
         { label: "中文", value: "cn" },
         { label: "Engish", value: "en" },
-        { label: "한국어", value: "korea"}
+        { label: "한국어", value: "korea"},
+        { label: "日本語", value: "japan"}
       ]
     };
   },
