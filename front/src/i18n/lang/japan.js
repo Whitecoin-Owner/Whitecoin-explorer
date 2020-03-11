@@ -94,7 +94,7 @@ const japan = {
             amount: '金額',
             contractRegister: 'コントラクト登録',
             authorAddress: '創設者',
-            inheritFrom: '继承自:', ＝
+            inheritFrom: '继承自:',
             rate: 'レート',
             contractTransfer: 'コントラクト入金',
             contractUpgrade: 'コントラクトのアップグレード',
