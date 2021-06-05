@@ -17,7 +17,7 @@ import java.util.TimeZone;
 public class WhiteCoinBrowserApplication {
 
     public static void main(String[] args) {
-        TimeZone.setDefault(TimeZone.getTimeZone("GMT+8"));
+//        TimeZone.setDefault(TimeZone.getTimeZone("GMT+8"));
         SpringApplication.run(WhiteCoinBrowserApplication.class, args);
     }
 }

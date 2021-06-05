@@ -1,13 +1,15 @@
 package com.browser.dao.entity;
 
+import com.browser.wallet.beans.ContractTxReceipt;
+
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Set;
 
 public class BlTransaction {
-	
-	private Integer id;
-	
+
+    private Integer id;
+
     private String trxId;
 
     private String blockId;
@@ -17,29 +19,29 @@ public class BlTransaction {
     private String fromAccount;
 
     private String toAccount;
-    
+
     private String minerAddress;
 
     private BigDecimal amount;
-    
-    private String  amountStr;
-    
+
+    private String amountStr;
+
     private String assetId;
-    
+
     private String symbol;
 
     private BigDecimal fee;
-    
-    private String  feeStr;
+
+    private String feeStr;
 
     private Date trxTime;
 
     private String extraTrxId;
-    
+
     private String guaranteeId;
 
     private Integer opType;
-    
+
     private Integer parentOpType;
 
     private Integer gasLimit;
@@ -51,26 +53,31 @@ public class BlTransaction {
     private String contractId;
 
     private Date createdTime;
-    
+
     private String calledAbi;
 
     private String abiParams;
 
     private String extension;
-    
+
     private Integer extension1;
-    
+
     private String memo;
-    
+
+    private Boolean fail = false; // 是否失败交易
+
+    // 这个不直接存入数据库，取数据后的暂存值
+    private ContractTxReceipt receipt;
+
     //状态
     private Integer status;
-    
+
     private String authorAddr;
-    
+
     private String exchange;
-    
+
     private boolean guaranteeUse;
-    
+
     //查询统计参数
     private String trxNum;
     private String queryTime;
@@ -81,123 +88,132 @@ public class BlTransaction {
     private Integer transactiopns;
     private Integer rewards;
     private String address;
-    
+    private String eventArg;
+
     private Set<String> toAddrList;
     private Set<String> fromAddrList;
-    
-	public boolean isGuaranteeUse() {
-		return guaranteeUse;
-	}
 
-	public void setGuaranteeUse(boolean guaranteeUse) {
-		this.guaranteeUse = guaranteeUse;
-	}
+    public String getEventArg() {
+        return eventArg;
+    }
 
-	public String getGuaranteeId() {
-		return guaranteeId;
-	}
+    public void setEventArg(String eventArg) {
+        this.eventArg = eventArg;
+    }
 
-	public void setGuaranteeId(String guaranteeId) {
-		this.guaranteeId = guaranteeId;
-	}
+    public boolean isGuaranteeUse() {
+        return guaranteeUse;
+    }
 
-	public String getMinerAddress() {
-		return minerAddress;
-	}
+    public void setGuaranteeUse(boolean guaranteeUse) {
+        this.guaranteeUse = guaranteeUse;
+    }
 
-	public void setMinerAddress(String minerAddress) {
-		this.minerAddress = minerAddress;
-	}
+    public String getGuaranteeId() {
+        return guaranteeId;
+    }
 
-	public String getAuthorAddr() {
-		return authorAddr;
-	}
+    public void setGuaranteeId(String guaranteeId) {
+        this.guaranteeId = guaranteeId;
+    }
 
-	public void setAuthorAddr(String authorAddr) {
-		this.authorAddr = authorAddr;
-	}
+    public String getMinerAddress() {
+        return minerAddress;
+    }
 
-	public String getExchange() {
-		return exchange;
-	}
+    public void setMinerAddress(String minerAddress) {
+        this.minerAddress = minerAddress;
+    }
 
-	public void setExchange(String exchange) {
-		this.exchange = exchange;
-	}
+    public String getAuthorAddr() {
+        return authorAddr;
+    }
 
-	public Integer getStatus() {
-		return status;
-	}
+    public void setAuthorAddr(String authorAddr) {
+        this.authorAddr = authorAddr;
+    }
 
-	public void setStatus(Integer status) {
-		this.status = status;
-	}
+    public String getExchange() {
+        return exchange;
+    }
 
-	public String getAddress() {
-		return address;
-	}
+    public void setExchange(String exchange) {
+        this.exchange = exchange;
+    }
 
-	public void setAddress(String address) {
-		this.address = address;
-	}
+    public Integer getStatus() {
+        return status;
+    }
 
-	public Integer getTransactiopns() {
-		return transactiopns;
-	}
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
 
-	public void setTransactiopns(Integer transactiopns) {
-		this.transactiopns = transactiopns;
-	}
+    public String getAddress() {
+        return address;
+    }
 
-	public Integer getRewards() {
-		return rewards;
-	}
+    public void setAddress(String address) {
+        this.address = address;
+    }
 
-	public void setRewards(Integer rewards) {
-		this.rewards = rewards;
-	}
+    public Integer getTransactiopns() {
+        return transactiopns;
+    }
 
-	public Integer getPage() {
-		return page;
-	}
+    public void setTransactiopns(Integer transactiopns) {
+        this.transactiopns = transactiopns;
+    }
 
-	public void setPage(Integer page) {
-		this.page = page;
-	}
+    public Integer getRewards() {
+        return rewards;
+    }
 
-	public Integer getRows() {
-		return rows;
-	}
+    public void setRewards(Integer rewards) {
+        this.rewards = rewards;
+    }
 
-	public void setRows(Integer rows) {
-		this.rows = rows;
-	}
+    public Integer getPage() {
+        return page;
+    }
 
-	public String getAmountStr() {
-		return amountStr;
-	}
+    public void setPage(Integer page) {
+        this.page = page;
+    }
 
-	public void setAmountStr(String amountStr) {
-		this.amountStr = amountStr;
-	}
+    public Integer getRows() {
+        return rows;
+    }
 
-	public String getFeeStr() {
-		return feeStr;
-	}
+    public void setRows(Integer rows) {
+        this.rows = rows;
+    }
 
-	public void setFeeStr(String feeStr) {
-		this.feeStr = feeStr;
-	}
+    public String getAmountStr() {
+        return amountStr;
+    }
 
-	public Integer getId() {
-		return id;
-	}
+    public void setAmountStr(String amountStr) {
+        this.amountStr = amountStr;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public String getFeeStr() {
+        return feeStr;
+    }
 
-	public String getTrxId() {
+    public void setFeeStr(String feeStr) {
+        this.feeStr = feeStr;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getTrxId() {
         return trxId;
     }
 
@@ -316,7 +332,7 @@ public class BlTransaction {
     public void setCreatedTime(Date createdTime) {
         this.createdTime = createdTime;
     }
-    
+
     public String getCalledAbi() {
         return calledAbi;
     }
@@ -341,92 +357,108 @@ public class BlTransaction {
         this.extension = extension == null ? null : extension.trim();
     }
 
-	public Set<String> getToAddrList() {
-		return toAddrList;
-	}
+    public Set<String> getToAddrList() {
+        return toAddrList;
+    }
 
-	public void setToAddrList(Set<String> toAddrList) {
-		this.toAddrList = toAddrList;
-	}
+    public void setToAddrList(Set<String> toAddrList) {
+        this.toAddrList = toAddrList;
+    }
 
-	public Set<String> getFromAddrList() {
-		return fromAddrList;
-	}
+    public Set<String> getFromAddrList() {
+        return fromAddrList;
+    }
 
-	public void setFromAddrList(Set<String> fromAddrList) {
-		this.fromAddrList = fromAddrList;
-	}
+    public void setFromAddrList(Set<String> fromAddrList) {
+        this.fromAddrList = fromAddrList;
+    }
 
-	public String getAssetId() {
-		return assetId;
-	}
+    public String getAssetId() {
+        return assetId;
+    }
 
-	public void setAssetId(String assetId) {
-		this.assetId = assetId;
-	}
+    public void setAssetId(String assetId) {
+        this.assetId = assetId;
+    }
 
-	public String getMemo() {
-		return memo;
-	}
+    public String getMemo() {
+        return memo;
+    }
 
-	public void setMemo(String memo) {
-		this.memo = memo;
-	}
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
 
-	public String getSymbol() {
-		return symbol;
-	}
+    public String getSymbol() {
+        return symbol;
+    }
 
-	public void setSymbol(String symbol) {
-		this.symbol = symbol;
-	}
+    public void setSymbol(String symbol) {
+        this.symbol = symbol;
+    }
 
-	public String getTrxNum() {
-		return trxNum;
-	}
+    public String getTrxNum() {
+        return trxNum;
+    }
 
-	public void setTrxNum(String trxNum) {
-		this.trxNum = trxNum;
-	}
+    public void setTrxNum(String trxNum) {
+        this.trxNum = trxNum;
+    }
 
-	public String getQueryTime() {
-		return queryTime;
-	}
+    public String getQueryTime() {
+        return queryTime;
+    }
 
-	public void setQueryTime(String queryTime) {
-		this.queryTime = queryTime;
-	}
+    public void setQueryTime(String queryTime) {
+        this.queryTime = queryTime;
+    }
 
-	public String getStartTime() {
-		return startTime;
-	}
+    public String getStartTime() {
+        return startTime;
+    }
 
-	public void setStartTime(String startTime) {
-		this.startTime = startTime;
-	}
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
 
-	public String getEndTime() {
-		return endTime;
-	}
+    public String getEndTime() {
+        return endTime;
+    }
 
-	public void setEndTime(String endTime) {
-		this.endTime = endTime;
-	}
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
+    }
 
-	public Integer getExtension1() {
-		return extension1;
-	}
+    public Integer getExtension1() {
+        return extension1;
+    }
 
-	public void setExtension1(Integer extension1) {
-		this.extension1 = extension1;
-	}
+    public void setExtension1(Integer extension1) {
+        this.extension1 = extension1;
+    }
 
-	public Integer getParentOpType() {
-		return parentOpType;
-	}
+    public Integer getParentOpType() {
+        return parentOpType;
+    }
 
-	public void setParentOpType(Integer parentOpType) {
-		this.parentOpType = parentOpType;
-	}
-	
+    public void setParentOpType(Integer parentOpType) {
+        this.parentOpType = parentOpType;
+    }
+
+    public ContractTxReceipt getReceipt() {
+        return receipt;
+    }
+
+    public void setReceipt(ContractTxReceipt receipt) {
+        this.receipt = receipt;
+    }
+
+    public Boolean getFail() {
+        return fail;
+    }
+
+    public void setFail(Boolean fail) {
+        this.fail = fail;
+    }
+
 }

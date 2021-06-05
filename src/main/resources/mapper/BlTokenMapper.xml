@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.browser.dao.mapper.BlTokenMapper">
+    <resultMap id="BaseResultMap" type="com.browser.dao.entity.BlToken">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="contract_address" property="contractAddress" jdbcType="VARCHAR"/>
+        <result column="token_symbol" property="tokenSymbol" jdbcType="VARCHAR"/>
+        <result column="precision" property="precision" jdbcType="INTEGER"/>
+        <result column="creator_address" property="creatorAddress" jdbcType="VARCHAR"/>
+        <result column="create_trx_id" property="createTrxId" jdbcType="VARCHAR"/>
+        <result column="token_supply" property="tokenSupply" jdbcType="DECIMAL"/>
+        <result column="top_sort" property="topSort" jdbcType="INTEGER"/>
+        <result column="create_at" property="createAt" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, contract_address, token_symbol, `precision`, creator_address, create_trx_id, token_supply, top_sort
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from bl_token
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <select id="selectByContractAddress" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from bl_token
+        where contract_address = #{contractAddress,jdbcType=VARCHAR}
+    </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bl_token
+        order by id asc
+    </select>
+    <select id="selectAllActive" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bl_token where `precision` is not null and `token_supply` is not null and `token_symbol` is not null
+        order by id asc
+    </select>
+
+    <select id="getActiveTokenList" resultMap="BaseResultMap" parameterType="com.browser.dao.entity.BlToken">
+        select
+        bt.id, bt.contract_address, bt.token_symbol, bt.`precision`, bt.creator_address, bt.create_trx_id, bt.token_supply, bt.top_sort,
+        bci.reg_time create_at
+        from bl_token bt left join bl_contract_info bci
+        on bt.contract_address = bci.contract_id
+        where bt.`precision` is not null and bt.`token_supply` is not null and bt.`token_symbol` is not null
+    </select>
+
+    <select id="getPrecisionByContractAddress" resultType="java.lang.Integer">
+        select
+        `precision`
+        from bl_token
+        <where>
+            contract_address = #{contractAddress,jdbcType=VARCHAR} AND token_symbol = 'XUSD'
+        </where>
+    </select>
+
+    <select id="selectAllTopActiveTokenList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bl_token where top_sort is not null and `precision` is not null and `token_supply` is not null and `token_symbol` is not null
+        order by top_sort asc, id asc
+    </select>
+
+    <select id="selectAllNotActive" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bl_token where `precision` is null or `token_supply` is null or `token_symbol` is null
+        order by id asc
+    </select>
+
+    <select id="getTpContractAddressList" resultType="java.lang.String">
+        select
+        contract_address
+        from tp_contract_address
+    </select>
+
+    <select id="selectAllByCond" resultMap="BaseResultMap" parameterType="com.browser.dao.entity.BlToken">
+        select
+        <include refid="Base_Column_List"/>
+        from bl_token
+        where 1 = 1
+        <trim suffixOverrides=",">
+            <if test="contractAddress!=null">
+                and contract_address = #{contractAddress,jdbcType=VARCHAR}
+            </if>
+            <if test="tokenSymbol!=null">
+                and token_symbol = #{tokenSymbol,jdbcType=VARCHAR}
+            </if>
+            <if test="precision!=null">
+                and `precision` = #{precision,jdbcType=INTEGER}
+            </if>
+            <if test="creatorAddress!=null">
+                and creator_address = #{creatorAddress,jdbcType=VARCHAR}
+            </if>
+            <if test="createTrxId !=null">
+                and create_trx_id = #{createTrxId,jdbcType=VARCHAR}
+            </if>
+            <if test="tokenSupply!=null">
+                and token_supply = #{tokenSupply,jdbcType=DECIMAL}
+            </if>
+            <if test="topSort != null">
+                and top_sort = #{topSort,jdbcType=INTEGER}
+            </if>
+        </trim>
+        order by id asc
+    </select>
+
+    <insert id="insert" parameterType="com.browser.dao.entity.BlToken">
+    insert into bl_token (contract_address, token_symbol, `precision`, creator_address, create_trx_id, token_supply, top_sort, create_at)
+    values (#{contractAddress,jdbcType=VARCHAR}, #{tokenSymbol,jdbcType=VARCHAR},
+     #{precision, jdbcType=INTEGER}, #{creatorAddress,jdbcType=VARCHAR}, #{createTrxId,jdbcType=VARCHAR},
+    #{tokenSupply,jdbcType=DECIMAL}, #{topSort,jdbcType=INTEGER}, #{createAt}
+     )
+  </insert>
+    <update id="updateTokenTotalSupplyByContractAddress" parameterType="com.browser.dao.entity.BlToken">
+        update bl_token set token_supply = #{tokenSupply,jdbcType=DECIMAL}
+        where contract_address = #{contractAddress,jdbcType=VARCHAR}
+    </update>
+    <update id="updateBlToken" parameterType="com.browser.dao.entity.BlToken">
+        update bl_token
+        <set>
+            <if test="tokenSupply != null">
+                token_supply = #{tokenSupply,jdbcType=DECIMAL},
+            </if>
+            <if test="tokenSymbol != null">
+                token_symbol = #{tokenSymbol,jdbcType=VARCHAR},
+            </if>
+            <if test="precision != null">
+                `precision` = #{precision,jdbcType=INTEGER},
+            </if>
+            <if test="createTrxId != null">
+                create_trx_id = #{createTrxId,jdbcType=VARCHAR},
+            </if>
+            <if test="creatorAddress != null">
+                creator_address = #{creatorAddress,jdbcType=VARCHAR}
+            </if>
+        </set>
+        where contract_address = #{contractAddress,jdbcType=VARCHAR}
+    </update>
+</mapper>

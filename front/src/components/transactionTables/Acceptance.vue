@@ -35,7 +35,11 @@
         width="200"
       >
         <template slot-scope="scope">
-          <timeago :since="scope.row.createdTime" :locale="getBusLocal" :auto-update="0.2"></timeago>
+          <div>
+            <timeago :since="scope.row.createdTime" :locale="getBusLocal" :auto-update="0.2"></timeago>
+            &nbsp;
+            <span>{{new Date(scope.row.createdTime)}}</span>
+          </div>
         </template>
       </el-table-column>
       <el-table-column

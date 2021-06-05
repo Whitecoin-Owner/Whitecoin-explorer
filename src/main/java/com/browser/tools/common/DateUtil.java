@@ -3,12 +3,17 @@ package com.browser.tools.common;
 import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import com.browser.dao.entity.BlTransaction;
+import org.springframework.util.Assert;
 
 /**
  * <p>
@@ -321,7 +326,17 @@ public class DateUtil {
         return day;
     }
 
+
+    public static String convertTimeToString(Long time) {
+        if (time == null){
+            return "";
+        }
+        DateTimeFormatter ftf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return ftf.format(LocalDateTime.ofInstant(Instant.ofEpochSecond(time), ZoneId.systemDefault()));
+    }
+
+
     public static void main(String[] args) {
-        System.out.println(getDaySub("2019-02-25","2019-03-25"));
+        System.out.println(getDaySub("2019-02-25", "2019-03-25"));
     }
 }

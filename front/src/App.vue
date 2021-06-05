@@ -1,17 +1,28 @@
 <template>
   <div id="app">
-    <v-nav></v-nav>
-    <router-view />
+    <v-nav v-if="desktop"/>
+    <v-nav-mobile v-else/>
+    <router-view class="mian_alls" />
+    <iFooter v-if="desktop" />
+    <iFooterMobile v-else/>
   </div>
 </template>
 
 <script>
 import VNav from "./components/nav/VNav";
+import VNavMobile from "./components/nav/VNavMobile";
+import iFooter from "./components/nav/iFooter";
+import iFooterMobile from "./components/nav/iFooterMobile";
 import bus from "./utils/bus";
 
 export default {
-  components: { VNav },
+  components: { VNav,iFooter,VNavMobile,iFooterMobile },
   name: "App",
+  data(){
+    return {
+      desktop: device.desktop()
+    }
+  },
   created() {
     let href = window.location.href;
     if (href.indexOf("/blocks") > 0) {
@@ -41,5 +52,9 @@ export default {
   input::-webkit-input-placeholder {
     font-size: 12px;
   }
+  .mian_alls{
+    height: 100%;
+  }
 }
+
 </style>

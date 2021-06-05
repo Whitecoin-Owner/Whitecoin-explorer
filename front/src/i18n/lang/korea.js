@@ -5,7 +5,14 @@ const korea = {
     blocks: '블록',
     transactions: '거래 내역',
     contracts: '컨트렉트',
-    richlist: '풍부한 목록'
+    richlist: '풍부한 목록',
+    tokens: '화폐',
+    ziyuan: '자원',
+    assets: '자산'
+  },
+  maxTitle:{ 
+    t1:'거래 내역',
+    t2:'화폐 거래 내역',
   },
   alert: {
     noSpace:'사용 가능한 공간이 부족합니다',
@@ -13,7 +20,8 @@ const korea = {
     notSearch:'검색 결과를 찾을 수 없습니다'
   },
   search: {
-    placeholder: '주소/컨트렉트 주소/블록/계정명'
+    placeholder: '주소/컨트렉트 주소/블록/계정명',
+    placeholder2:'코인명 또는 계약 주소를 입력해 주세요',
   },
   home: {
     blockchinaInfo: {
@@ -23,11 +31,11 @@ const korea = {
       blockHeight: '블록 높이',
       blockReward: '블록 리워드',
       crossAsset: '기타 자산',
-      accountCount: '계정 수량'
+      accountCount: '총 발행량'
     },
     valueInfo: {
       title: 'Value Info',
-      price: ' 가격($)',
+      price: ' 가격',
       priceBTC: '가격(BTC)',
       change: '변동(24H)'
     },
@@ -40,7 +48,10 @@ const korea = {
       transactions: '거래',
       miner: '마이너',
       size: '사이즈',
-      reward: '리워드'
+      reward: '리워드',
+      minerFee:'채굴비용',
+      over:'완성',
+      success:'건의 주문',
     },
     transaction: {
       title: '거래',
@@ -51,14 +62,23 @@ const korea = {
       types: '유형',
       age: '시간',
       value: '금액',
-      fee: '수수료'
+      fee: '수수료',
+      numberss:'수량',
+      fromDeafult:'(선물)계약 생성하기'
     },
     transactionLine: {
       today: '오늘',
       week: '이번주',
       month: '이번달',
       summary: '거래 통계'
-    }
+    },
+    footer: {
+      t1: '백서',
+      t2: 'Contact Us',
+      t3: '뉴스',
+      t4: '지원',
+      t5: '파트너',
+    },
   },
   transferDetails: {
     tips: {
@@ -72,6 +92,16 @@ const korea = {
       type: '거래 결과 유형:',
       height: '블록 높이:',
       timeStamp: '시간:'
+    },
+    tokenTransfers: {
+      title: 'Token 이체',
+      transfer: '이체',
+    },
+    contractBalanceChangeDetail: {
+      title: '계약 잔액 변경',
+      contract_withdraw: '계약에서 양도',
+      deposit_contract: '예금 계약',
+      deposit_to_address: '계약 철회 주소',
     },
     details: {
       title: '거래 정보',
@@ -140,7 +170,7 @@ const korea = {
       rewards: '리워드:'
     },
     myTransactions: {
-      title: '내 거래', 
+      title: '이체', 
       txHash: '거래 해시',
       block: '블록',
       types: '유형',
@@ -169,6 +199,20 @@ const korea = {
     lastTime: '마지막 사용 시간',
     total_span_before: '총 발견',
     total_span_after: '_개의 컨트렉트'
+  },
+  tokens: {
+    title: '화폐',
+    contractAddress: '컨트렉트 주소',
+    types: '유형',
+    authorAddress: '생성자',
+    callTimes: '호출 횟수',
+    createTime: '생성 시간',
+    lastTime: '마지막 사용 시간',
+    total_span_before: '총 발견',
+    total_span_after: '_개의 컨트렉트',
+    tokenSymbol: '토큰 기호',
+    precision: '정도',
+    tokenSupply: '공급'
   },
   richlist: {
     title: '풍부한 목록',
@@ -263,7 +307,8 @@ const korea = {
       rewards: '리워드:',
       balances: '잔액:',
       lockBalance:'투표 자산:',
-      paybackBalances: '상금 금액:'
+      paybackBalances: '상금 금액:',
+      tokenBalances: '화폐잔액:',
     },
     myTransactions: {
       title: '내 거래',
@@ -276,6 +321,31 @@ const korea = {
       value: '금액',
       fee: '수수료'
     },
+    myTokenTransactions: {
+      title: '내 토큰 거래',
+      txHash: '거래 해시',
+      block: '블록',
+      types: '유형',
+      age: '시간',
+      from: '에서',
+      to: '~로',   
+      value: '금액',
+      fee: '수수료',
+      symbol: '토큰'
+    }, 
+    mySwapTransactions: {
+      address: '주소',
+      title: '내 스왑 거래',
+      txHash: '거래 해시',
+      block: '블록',
+      types: '유형',
+      age: '시간',
+      from: '에서',
+      to: '~로', 
+      value: '금액',
+      fee: '수수료',
+      symbol: '토큰'
+    },
     myContracts: {
       title: '내 컨트렉트',
       address: '컨트렉트 주소',
@@ -284,6 +354,10 @@ const korea = {
       create: '생성 시간',
       last: '마지막 시용 시간'
     }
+  },
+  message:{
+    success:'복사성공!',
+    failed:'복사실패!'
   },
   ...enLocale
 }

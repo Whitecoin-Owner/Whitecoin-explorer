@@ -7,8 +7,7 @@ import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.SerializationException;
 
 /**
- * redis键策略
- * @author mayakui
+ * redis key config
  *
  */
 public class JBSRedisObjectSerializer implements RedisSerializer<Object> {

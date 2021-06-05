@@ -82,6 +82,8 @@ public class Constant {
 	public static final int GURANTEE_INVALID = 0;
 	public static final int GURANTEE_VALID = 1;
 
+	public static final String MAIN_ASSET_ID = "1.3.0"; // 主资产的assetId
+
 	// 精度保留长度
 	public static final int PRECISION_LENGTH = 4;
 	public static final long PRECISION = 100000000L;

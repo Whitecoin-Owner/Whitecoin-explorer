@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.browser.dao.mapper.BlSwapContractMapper">
+    <resultMap id="BaseResultMap" type="com.browser.dao.entity.BlSwapContract">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="contract_address" property="contractAddress" jdbcType="VARCHAR"/>
+        <result column="token1" property="token1" jdbcType="VARCHAR"/>
+        <result column="token2" property="token2" jdbcType="VARCHAR"/>
+        <result column="verified" property="verified" jdbcType="INTEGER"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, contract_address, token1, token2, verified
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from bl_swap_contract
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <select id="selectByContractAddress" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from bl_swap_contract
+        where contract_address = #{contractAddress,jdbcType=VARCHAR}
+    </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bl_swap_contract
+        order by id asc
+    </select>
+    <select id="selectAllByCond" resultMap="BaseResultMap" parameterType="com.browser.dao.entity.BlSwapContract">
+        select
+        <include refid="Base_Column_List"/>
+        from bl_swap_contract
+        where 1 = 1
+        <trim suffixOverrides=",">
+            <if test="contractAddress!=null">
+                and contract_address = #{contractAddress,jdbcType=VARCHAR}
+            </if>
+            <if test="token1!=null">
+                and token1 = #{token1,jdbcType=VARCHAR}
+            </if>
+            <if test="token2!=null">
+                and token2 = #{token2,jdbcType=VARCHAR}
+            </if>
+            <if test="verified!=null">
+                and verified = #{verified,jdbcType=INTEGER}
+            </if>
+        </trim>
+        order by id asc
+    </select>
+
+    <insert id="insert" parameterType="com.browser.dao.entity.BlSwapContract">
+    insert into bl_swap_contract (contract_address, token1, token2, verified)
+    values (#{contractAddress,jdbcType=VARCHAR}, #{token1,jdbcType=VARCHAR},
+     #{token2, jdbcType=VARCHAR}, #{verified,jdbcType=INTEGER}
+     )
+  </insert>
+</mapper>

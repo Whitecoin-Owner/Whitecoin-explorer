@@ -3,6 +3,7 @@ package com.browser.dao.entity;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 交易类型返回
@@ -21,6 +22,12 @@ public class TransOpTypeRes {
 	private Date timeStamp;
 	
 	private Object operationData;
+
+	private List<BlTxEvents> events;
+	private List<BlTxContractBalanceChange> txContractBalanceChanges;
+	private List<BlTokenTransaction> tokenTransactions;
+	private List<BlSwapTransaction> swapTransactions;
+	private Boolean fail;
 
 	public String getTxHash() {
 		return txHash;
@@ -68,5 +75,45 @@ public class TransOpTypeRes {
 
 	public void setOperationData(Object operationData) {
 		this.operationData = operationData;
+	}
+
+	public List<BlTxEvents> getEvents() {
+		return events;
+	}
+
+	public void setEvents(List<BlTxEvents> events) {
+		this.events = events;
+	}
+
+	public List<BlTxContractBalanceChange> getTxContractBalanceChanges() {
+		return txContractBalanceChanges;
+	}
+
+	public void setTxContractBalanceChanges(List<BlTxContractBalanceChange> txContractBalanceChanges) {
+		this.txContractBalanceChanges = txContractBalanceChanges;
+	}
+
+	public List<BlTokenTransaction> getTokenTransactions() {
+		return tokenTransactions;
+	}
+
+	public void setTokenTransactions(List<BlTokenTransaction> tokenTransactions) {
+		this.tokenTransactions = tokenTransactions;
+	}
+
+	public List<BlSwapTransaction> getSwapTransactions() {
+		return swapTransactions;
+	}
+
+	public void setSwapTransactions(List<BlSwapTransaction> swapTransactions) {
+		this.swapTransactions = swapTransactions;
+	}
+
+	public Boolean getFail() {
+		return fail;
+	}
+
+	public void setFail(Boolean fail) {
+		this.fail = fail;
 	}
 }

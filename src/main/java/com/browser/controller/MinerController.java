@@ -51,7 +51,7 @@ public class MinerController extends BaseController {
 			resultMsg.setRetCode(ResultMsg.HTTP_OK);
 			resultMsg.setData(data);
 		} catch (Exception e) {
-			logger.error("系统错误", e);
+			logger.error("system error", e);
 			resultMsg.setRetCode(ResultMsg.HTTP_ERROR);
 			resultMsg.setRetMsg(e.getMessage());
 		}
@@ -59,7 +59,7 @@ public class MinerController extends BaseController {
 	}
 	
 	/**
-	 * 根据地址统计信息
+	 * address statistic data
 	 * @return
 	 */
 	@ResponseBody
@@ -68,7 +68,7 @@ public class MinerController extends BaseController {
 		ResultMsg resultMsg = new ResultMsg();
 		if(null==blMinerStatis.getAddress()) {
 			resultMsg.setRetCode(ResultMsg.HTTP_CHECK_VALID);
-			resultMsg.setRetMsg("参数不能为空");
+			resultMsg.setRetMsg("param can't be empty");
 			return resultMsg;
 		}
 		try {
@@ -76,7 +76,7 @@ public class MinerController extends BaseController {
 			resultMsg.setRetCode(ResultMsg.HTTP_OK);
 			resultMsg.setData(data);
 		} catch (Exception e) {
-			logger.error("系统错误", e);
+			logger.error("system error", e);
 			resultMsg.setRetCode(ResultMsg.HTTP_ERROR);
 			resultMsg.setRetMsg(e.getMessage());
 		}
@@ -84,7 +84,7 @@ public class MinerController extends BaseController {
 	}
 
 	/**
-	 * 判断地址或者账户名是否存在
+	 * check existence of address/account name
 	 * @return
 	 */
 	@ResponseBody
@@ -96,7 +96,7 @@ public class MinerController extends BaseController {
 			resultMsg.setRetCode(ResultMsg.HTTP_OK);
 			resultMsg.setData(data);
 		} catch (Exception e) {
-			logger.error("系统错误", e);
+			logger.error("system error", e);
 			resultMsg.setRetCode(ResultMsg.HTTP_ERROR);
 			resultMsg.setRetMsg(e.getMessage());
 		}
@@ -104,7 +104,7 @@ public class MinerController extends BaseController {
 	}
 
 	/**
-	 * 统计地址拥有合约信息
+	 * contracts statistic owned by address
 	 * @return
 	 */
 	@ResponseBody
@@ -113,7 +113,7 @@ public class MinerController extends BaseController {
 		ResultMsg resultMsg = new ResultMsg();
 		if(null==BlContractInfo.getOwnerAddress()) {
 			resultMsg.setRetCode(ResultMsg.HTTP_CHECK_VALID);
-			resultMsg.setRetMsg("参数不能为空");
+			resultMsg.setRetMsg("param can't be empty");
 			return resultMsg;
 		}
 		try {
@@ -121,7 +121,7 @@ public class MinerController extends BaseController {
 			resultMsg.setRetCode(ResultMsg.HTTP_OK);
 			resultMsg.setData(data);
 		} catch (Exception e) {
-			logger.error("系统错误", e);
+			logger.error("system error", e);
 			resultMsg.setRetCode(ResultMsg.HTTP_ERROR);
 			resultMsg.setRetMsg(e.getMessage());
 		}

@@ -36,12 +36,30 @@
     </if>
     order by reg_time DESC
   </select>
+
+
+  <select id="selectContractListPage" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from bl_contract_info
+    where 1=1
+    <if test="record.ownerAddress !=null and record.ownerAddress !='' ">
+      and owner_address = #{record.ownerAddress,jdbcType=VARCHAR}
+    </if>
+    order by reg_time DESC
+    limit #{offset,jdbcType=INTEGER}, #{limit,jdbcType=INTEGER}
+  </select>
   
   <!-- 统计某个地址拥有的合约量 -->
   <select id="countContracts" resultType="java.lang.Integer" parameterType="java.lang.String" >
     select count(contract_id)
     from bl_contract_info
     where owner_address = #{address,jdbcType=VARCHAR}
+  </select>
+
+  <select id="countAll" resultType="java.lang.Integer">
+    select count(*)
+    from bl_contract_info
   </select>
   
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >

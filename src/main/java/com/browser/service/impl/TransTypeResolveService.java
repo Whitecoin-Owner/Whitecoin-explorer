@@ -533,7 +533,7 @@ public class TransTypeResolveService {
         result.put("fee", feeStr(transaction.getFee()));
         if (transaction.getToAccount() != null) {
             result.put("toAddress", transaction.getToAccount());
-            result.put("citizen", transaction.getExtension());
+            result.put("miner", transaction.getExtension());
         }
 
         return result;
@@ -552,7 +552,7 @@ public class TransTypeResolveService {
         result.put("fee", feeStr(transaction.getFee()));
         if (transaction.getFromAccount() != null) {
             result.put("fromAddress", transaction.getFromAccount());
-            result.put("citizen", transaction.getExtension());
+            result.put("miner", transaction.getExtension());
         }
 
         return result;
@@ -605,7 +605,7 @@ public class TransTypeResolveService {
     //TODO
 
     /**
-     * 调整citizen挖矿
+     * 调整miner挖矿
      *
      * @param json
      * @return

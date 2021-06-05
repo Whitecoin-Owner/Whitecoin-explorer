@@ -1,43 +1,130 @@
 <template>
   <div class="wrap">
-    <div class="top-line"></div>
-    <div class="background"></div>
-    <main>
-      <h2>
-        {{$t('transaction.title')}}
-      </h2>
-      <div class="total">
-        {{$t('transaction.txs_found_before')}}{{allTransactionTotal}} {{$t('transaction.txs_found_after')}}
+    <div class="tr_main">
+      <div class="con_top">
+        <p>{{$t('transaction.title')}}</p>
+        <Search class="search_con"/>
       </div>
-      <nav>
+      <div class="con_all">
+        <div class="all_title">
+          <li :class="{'active':traActive === 1}" @click="getTableData">{{$t('maxTitle.t1')}}</li>
+          <li :class="{'active':traActive === 2}" @click="tokenTableData">{{$t('maxTitle.t2')}}</li>
+        </div>
+        <div class="con_table" v-show="traActive === 1">
+          <all v-if="tips[0].show" :tableData="tableData"></all>
+          <transfer v-else-if="tips[1].show" :tableData="tableData"></transfer>
+          <withdraw v-else-if="tips[2].show" :tableData="tableData"></withdraw>
+          <recharge v-else-if="tips[3].show" :tableData="tableData"></recharge>
+          <contract v-else-if="tips[4].show" :tableData="tableData"></contract>
+          <wage v-else-if="tips[5].show" :tableData="tableData"></wage>
+          <acceptance v-else-if="tips[6].show" :tableData="tableData"></acceptance>
+          <mortgage v-else-if="tips[7].show" :tableData="tableData"></mortgage>
+          <foreclose v-else-if="tips[8].show" :tableData="tableData"></foreclose>
+          <other v-else-if="tips[9].show" :tableData="tableData"></other>
+          <el-pagination
+            class="pagination"
+            layout="prev, pager, next, jumper"
+            :current-page="page"
+            :page-size="size"
+            :total="total"
+            @current-change="pageChange">
+          </el-pagination> 
+        </div>
+        <div class="con_table" v-show="traActive === 2">
+          <el-table
+            :data="TokenTrxData"
+            width="100%"
+          >
+            <el-table-column
+              align="center"
+              :label="$t('home.transaction.txHash')"
+              width="180"
+            >
+              <template slot-scope="scope">
+                <router-link  class="yanse"  :to="'/transfer_details/'+scope.row.trxId+'/'+79">{{scope.row.trxId}}</router-link>
+              </template>
+            </el-table-column>
+            <el-table-column
+              align="center"
+              :label="$t('transaction.block')"
+              width="80"
+              >
+              <template slot-scope="scope">
+                <router-link  class="yanse"  :to="'/blockDetails/'+scope.row.blockNum">{{scope.row.blockNum}}</router-link>
+              </template>
+            </el-table-column>
+            <el-table-column
+              align="center"
+              :label="$t('transaction.age')"
+              
+            >
+              <template slot-scope="scope">
+                <div>
+                  <span>{{scope.row.trxTime}}</span>  
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column
+              align="center"
+              :label="$t('transaction.from')"
+              width="190"
+            >
+              <template slot-scope="scope">
+                <router-link :to="'/address?address='+scope.row.fromAccount"><span class="yanse" >{{scope.row.fromAccount !==null ? scope.row.fromAccount :'--'}}</span></router-link>
+              </template>
+            </el-table-column>
+            <el-table-column
+              align="center"
+              :label="$t('transaction.to')"
+              width="180"
+            >
+              <template slot-scope="scope">
+                <router-link :to="'/address?address='+scope.row.toAccount"><span class="yanse" >{{scope.row.toAccount !==null ? scope.row.toAccount :'--'}}</span></router-link>
+              </template>
+            </el-table-column>
+              <el-table-column
+                align="center"
+                prop="amountStr"
+                :label="$t('transaction.value')"
+                width="150"
+              >
+              </el-table-column>
+                <el-table-column
+                  align="center"
+                  :label="$t('transaction.fee')"
+                  
+                >
+                  <template slot-scope="scope">
+                    {{scope.row.feeStr}}
+                    <img v-if="scope.row.guaranteeUse" class="feeShow" src="../assets/img/shouxufei.png"/>
+                  </template>
+                </el-table-column>
+          </el-table>
+            <el-pagination
+            class="pagination"
+            layout="prev, pager, next, jumper"
+            :current-page="page1"
+            :page-size="size"
+            :total="total1"
+            @current-change="pageChange1">
+          </el-pagination> 
+        </div>
+        
+      </div>
+      
+      <!-- <nav>
         <div class="nav-item-wrap">
           <span v-for="item in tips" :key="item.name" class="normal" :class="{'choice':item.show}"
                 @click="tipChange(item)">{{item.name}}</span>
         </div>
-      </nav>
-      <all v-if="tips[0].show" :tableData="tableData"></all>
-      <transfer v-else-if="tips[1].show" :tableData="tableData"></transfer>
-      <withdraw v-else-if="tips[2].show" :tableData="tableData"></withdraw>
-      <recharge v-else-if="tips[3].show" :tableData="tableData"></recharge>
-      <contract v-else-if="tips[4].show" :tableData="tableData"></contract>
-      <wage v-else-if="tips[5].show" :tableData="tableData"></wage>
-      <acceptance v-else-if="tips[6].show" :tableData="tableData"></acceptance>
-      <mortgage v-else-if="tips[7].show" :tableData="tableData"></mortgage>
-      <foreclose v-else-if="tips[8].show" :tableData="tableData"></foreclose>
-      <other v-else-if="tips[9].show" :tableData="tableData"></other>
-      <el-pagination
-        class="pagination"
-        layout="prev, pager, next, jumper"
-        :current-page="page"
-        :page-size="size"
-        :total="total"
-        @current-change="pageChange">
-      </el-pagination>
-    </main>
+      </nav> -->
+      
+    </div>
   </div>
 </template>
 
 <script>
+  import Search from "../components/search/Search";
   import All from "../components/transactionTables/All";
   import Contract from "../components/transactionTables/Contract";
   import Wage from "../components/transactionTables/Wage";
@@ -48,6 +135,9 @@
   import Other from "../components/transactionTables/Other";
   import Mortgage from "../components/transactionTables/Mortgage";
   import Foreclose from "../components/transactionTables/Foreclose";
+  import dayjs from 'dayjs';
+  import bus from "../utils/bus";
+  import mixin from "../utils/mixin";
 
   export default {
     components: {
@@ -60,8 +150,10 @@
       Withdraw,
       Wage,
       Contract,
-      All
+      All,
+      Search
     },
+    mixins: [mixin],
     name: "transaction",
     beforeRouteUpdate(to, from, next) {
       if (to.query) {
@@ -75,7 +167,10 @@
         page: 1,
         size: 10,
         total: 0,
+        page1: 1,
+        total1: 0,
         allTransactionTotal: 0,
+        traActive:1,
         tips: [
           {
             name: this.$t('transaction.all'),
@@ -129,15 +224,12 @@
           }
         ],
         tableData: [],
-        txHash: null
+        TokenTrxData:[],
+        txHash: null,
+        isShow:false
       }
     },
-    created() {
-      if (this.$route.query.txHash) {
-        this.txHash = this.$route.query.txHash;
-      }
-      this.getTableData();
-    },
+    
     methods: {
       tipChange(item) {
         if (item.show) {
@@ -155,7 +247,13 @@
         this.page = page;
         this.getTableData();
       },
+      pageChange1(page) {
+        this.page1 = page;
+        this.tokenTableData();
+      },
       getTableData() {
+        this.traActive = 1;
+
         let that = this;
         let parentOpType = null;
         for (let i = 0; i < this.tips.length; i++) {
@@ -184,46 +282,102 @@
           page: this.page,
           rows: this.size
         }).then(function (res) {
-          that.tableData = res.data.data.rows;
-          that.total = res.data.data.total;
-          if (!parentOpType) {
-            that.allTransactionTotal = res.data.data.total;
+          if(res.data.retCode===200 && res.data.data !==null){
+            res.data.data.rows.forEach(item=>{
+              item.trxTime = dayjs(item.trxTime).format('YYYY-MM-DD HH:mm:ss');
+              item.amountStr = item.amountStr !==null ? item.amountStr : 0
+            })
+            that.tableData = res.data.data.rows;
+            console.log(res.data.data.rows,'0000')
+            that.total = res.data.data.total;
+            if (!parentOpType) {
+              that.allTransactionTotal = res.data.data.total;
+            }
           }
         });
-      }
-    }
+      },
+      tokenTableData(){
+        this.traActive = 2;
+        // 我的代币交易
+        let that = this;
+        this.$axios.post('queryTokenTrx', {
+          page: this.page1,
+          rows: this.size
+        }).then(function (res) {
+          if(res.data.retCode===200 && res.data.data !==null){
+            res.data.data.rows.forEach(item=>{
+              item.trxTime = dayjs(item.trxTime).format('YYYY-MM-DD HH:mm:ss');
+              item.amountStr = item.amountStr !==null ? item.amountStr : 0
+            })
+            console.log(res.data.data.rows,'9999')
+            that.TokenTrxData = res.data.data.rows;
+            that.total1 = res.data.data.total;
+          }
+        });
+      },
+      traChange(index) {
+        this.traActive = index;
+      },
+    },
+    created() {
+      bus.navChoice = 2;
+      this.getTableData();
+    },
   }
 </script>
 
 <style lang="less" scoped>
   .wrap {
-    .top-line {
-      height: 1px;
-    }
-    .background {
-      width: 100%;
-      height: 338px;
-      position: absolute;
-      top: 0;
-      left: 0;
-      background: white;
-    }
-    main {
-      width: 77%;
-      min-width: 1160px;
-      margin: 120px auto;
+    .tr_main {
+      width: 1140px;
+      margin: 0 auto;
       position: relative;
-      color: black;;
-      .search {
-        position: absolute;
-        right: 0;
-        top: 0;
+      color: black;
+      .con_top{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 30px;
+        p{
+          font-size: 22px;
+          color: #333333;
+          font-weight: 600;
+        }
       }
-      h2 {
-        font-size: 36px;
-      }
-      .total {
-        margin: 10px 0 15px;
+      .con_all{
+        background: #fff;
+        box-shadow: 0px 2px 13px 0px rgba(0, 0, 0, 0.09);
+        margin: 30px 0;
+        padding-bottom: 30px;
+        .all_title{
+          display: flex;
+          align-items: center;
+          border-bottom:1px solid #EEEEEE;
+          line-height: 30px;
+          padding:10px 0 0 30px;
+          margin-bottom: 30px;
+          color: #333333;
+          li{
+            list-style: none;
+            padding: 12px 0;
+            border-bottom:2px solid #fff;
+            margin-right: 60px;
+          }
+          li:hover{
+            border-bottom:2px solid #735DFF;
+            cursor: pointer;
+          }
+          .active{
+            border-bottom:2px solid #735DFF;
+            color: #333333;
+            font-weight: bold;
+          }
+        }
+        .con_table{
+          margin: 0 30px;
+          box-sizing: border-box;
+          padding-bottom: 30px;
+        }
       }
       .pagination {
         text-align: center;
@@ -273,4 +427,5 @@
       }
     }
   }
+
 </style>

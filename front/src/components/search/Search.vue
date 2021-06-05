@@ -1,6 +1,6 @@
 <template>
   <div class="wrap">
-    <input :placeholder="$t('search.placeholder')" v-model="keyWord" @keyup.enter="search" />
+    <el-input placeholder="Search by Address/TxHash/Contract/Height/Account Name" v-model="keyWord" @keyup.enter="search" />
     <span class="search-btn" @click="search">
       <i v-if="false" class="iconfont icon-sousuo"></i>
     </span>
@@ -18,6 +18,7 @@ export default {
   methods: {
     search() {
       this.keyWord = this.keyWord.trim(); //去首尾空格
+      console.log(this.keyWord)
       let that = this;
       let regS = /(^\s+)|(\s+$)|\s+/g;
       let reg = /^[0-9]+[0-9]*$/;
@@ -42,7 +43,7 @@ export default {
             let data = res.data.data;
             if (data.total > 0) {
               that.$router.push({
-                path: "/transaction",
+                path:  `/transfer_details/${that.keyWord}/0`,
                 query: { txHash: that.keyWord }
               });
             } else {
@@ -102,29 +103,31 @@ export default {
 
 <style lang="less" scoped>
 .wrap {
-  width: 474px;
-  height: 30px;
+  width: 690px;
+  height: 52px;
   position: relative;
-  @media screen and (max-width: 1400px) {
-    width: 400px;
+  @media screen and (max-width: 900px) {
+    width: 100%;
   }
   input {
-    width: calc(~"100% - 40px");
-    height: 100%;
-    position: absolute;
-    line-height: 30px;
+    width:100%;
+    line-height: 52px;
     box-sizing: border-box;
-    background: rgba(11, 14, 46, 1);
+    background: #fff;
     // border-bottom: 2px solid white;
-    color: white;
+    color:#333333;
     outline: none;
-    left: 10px;
-    top: 0;
-    border-radius: 15px;
-    text-indent: 15px;
+    border-radius: 6px;
+    padding-left: 15px;
+    font-size: 20px;
+    border: 1px solid #735DFF;
     &::placeholder {
-      color: white;
-      font-size: 13px;
+      color: #677897;
+      font-size: 20px;
+      line-height:45px;
+    }
+    &::-webkit-input-placeholder{
+      line-height:45px;
     }
   }
 
@@ -134,27 +137,17 @@ export default {
     right: 0;
     top: 0;
     /*width: 60px;*/
-    height: 30px;
-    line-height: 30px;
     text-align: center;
     color: black;
     cursor: pointer;
     .iconfont {
       font-size: 24px;
     }
-    width: 43px;
-    height: 32px;
-    // background: rgba(76, 93, 143, 1);
-    background: #4C5D8F;
-    border-radius: 0px 16px 16px 0px;
-    color: white;
-    right: 33px;
-    background-image: url(/static/img/browser_search_ico.png);
-    opacity: 0.5;
-    background-repeat: no-repeat;
-        background-size: 20px;
-        background-position-y: center;
-    background-position-x: center;
+    width: 54px;
+    height: 54px;
+    background: url(../../assets/img/search_ico.png) no-repeat;
+    background-size: 100%;
   }
 }
 </style>
+

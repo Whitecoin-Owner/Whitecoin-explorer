@@ -29,6 +29,8 @@ public class BlBlock {
 
     private Long amount;
 
+    private Long seconds;
+
     private BigDecimal fee;
 
     private BigDecimal reward;
@@ -45,7 +47,15 @@ public class BlBlock {
     private Integer transactions;
     private BigDecimal countRewards;
     private String rewards;
-    
+
+    public Long getSeconds() {
+        return seconds;
+    }
+
+    public void setSeconds(Long seconds) {
+        this.seconds = seconds;
+    }
+
     public BigDecimal getCountRewards() {
 		return countRewards;
 	}

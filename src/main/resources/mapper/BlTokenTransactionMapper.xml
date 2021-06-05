@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.browser.dao.mapper.BlTokenTransactionMapper">
+    <resultMap id="BaseResultMap" type="com.browser.dao.entity.BlTokenTransaction">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="trx_id" property="trxId" jdbcType="VARCHAR"/>
+        <result column="block_id" property="blockId" jdbcType="VARCHAR"/>
+        <result column="block_num" property="blockNum" jdbcType="INTEGER"/>
+        <result column="from_account" property="fromAccount" jdbcType="VARCHAR"/>
+        <result column="to_account" property="toAccount" jdbcType="VARCHAR"/>
+        <result column="symbol" property="symbol" jdbcType="VARCHAR"/>
+        <result column="amount" property="amount" jdbcType="BIGINT"/>
+        <result column="fee" property="fee" jdbcType="BIGINT"/>
+        <result column="trx_time" property="trxTime" jdbcType="TIMESTAMP"/>
+        <result column="contract_id" property="contractId" jdbcType="VARCHAR"/>
+        <result column="memo" property="memo" jdbcType="VARCHAR"/>
+        <result column="event_seq" property="eventSeq" jdbcType="INTEGER"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, trx_id, block_id, block_num, from_account, to_account, `symbol`, amount, `fee`, trx_time, contract_id, memo, event_seq
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from bl_token_transaction
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <select id="selectAllByCond" resultMap="BaseResultMap" parameterType="com.browser.dao.entity.BlTokenTransaction">
+        select
+        <include refid="Base_Column_List"/>
+        from bl_token_transaction
+        where 1 = 1
+        <trim suffixOverrides=",">
+            <if test="trxId!=null">
+                and trx_id = #{trxId,jdbcType=VARCHAR}
+            </if>
+            <if test="blockId!=null">
+                and block_id = #{blockId,jdbcType=VARCHAR}
+            </if>
+            <if test="blockNum!=null">
+                and `block_num` = #{blockNum,jdbcType=INTEGER}
+            </if>
+            <if test="fromAccount!=null">
+                and from_account = #{fromAccount,jdbcType=VARCHAR}
+            </if>
+            <if test="toAccount !=null">
+                and to_account = #{toAccount,jdbcType=VARCHAR}
+            </if>
+            <if test="symbol!=null">
+                and `symbol` = #{symbol,jdbcType=VARCHAR}
+            </if>
+            <if test="amount!=null">
+                and `amount` = #{amount,jdbcType=BIGINT}
+            </if>
+            <if test="fee!=null">
+                and `fee` = #{fee,jdbcType=BIGINT}
+            </if>
+            <if test="trxTime!=null">
+                and `trx_time` = #{trxTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="contractId!=null">
+                and `contract_id` = #{contractId,jdbcType=VARCHAR}
+            </if>
+            <if test="memo!=null">
+                and `memo` = #{memo,jdbcType=VARCHAR}
+            </if>
+            <if test="eventSeq!=null">
+                and `event_seq` = #{eventSeq,jdbcType=INTEGER}
+            </if>
+        </trim>
+        order by id desc
+    </select>
+
+    <select id="selectListByUserAddress" resultMap="BaseResultMap" parameterType="com.browser.dao.entity.BlTokenTransaction">
+        select
+        <include refid="Base_Column_List"/>
+        from bl_token_transaction
+        where ( from_account = #{address,jdbcType=VARCHAR} or to_account = #{address,jdbcType=VARCHAR} )
+        <!--order by id desc-->
+    </select>
+
+    <select id="selectTrxList" resultMap="BaseResultMap" parameterType="com.browser.dao.entity.BlTokenTransaction">
+        select
+        <include refid="Base_Column_List"/>
+        from bl_token_transaction
+        order by id desc
+    </select>
+
+    <insert id="insert" parameterType="com.browser.dao.entity.BlTokenTransaction">
+    insert into bl_token_transaction (trx_id, block_id, block_num, from_account, to_account, `symbol`, amount, `fee`, trx_time, contract_id, memo, event_seq)
+    values (#{trxId,jdbcType=VARCHAR}, #{blockId,jdbcType=VARCHAR},
+     #{blockNum, jdbcType=INTEGER}, #{fromAccount,jdbcType=VARCHAR}, #{toAccount,jdbcType=VARCHAR}, #{symbol,jdbcType=VARCHAR},
+     #{amount,jdbcType=BIGINT}, #{fee,jdbcType=BIGINT}, #{trxTime,jdbcType=TIMESTAMP},
+      #{contractId,jdbcType=VARCHAR}, #{memo,jdbcType=VARCHAR}, #{eventSeq,jdbcType=INTEGER}
+     )
+  </insert>
+</mapper>

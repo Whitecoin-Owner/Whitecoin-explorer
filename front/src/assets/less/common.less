@@ -1,3 +1,6 @@
+li{
+  list-style-type: none;
+}
 .common_input {
   outline: none;
   border-bottom: 1px solid #4181FF;
@@ -16,7 +19,8 @@
 .right {
   float: right;
 }
-.operation-details {
+
+.tokenTransfers {
   header {
     color: white;;
     height: 40px;
@@ -63,6 +67,54 @@
     }
   }
 }
+
+.operation-details {
+  header {
+    color: white;;
+    height: 40px;
+    background: #132241;
+    line-height: 40px;
+    padding-left: 15px;
+    font-weight: 500;
+  }
+  .con {
+    ul {
+      li {
+        padding:15px 30px;
+        font-size: 14px;
+        border-bottom: 1px solid #fcfcfc;
+        &:last-of-type {
+          border-bottom: none;
+        }
+        span {
+          display: inline-block;
+          text-align: center;
+        }
+        .border {
+          box-sizing: border-box;
+          width: 846px;
+          min-height: 25px;
+          display: inline-block;
+          text-align: left;
+          padding: 5px;
+          .el-textarea__inner {
+            border: 1px solid #e5e5e5;
+          }
+        }
+        .name {
+          width: 160px;
+          text-align: left;
+          .el-icon-back {
+            transform: rotate(180deg);
+          }
+        }
+        .top {
+          vertical-align: top;
+        }
+      }
+    }
+  }
+}
 .events {
   border: 1px solid #e5e5e5;
   margin-top: 25px;
@@ -78,4 +130,170 @@
 .link:hover {
   color: #5586ED;
   cursor: pointer;
+}
+
+// elementui  公共样式修改
+
+.el-table__body, .el-table__footer, .el-table__header{
+  width: 100%;
+}
+.table-wrap .el-table thead tr th,.el-table th{
+background: #735DFF;
+line-height: 63px;
+font-weight: normal;
+font-size: 18px;
+}
+.table-wrap .el-table tr{
+border-bottom:1px solid #eeeeee !important
+}
+.el-table .cell{
+padding: 10px 0 15px 15px;
+border: 0;
+  .yanse{
+    color: #0279FF;
+    cursor: pointer;
+    &:hover{
+      color: #333;
+    }
+  }
+}
+.table-wrap .el-table td, .table-wrap .el-table th.is-leaf {
+border-bottom:1px solid #EEEEEE;
+}
+.table-wrap .el-table tr:hover td{
+background: none;
+}
+.el-pager li{
+border-radius: 3px;
+border: 1px solid #C6C6C6;
+margin:0 4px;
+color: #C6C6C6;
+}
+.el-pager li.active,.el-pager li:hover{
+color: #fff;
+background: #735DFF;
+border-radius: 3px;
+border: 1px solid #735DFF;
+}
+.el-pagination .btn-next,.el-pagination .btn-prev{
+border: 1px solid #C6C6C6; 
+color: #C6C6C6; 
+}
+.el-pagination .btn-next:hover,.el-pagination .btn-prev:hover{
+  background: #735DFF;
+  color: #fff;
+  }
+.el-pager .number{
+color: #677897;
+}
+
+.el-pagination__jump{
+border-bottom:0
+}
+.el-pagination__editor.el-input .el-input__inner{
+border: 1px solid #C6C6C6;
+color: #677897;
+font-size: 14px;
+}
+.el-pager li.btn-quicknext{
+color: #677897;
+}
+
+.el-pager li.active+li{
+  border: 1px solid #C6C6C6 !important
+}
+.el-pager li.btn-quickprev{
+  color: #677897;
+}
+.el-table{
+  color: #333;
+}
+.el-table th.is-leaf{
+  background:#735DFF ;
+  color: #fff;
+}
+.el-input.el-input--medium {
+  background: #fff;
+  line-height: 52px;
+  border: 1px solid #735DFF;
+  box-sizing: border-box;
+  border-radius: 8px;
+}
+.el-input.el-input--medium.el-input--suffix{
+  border: 0;
+}
+.el-input__inner{
+  color: #333333;
+  font-weight: normal;
+  &::placeholder {
+    color: #677897;
+    font-weight: normal;
+  }
+}
+.el-select .el-input.is-focus .el-input__inner{
+  border-color: #fff;
+}
+.el-popper[x-placement^=bottom] .popper__arrow{
+  left: 45% !important;
+}
+.el-popper[x-placement^=bottom]{
+  margin-top: 0;
+}
+.el-input.el-input--medium.el-pagination__editor.is-in-pagination{
+  line-height: 0;
+  border:0
+}
+.operation-details header{
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  background: #735DFF;
+  height: 63px;
+  line-height: 63px;
+}
+.operation-details header{
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  background: #735DFF;
+  height: 63px;
+  line-height: 63px;
+}
+.el-table{
+  border: 1px solid #B8C8DA;
+  border-radius: 10px;
+}
+
+.el-pagination__total{
+  font-size: 26rem !important;
+  min-width: 80rem !important;
+  height: 50rem !important; 
+  line-height: 50rem !important;
+  border:0;
+  border-radius: 8rem;
+  margin-right:0;
+  padding: 0 10rem !important;
+  color: #737D92;
+  background: #E3DEFF;
+}
+
+.el-select-dropdown__wrap{
+  max-height: 274rem !important;
+}
+
+
+.el-notification{
+  width: 330rem;
+}
+.el-notification.right{
+  right: 26%;
+  top: 3% !important;
+}
+.el-notification__content{
+  font-size: 28rem;
+  text-align: unset;
+  line-height: 28rem;
+}
+.el-notification__icon{
+  width: 28rem;
+  font-size: 28rem;
+  margin-top: 4rem;
 }

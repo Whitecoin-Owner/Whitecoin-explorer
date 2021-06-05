@@ -1,11 +1,11 @@
 <template>
   <div class="operation-details">
-    <template v-for="item in detail">
-      <header>
+    <template v-for="(item,index) in detail">
+      <header  :key="index">
         <!--{{$t('transferDetails.details.transfer')}}-->
         {{getTypeName(type)}}
       </header>
-      <div class="con">
+      <div class="con"  :key="index">
         <ul>
           <li class="value">
                 <span class="name">
@@ -16,7 +16,7 @@
                 </span>
           </li>
           <li class="record">
-            <section>
+            <div class="re_section">
               <div class="name">
                 {{$t('transferDetails.details.from')}}
               </div>
@@ -24,12 +24,12 @@
                 <span class="link" @click="_mixin_address_jump(item.fromAddress)">{{item.fromAddress}}</span>
               </div>
               <div class="mid">
-                To
+                {{$t('transferDetails.details.to')}}
               </div>
               <div class="from-to">
                 <span class="link" @click="_mixin_address_jump(item.toAddress)">{{item.toAddress}}</span>
               </div>
-            </section>
+            </div>
           </li>
           <li>
             <span class="name">

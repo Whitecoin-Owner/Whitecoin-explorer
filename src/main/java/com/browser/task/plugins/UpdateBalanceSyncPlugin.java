@@ -19,6 +19,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ForkJoinPool;
 
 /**
  * 找到可能导致地址余额变动的交易并相应更新用户资产余额
@@ -27,6 +29,7 @@ import java.util.Set;
 public class UpdateBalanceSyncPlugin implements ISyncPlugin {
 
     private static Logger logger = LoggerFactory.getLogger(UpdateBalanceSyncPlugin.class);
+    public static ForkJoinPool forkJoinPool = new ForkJoinPool(30);
 
     @Autowired
     private RequestWalletService requestWalletService;
@@ -165,13 +168,28 @@ public class UpdateBalanceSyncPlugin implements ISyncPlugin {
                 return;
             }
         }
+
+        CountDownLatch countDownLatch = new CountDownLatch(addrs.size());
         // update addresses balances to db
         for(String addr : addrs) {
-            try {
-                updateAddrCoinToDb(addr, assetId);
-            } catch (Exception e) {
-                logger.error("update addr " + addr + " balances error", e);
-            }
+            String finalAssetId = assetId;
+            forkJoinPool.submit(() -> {
+                try {
+                    updateAddrCoinToDb(addr, finalAssetId);
+                } catch (Exception e) {
+                    logger.error("update addr " + addr + " balances error", e);
+                } finally {
+                    countDownLatch.countDown();
+                }
+            });
+        }
+
+
+        try {
+            countDownLatch.await();
+        } catch (InterruptedException e) {
+            logger.error("scan deposit await error", e);
         }
     }
 }
+

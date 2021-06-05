@@ -16,6 +16,7 @@
 			jdbcType="VARCHAR" />
 		<result column="symbol" property="symbol" jdbcType="VARCHAR" />
 		<result column="asset_id" property="assetId" jdbcType="VARCHAR" />
+		<result column="event_arg" property="eventArg" jdbcType="VARCHAR" />
 		<result column="amount" property="amount" jdbcType="DECIMAL" />
 		<result column="fee" property="fee" jdbcType="DECIMAL" />
 		<result column="trx_time" property="trxTime"
@@ -52,7 +53,7 @@
 		symbol,asset_id, amount, fee,
 		trx_time, extra_trx_id,guarantee_id, op_type, parent_op_type, gas_limit, gas_cost, gas_price,
 		contract_id,
-		created_time, called_abi, abi_params,memo,extension,extension1
+		created_time, called_abi, abi_params,memo,extension,extension1, `fail`
 	</sql>
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
 		parameterType="java.lang.Integer">
@@ -69,7 +70,7 @@
 		from bl_transaction
 		where 1=1
 		<if test="trxId != null">
-			and trx_id =#{trxId,jdbcType=INTEGER}
+			and trx_id =#{trxId,jdbcType=VARCHAR}
 		</if>
 		<if test="opType != null">
 			and op_type =#{opType,jdbcType=INTEGER}
@@ -88,7 +89,9 @@
 		from bl_transaction
 		where
 		trx_id = #{trxId,jdbcType=VARCHAR}
-		and op_type =#{opType,jdbcType=INTEGER}
+		<if test="opType != null">
+			and op_type =#{opType,jdbcType=INTEGER}
+		</if>
 	</select>
 	
 	<!-- 根据区块高度查询区块交易信息 -->
@@ -105,6 +108,24 @@
 		SELECT
 		<include refid="Base_Column_List" />
 		FROM bl_transaction a ORDER BY a.id DESC LIMIT 0,10
+	</select>
+
+	<select id="getTranListByOldContractAddressAndOldToAddr" parameterType="com.browser.model.DaiTranRequest" resultMap="BaseResultMap">
+		SELECT
+		bt.id, bt.trx_id, bt.block_id, bt.block_num, bt.from_account, bt.to_account, bt.miner_address,
+		bt.symbol, bt.asset_id, bt.amount, bt.fee,
+		bt.trx_time, bt.extra_trx_id, bt.guarantee_id, bt.op_type, bt.parent_op_type, bt.gas_limit, bt.gas_cost, bt.gas_price,
+		bt.contract_id,
+		bt.created_time, bt.called_abi, bt.abi_params, bt.memo, bt.extension, bt.extension1, bt.`fail`,
+		bte.event_arg
+		FROM bl_transaction bt LEFT JOIN bl_tx_events bte ON bt.trx_id = bte.trx_id AND bte.contract_address = bt.contract_id
+		<where>
+			<bind name="toAddrBind" value="'%' + walletAddress + '%'" />
+			bte.event_arg LIKE #{toAddrBind,jdbcType=VARCHAR}
+			AND bt.contract_id = #{contractAddress,jdbcType=VARCHAR}
+			AND bt.block_num BETWEEN #{beginBlockNum} AND #{endBlockNum}
+<!--			AND bt.block_num =  #{blockNum}-->
+		</where>
 	</select>
 
 	<!-- 查询矿工交易信息 -->
@@ -299,7 +320,7 @@
 		trx_time, extra_trx_id, guarantee_id,
 		op_type, parent_op_type, gas_limit, gas_cost,
 		gas_price, contract_id, created_time,
-		called_abi, abi_params, memo,extension,extension1
+		called_abi, abi_params, memo,extension,extension1, `fail`
 		)
 		values (#{id,jdbcType=INTEGER}, #{trxId,jdbcType=VARCHAR},
 		#{blockId,jdbcType=VARCHAR},
@@ -312,8 +333,9 @@
 		#{gasCost,jdbcType=INTEGER},
 		#{gasPrice,jdbcType=DECIMAL}, #{contractId,jdbcType=VARCHAR}, #{createdTime,jdbcType=TIMESTAMP},
 		#{calledAbi,jdbcType=VARCHAR}, #{abiParams,jdbcType=VARCHAR},#{memo,jdbcType=VARCHAR},
-		#{extension,jdbcType=VARCHAR},#{extension1,jdbcType=INTEGER}
+		#{extension,jdbcType=VARCHAR},#{extension1,jdbcType=INTEGER}, #{fail,jdbcType=INTEGER}
 		)
+		ON DUPLICATE KEY UPDATE created_time = CURRENT_TIMESTAMP
 	</insert>
 	<insert id="insertBatch" parameterType="java.util.List">
 		insert into bl_transaction (id, trx_id, block_id,
@@ -322,7 +344,7 @@
 		trx_time, extra_trx_id,guarantee_id,
 		op_type, parent_op_type, gas_limit, gas_cost,
 		gas_price, contract_id, created_time,
-		called_abi, abi_params,memo, extension,extension1
+		called_abi, abi_params,memo, extension,extension1, `fail`
 		)
 		values
 		<foreach collection="list" item="item" index="index"
@@ -343,9 +365,11 @@
 			#{item.abiParams,jdbcType=VARCHAR},
 			#{item.memo,jdbcType=VARCHAR},
 			#{item.extension,jdbcType=VARCHAR},
-			#{item.extension1,jdbcType=INTEGER}
+			#{item.extension1,jdbcType=INTEGER},
+			#{item.fail,jdbcType=INTEGER}
 			)
 		</foreach>
+		ON DUPLICATE KEY UPDATE created_time = CURRENT_TIMESTAMP
 	</insert>
 	<insert id="insertSelective"
 		parameterType="com.browser.dao.entity.BlTransaction">
@@ -429,6 +453,9 @@
 			<if test="extension1 != null">
 				extension1,
 			</if>
+			<if test="fail != null">
+				`fail`,
+			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="id != null">
@@ -509,7 +536,11 @@
 			<if test="extension1 != null">
 				#{extension1,jdbcType=INTEGER},
 			</if>
+			<if test="fail != null">
+				#{fail,jdbcType=INTEGER},
+			</if>
 		</trim>
+		ON DUPLICATE KEY UPDATE created_time = CURRENT_TIMESTAMP
 	</insert>
 	<update id="updateByPrimaryKeySelective"
 		parameterType="com.browser.dao.entity.BlTransaction">
@@ -590,6 +621,9 @@
 			<if test="extension1 != null">
 				extension1 = #{extension1,jdbcType=INTEGER},
 			</if>
+			<if test="fail != null">
+				`fail` = #{fail,jdbcType=INTEGER},
+			</if>
 		</set>
 		where id = #{id,jdbcType=INTEGER}
 	</update>
@@ -620,7 +654,8 @@
 		abi_params = #{abiParams,jdbcType=VARCHAR},
 		memo = #{memo,jdbcType=VARCHAR},
 		extension = #{extension,jdbcType=VARCHAR},
-		extension1 = #{extension1,jdbcType=INTEGER}
+		extension1 = #{extension1,jdbcType=INTEGER},
+		`fail` = #{fail,jdbcType=INTEGER}
 		where id = #{id,jdbcType=INTEGER}
 	</update>
 </mapper>

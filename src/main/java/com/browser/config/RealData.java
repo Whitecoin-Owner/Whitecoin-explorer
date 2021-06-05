@@ -9,8 +9,7 @@ import java.util.TreeSet;
 
 import com.browser.dao.entity.BlStatis;
 import com.browser.service.StatisService;
-import jdk.nashorn.internal.scripts.JS;
-import net.sf.json.JSON;
+
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,7 +23,7 @@ import com.browser.dao.entity.BlContractInfo;
 import com.browser.dao.mapper.BlAssetMapper;
 import com.browser.service.impl.RedisService;
 import com.browser.service.impl.RequestWalletService;
-import com.browser.tools.Constant;
+
 
 /**
  * 页面轮询请求的实施数据

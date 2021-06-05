@@ -34,7 +34,7 @@ CREATE TABLE `bl_block` (
   `created_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`block_num`),
   KEY `blockTime` (`block_time`) USING BTREE,
-  KEY `block_block_num` (`block_num`) USING BTREE,
+  UNIQUE KEY `block_block_num` (`block_num`) USING BTREE,
   KEY `miner_address` (`miner_address`) USING BTREE,
   KEY `reward` (`reward`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='区块链block表';
@@ -206,7 +206,7 @@ CREATE TABLE `bl_transaction` (
   KEY `trx_contract` (`from_account`,`op_type`,`contract_id`) USING BTREE,
   KEY `trx_from` (`from_account`) USING BTREE,
   KEY `trx_to` (`to_account`) USING BTREE,
-  KEY `trx_id` (`trx_id`),
+  UNIQUE KEY `trx_id` (`trx_id`),
   KEY `op_type` (`op_type`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='区块链交易表';
 

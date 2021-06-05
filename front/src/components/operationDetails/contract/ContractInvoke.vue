@@ -136,15 +136,14 @@
 <style lang="less" scoped>
 .operation-details {
   .text_area {
-    margin-bottom: 15px;
-    border: 1px solid #e5e5e5;
+    border-top: 1px solid #e5e5e5;
     ul li {
       border: none;
       span {
         text-align: left;
         display: inline-block;
         &:first-of-type {
-          width: 250px;
+          width:160px;
         }
       }
     }

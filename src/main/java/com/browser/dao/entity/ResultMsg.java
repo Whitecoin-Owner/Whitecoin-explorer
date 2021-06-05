@@ -1,37 +1,35 @@
 package com.browser.dao.entity;
 
 /**
- * Created by mayakui on 2018/2/24 0024.
- * 返回前台的统一实体
  */
 public class ResultMsg {
 
-    //成功
+    // success
     public static final int HTTP_OK = 200;
 
-    //服务异常
+    // server error
     public static final int HTTP_ERROR = 500;
 
-    //登陆失效
+    // login fail
     public static final int HTTP_REQUEST_VALID = 400;
 
-    //参数等校验失败
+    // params invalid
     public static final int HTTP_CHECK_VALID = 300;
 
     /**
-     * 错误码
+     * error code
      */
     private int retCode;
 
     /**
-     * 错误信息
+     * error message
      */
     private String retMsg;
 
     private int version;
 
     /**
-     * 返回数据
+     * result data
      */
     private Object data;
 

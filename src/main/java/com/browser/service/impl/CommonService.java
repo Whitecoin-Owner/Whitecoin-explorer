@@ -59,7 +59,12 @@ public class CommonService {
             Set<BlContractInfo> contractInfoSet = realData.getRegisterContractInfo();
             if (contractInfoSet != null) {
                 for (BlContractInfo register : contractInfoSet) {
-                    blContractInfoMapper.insert(register);
+                    if(register==null) {
+                        continue;
+                    }
+                    if(blContractInfoMapper.selectByPrimaryKey(register.getContractId()) == null) {
+                        blContractInfoMapper.insert(register);
+                    }
                 }
             }
 

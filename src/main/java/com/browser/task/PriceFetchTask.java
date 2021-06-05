@@ -49,22 +49,22 @@ public class PriceFetchTask {
         }
     }
 
-    @Scheduled(cron = "0 * * * * ? ")
-    public void fetchCoinPrice() {
-        log.info("start fetchCoinPrice");
-        try {
-            PriceInfo xwcUsdtPriceInfo = fetchXwcPrice("XWC", "USDT");
-            if(xwcUsdtPriceInfo != null) {
-                redisService.putMainCoinUsdtPrice(xwcUsdtPriceInfo);
-            }
-            PriceInfo xwcBtcPriceInfo = fetchXwcPrice("XWC", "BTC");
-            if(xwcBtcPriceInfo != null) {
-                redisService.putMainCoinBtcPrice(xwcBtcPriceInfo);
-            }
-        } catch (Exception e) {
-            log.error("fetchCoinPrice error", e);
-        } finally {
-            log.info("end fetchCoinPrice");
-        }
-    }
+//    @Scheduled(cron = "0 * * * * ? ")
+//    public void fetchCoinPrice() {
+//        log.info("start fetchCoinPrice");
+//        try {
+//            PriceInfo xwcUsdtPriceInfo = fetchXwcPrice("XWC", "USDT");
+//            if(xwcUsdtPriceInfo != null) {
+//                redisService.putMainCoinUsdtPrice(xwcUsdtPriceInfo);
+//            }
+//            PriceInfo xwcBtcPriceInfo = fetchXwcPrice("XWC", "BTC");
+//            if(xwcBtcPriceInfo != null) {
+//                redisService.putMainCoinBtcPrice(xwcBtcPriceInfo);
+//            }
+//        } catch (Exception e) {
+//            log.error("fetchCoinPrice error", e);
+//        } finally {
+//            log.info("end fetchCoinPrice");
+//        }
+//    }
 }

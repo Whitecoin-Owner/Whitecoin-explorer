@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.browser.dao.mapper.BlTokenBalanceMapper" >
+    <resultMap id="BaseResultMap" type="com.browser.dao.entity.BlTokenBalance" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="addr" property="addr" jdbcType="VARCHAR" />
+        <result column="amount" property="amount" jdbcType="DECIMAL" />
+        <result column="token_contract" property="tokenContract" jdbcType="VARCHAR" />
+        <result column="token_symbol" property="tokenSymbol" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+    id, addr, amount, token_contract, token_symbol
+  </sql>
+    <select id="selectByAddrAndTokenContract" resultMap="BaseResultMap"  parameterType="com.browser.dao.entity.BlTokenBalance">
+        select
+        <include refid="Base_Column_List" />
+        from bl_token_balance
+        where addr = #{addr,jdbcType=VARCHAR} and token_contract = #{tokenContract,jdbcType=VARCHAR}
+        order by amount desc
+        limit 1
+    </select>
+    <select id="selectAllByAddr" resultMap="BaseResultMap"  parameterType="com.browser.dao.entity.BlTokenBalance">
+        select
+        <include refid="Base_Column_List" />
+        from bl_token_balance
+        where addr=#{addr,jdbcType=VARCHAR} and amount > 0
+        limit 1000
+    </select>
+    <select id="selectAllByTokenContract" resultMap="BaseResultMap"  parameterType="com.browser.dao.entity.BlTokenBalance">
+        select
+        <include refid="Base_Column_List" />
+        from bl_token_balance
+        where token_contract=#{tokenContract,jdbcType=VARCHAR} and amount > 0
+        order by amount desc
+        limit 1000
+    </select>
+    <select id="getBlTokenBalanceListByContractAddress" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from bl_token_balance
+        where token_contract=#{contractAddr,jdbcType=VARCHAR}
+        order by amount desc
+    </select>
+    <select id="getSumBalanceByTokenContract" resultMap="BaseResultMap" parameterType="com.browser.dao.entity.BlTokenBalance">
+        select
+        sum(amount) as amount
+        from bl_token_balance
+        where token_contract=#{tokenContract,jdbcType=VARCHAR} and amount > 0
+        order by amount desc
+    </select>
+    <select id="getAddressCountByContractIdAndTokenSymbol" resultType="int">
+        select
+        count(id)
+        from bl_token_balance
+        where token_contract=#{contractAddress,jdbcType=VARCHAR} and token_symbol=#{tokenSymbol,jdbcType=VARCHAR}
+    </select>
+
+    <insert id="insert" parameterType="com.browser.dao.entity.BlTokenBalance" >
+    insert into bl_token_balance (addr, amount, token_contract, token_symbol)
+    values (#{addr,jdbcType=VARCHAR}, #{amount,jdbcType=DECIMAL},
+     #{tokenContract,jdbcType=VARCHAR},#{tokenSymbol,jdbcType=VARCHAR})
+     ON DUPLICATE KEY UPDATE amount = #{amount,jdbcType=DECIMAL}
+  </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.browser.dao.entity.BlTokenBalance" >
+        update bl_token_balance
+        <set >
+            <if test="addr != null" >
+                addr = #{addr,jdbcType=VARCHAR},
+            </if>
+            <if test="amount != null" >
+                amount = #{amount,jdbcType=DECIMAL},
+            </if>
+            <if test="tokenContract != null" >
+                token_contract = #{tokenContract,jdbcType=VARCHAR},
+            </if>
+            <if test="tokenSymbol != null" >
+                `token_symbol` = #{tokenSymbol,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.browser.dao.entity.BlTokenBalance" >
+    update bl_token_balance
+    set addr = #{addr,jdbcType=VARCHAR},
+      amount = #{amount,jdbcType=DECIMAL},
+      token_contract = #{tokenContract,jdbcType=VARCHAR},
+      token_symbol = #{tokenSymbol,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

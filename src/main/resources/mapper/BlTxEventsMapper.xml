@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.browser.dao.mapper.BlTxEventsMapper">
+    <resultMap id="BaseResultMap" type="com.browser.dao.entity.BlTxEvents">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="trx_id" property="trxId" jdbcType="VARCHAR"/>
+        <result column="block_num" property="blockNum" jdbcType="INTEGER"/>
+        <result column="op_num" property="opNum" jdbcType="INTEGER"/>
+        <result column="caller_addr" property="callerAddr" jdbcType="VARCHAR"/>
+        <result column="contract_address" property="contractAddress" jdbcType="VARCHAR"/>
+        <result column="event_name" property="eventName" jdbcType="VARCHAR"/>
+        <result column="event_arg" property="eventArg" jdbcType="VARCHAR"/>
+        <result column="event_seq" property="eventSeq" jdbcType="INTEGER"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, trx_id, block_num, op_num, caller_addr, contract_address, event_name, event_arg, event_seq
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from bl_tx_events
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+
+    <select id="existsCloseCdcByCdcId" resultType="java.lang.Integer">
+        <bind name="eventArg" value="'%' + cdcId + '%'" />
+        select
+        1
+        from bl_tx_events
+        where event_arg LIKE #{eventArg} AND event_name ='CloseCdc'
+        UNION ALL
+        select
+        1
+        from bl_tx_events
+        where event_arg LIKE #{eventArg} AND event_name ='Liquidate'
+        limit 1
+    </select>
+
+    <select id="getDaiTxOpenCdcEventListByCondition" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bl_tx_events
+        where caller_addr = #{callerAddr,jdbcType=VARCHAR} AND contract_address = #{contractAddress,jdbcType=VARCHAR}
+        AND event_name = 'OpenCdc'
+    </select>
+
+    <select id="getDaiTxcEventListByCondition" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bl_tx_events
+        where caller_addr = #{callerAddr,jdbcType=VARCHAR} AND contract_address = #{contractAddress,jdbcType=VARCHAR}
+    </select>
+
+   <!-- <select id="getDaiTxEventListByCondition" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bl_tx_events
+        where caller_addr = #{callerAddr,jdbcType=VARCHAR} AND contract_address = #{contractAddress,jdbcType=VARCHAR}
+    </select>-->
+
+    <select id="getDaiTxLiquidateEventListByCondition" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bl_tx_events
+        <where>
+            contract_address = #{contractAddress,jdbcType=VARCHAR}
+            AND event_name = 'Liquidate'
+        </where>
+    </select>
+
+    <select id="getBlTxEventListByCdcIdNotExistOpenCdc" resultMap="BaseResultMap">
+        <bind name="eventArgBind" value="'%' + cdcId + '%'" />
+        select
+        <include refid="Base_Column_List"/>
+        from bl_tx_events
+        where event_arg LIKE #{eventArgBind}
+    </select>
+
+    <select id="getEventArgListByEventName" resultType="java.lang.String">
+        select
+        event_arg
+        from bl_tx_events
+        <where>
+            contract_address = #{contractAddress,jdbcType=VARCHAR}
+            <if test="eventName!=null and eventName !=''">
+                <bind name="eventNameBind" value="'%' + eventName + '%'" />
+                AND event_name LIKE #{eventNameBind,jdbcType=VARCHAR}
+            </if>
+        </where>
+        ORDER BY block_num DESC
+    </select>
+
+    <select id="selectAllByCond" resultMap="BaseResultMap" parameterType="com.browser.dao.entity.BlTxEvents">
+        select
+        <include refid="Base_Column_List"/>
+        from bl_tx_events
+        where 1 = 1
+        <trim suffixOverrides=",">
+           <if test="trxId!=null">
+               and trx_id = #{trxId,jdbcType=VARCHAR}
+           </if>
+            <if test="blockNum!=null">
+                and block_num = #{blockNum,jdbcType=INTEGER}
+            </if>
+            <if test="opNum!=null">
+                and op_num = #{opNum,jdbcType=INTEGER}
+            </if>
+            <if test="callerAddr!=null">
+                and call_addr = #{callerAddr,jdbcType=VARCHAR}
+            </if>
+            <if test="contractAddress !=null">
+                and contract_address = #{contractAddress,jdbcType=VARCHAR}
+            </if>
+            <if test="eventName!=null">
+                and event_name = #{eventName,jdbcType=VARCHAR}
+            </if>
+            <if test="eventArg!=null">
+                and event_arg = #{eventArg,jdbcType=VARCHAR}
+            </if>
+            <if test="eventSeq!=null">
+                and event_seq = #{eventSeq,jdbcType=INTEGER}
+            </if>
+        </trim>
+         order by id asc
+    </select>
+
+    <insert id="insert" parameterType="com.browser.dao.entity.BlTxEvents">
+    insert into bl_tx_events (trx_id, block_num,
+      op_num, caller_addr, contract_address, event_name, event_arg, event_seq)
+    values (#{trxId,jdbcType=VARCHAR}, #{blockNum,jdbcType=INTEGER}, #{opNum, jdbcType=INTEGER}, #{callerAddr,jdbcType=VARCHAR}, #{contractAddress,jdbcType=VARCHAR},
+    #{eventName,jdbcType=VARCHAR}, #{eventArg, jdbcType=VARCHAR}, #{eventSeq, jdbcType=INTEGER}
+     )
+  </insert>
+
+    <select id="queryAllSiteInfo" resultType="com.alibaba.fastjson.JSONObject">
+        SELECT
+            #开仓XWC数量
+            sum(CASE event_name when 'OpenCdc' then json_extract_c(event_arg,"$.collateralAmount") else 0 END) 'openCdcXWCAmount',
+            #开仓XUSD数量
+            sum(CASE event_name when 'OpenCdc' then json_extract_c(event_arg,"$.stableTokenAmount") else 0 END) 'openCdcXUSDAmount',
+            #抵押XWC数量
+            sum(CASE event_name when 'AddCollateral' then json_extract_c(event_arg,"$.addAmount") else 0 END) 'addCollateralAmount',
+            #提现XWC数量
+            sum(CASE event_name when 'WidrawCollateral' then json_extract_c(event_arg,"$.widrawCollateralAmount") else 0 END) 'widrawCollateralAmount',
+            #移仓XWC数量
+            sum(CASE event_name when 'CloseCdc' then json_extract_c(event_arg,"$.collateralAmount") else 0 END) 'closeCdcXWCAmount',
+            #移仓XUSD数量
+            sum(CASE event_name when 'CloseCdc' then json_extract_c(event_arg,"$.stableTokenAmount") else 0 END) 'closeCdcXUSDAmount',
+            #清算XWC数量
+            sum(CASE event_name when 'Liquidate' then json_extract_c(event_arg,"$.collateralAmount") else 0 END) 'liquidateXWCAmount',
+            #清算XUSD数量
+            sum(CASE event_name when 'Liquidate' then json_extract_c(event_arg,"$.stableTokenAmount") else 0 END) 'liquidateXUSEAmount',
+            #借贷XUSD数量
+            sum(CASE event_name when 'ExpandLoan' then json_extract_c(event_arg,"$.expandLoanAmount") else 0 END) 'expandLoanAmount',
+            #返还XUSD数量
+            sum(CASE event_name when 'PayBack' then json_extract_c(event_arg,"$.realPayBackAmount") else 0 END) 'realPayBackAmount',
+            #清算罚金
+            sum(CASE event_name when 'Liquidate' then json_extract_c(event_arg,"$.penaltyAmount") else 0 END) 'penaltyAmount'
+        FROM bl_tx_events;
+    </select>
+</mapper>

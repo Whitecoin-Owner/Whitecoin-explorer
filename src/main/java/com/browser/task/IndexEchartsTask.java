@@ -1,18 +1,12 @@
 package com.browser.task;
 
-import com.alibaba.fastjson.JSONArray;
-import com.browser.config.RealData;
-import com.browser.dao.entity.BlTransaction;
 import com.browser.service.StatisService;
-import com.browser.tools.common.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * 首页数据缓存
@@ -26,14 +20,20 @@ public class IndexEchartsTask {
     @Autowired
     private StatisService statisService;
 
+    @Value("${scheduled.task}")
+    private boolean task;
 
-    @Scheduled(cron = "0 0/59 * * * ? ")
+    @Scheduled(cron = "0 0/2 * * * ? ")
     public void syncData() {
+        if (task) {
+            logger.info("不开启定时任务");
+            return;
+        }
         logger.info("【首页图表数据缓存】");
         try {
             statisService.indexEcharts();
         } catch (Exception e) {
-            logger.error("首页图表数据缓存异常：",e);
+            logger.error("首页图表数据缓存异常：", e);
         }
     }
 }

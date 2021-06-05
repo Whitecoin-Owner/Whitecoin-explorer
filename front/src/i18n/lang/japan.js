@@ -5,7 +5,14 @@ const japan = {
         blocks: 'ブロックチェーン',
         transactions: '取引履歴',
         contracts: 'コントラクト',
-        richlist: '豊富なリスト'
+        richlist: '豊富なリスト',
+        tokens: 'トークン',
+        ziyuan: 'リソース',
+        assets: '資産'
+    },
+    maxTitle:{
+        t1:'取引履歴',
+        t2:'トークン 取引履歴',
     },
     alert: {
         noSpace: '十分なスペースがありません',
@@ -13,7 +20,8 @@ const japan = {
         notSearch: '対応する検索結果が見つかりません。'
     },
     search: {
-        placeholder: 'アドレス/トランザクションハッシュ/コントラクトアドレス/ブロックの高さ/アカウント名'
+        placeholder: 'アドレス/トランザクションハッシュ/コントラクトアドレス/ブロックの高さ/アカウント名',
+        placeholder2:'トークン名または先物契約のアドレスを入力してください',
     },
     home: {
         blockchinaInfo: {
@@ -23,7 +31,7 @@ const japan = {
             blockHeight: 'ブロックの高さ',
             blockReward: 'ブロック報酬',
             crossAsset: 'その他の資産',
-            accountCount: 'アカウントの数'
+            accountCount: '総発行量'
         },
         valueInfo: {
             title: 'バリューの情報',
@@ -40,7 +48,10 @@ const japan = {
             transactions: 'トランザクション',
             miner: 'マイナー',
             size: 'サイズ',
-            reward: '報酬'
+            reward: '報酬',
+            minerFee:'マイニング費用',
+            over:'実施する',
+            success:'件の注文',
         },
         transaction: {
             title: 'トランザクション',
@@ -51,14 +62,23 @@ const japan = {
             types: 'タイプ ',
             age: '時間',
             value: '金額',
-            fee: '手数料'
+            fee: '手数料',
+            numberss:'数量',
+            fromDeafult:'契約を作成する'
         },
         transactionLine: {
             today: '今日',
             week: '今週',
             month: '今月',
             summary: 'トランザクション統計'
-        }
+        },
+        footer: {
+            t1: "ホワイトペーパー",
+            t2: "お問い合わせください",
+            t3: "イベント",
+            t4: "サポート",
+            t5: "リンク",
+        },
     },
     transferDetails: {
         tips: {
@@ -73,6 +93,25 @@ const japan = {
             height: 'ブロックの高さ',
             timeStamp: '時間'
         },
+        tokenTransfers: {
+            title: 'Token 送金',
+            transfer: '送金',
+        },
+        contractBalanceChangeDetail: {
+            title: '契約残高の変更',
+            contract_withdraw: '契約残高の変更...',
+            deposit_contract: '預金契約',
+            deposit_to_address: '契約撤回アドレス',
+        },
+        swapEvent: {
+            title: 'Swap Event',
+            NativeBalanceChange: 'Native Balance Change',
+            Exchanged: 'Exchange',
+            LiquidityTokenMinted: 'Minted Liquidity Token',
+            LiquidityTokenDestoryed: 'Destroyed Liquidity Token',
+            LiquidityAdded: 'Added Liquidity',
+            LiquidityRemoved: 'Removed Liquidity'
+          },
         details: {
             title: '明細',
             transfer: '送金',
@@ -140,7 +179,7 @@ const japan = {
             rewards: '報酬'
         },
         myTransactions: {
-            title: '私の取引',
+            title: '',
             txHash: '取引ハッシュ',
             block: 'ブロック',
             types: '種類',
@@ -165,10 +204,24 @@ const japan = {
         types: '種類',
         authorAddress: '作成者',
         callTimes: '呼び出し回数',
-        createTime: '作成時間',
+        createTime: '作成時間',  
         lastTime: '最後使用時間',
-        total_span_before: 'total_span_before',
-        total_span_after: 'total_span_after'
+        total_span_before: '合計',
+        total_span_after: '件の契約が見つかりました'
+    },
+    tokens: {
+        title: 'トークン',
+        contractAddress: 'コントラクトアドレス',
+        types: '種類',
+        authorAddress: '作成者',
+        callTimes: '呼び出し回数',
+        createTime: '作成時間',  
+        lastTime: '最後使用時間',
+        total_span_before: '合計',
+        total_span_after: '件の契約が見つかりました',
+        tokenSymbol: 'トークンシンボル',
+        precision: '精度',
+        tokenSupply: '供給' 
     },
     richlist: {
         title: '豊富なリスト',
@@ -200,8 +253,8 @@ const japan = {
         miner: 'マイナー',
         size: 'サイズ',
         reward: '報酬',
-        total_span_before: 'total_span_before:',
-        total_span_after: 'total_span_after',
+        total_span_before: '合計',
+        total_span_after: '件の契約が見つかりました',
         overview: {
             name: '概要',
             title: 'タイトル',
@@ -256,17 +309,18 @@ const japan = {
     address: {
         overview: {
             title: 'タイトル',
-            name: 'アカウント名',
-            address: 'アドレス',
-            contracts: 'コントラクト',
-            transaction: 'トランザクション',
-            rewards: '報酬',
-            balances: '残高',
-            lockBalance: '投票資産',
-            paybackBalances: '報酬金額'
+            name: 'アカウント名:',
+            address: 'アドレス:',
+            contracts: 'コントラクト:',
+            transaction: 'トランザクション:',
+            rewards: '報酬:',
+            balances: '残高:',
+            lockBalance: '投票資産:',
+            paybackBalances: '報酬金額:',
+            tokenBalances: 'トークン残高:',
         },
         myTransactions: {
-            title: '私の取引',
+            title: '送金',
             txHash: '取引ハッシュ',
             block: '高さ',
             types: '種類',
@@ -276,6 +330,31 @@ const japan = {
             value: '金額',
             fee: '手数料'
         },
+        myTokenTransactions: {
+            title: '私のトークントランザクション',
+            txHash: '取引ハッシュ',
+            block: '高さ',
+            types: '種類',
+            age: '時間',
+            from: '送信者',
+            to: '受取人',
+            value: '金額',
+            fee: '手数料',
+            symbol: 'トークン'
+        },
+        mySwapTransactions: {
+            address: '住所',
+            title: 'スワップトランザクション',
+            txHash: '取引ハッシュ',
+            block: '高さ',
+            types: '種類',
+            age: '時間',
+            from: '送信者',
+            to: '受取人',
+            value: '金額',
+            fee: '手数料',
+            symbol: 'トークン'
+        },
         myContracts: {
             title: '私のコントラクト',
             address: 'コントラクトアドレス',
@@ -284,6 +363,10 @@ const japan = {
             create: '作成時間',
             last: '最終使用時間'
         }
+    },
+    message:{
+        success:'コピー！',
+        failed:'コピーに失敗しました！'
     },
     ...enLocale
 }

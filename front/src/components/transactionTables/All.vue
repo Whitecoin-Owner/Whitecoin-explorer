@@ -2,73 +2,78 @@
   <div class="table-wrap">
     <el-table
       :data="tableData"
-
-      style="width: 100%"
+      width="100%"
     >
       <el-table-column
         align="center"
         :label="$t('home.transaction.txHash')"
-        show-overflow-tooltip
+        width="180"
       >
         <template slot-scope="scope">
-          <router-link    :to="'/transfer_details/'+scope.row.trxId+'/'+scope.row.opType">{{scope.row.trxId}}</router-link>
+          <router-link class="yanse" :to="'/transfer_details/'+scope.row.trxId+'/'+scope.row.opType">{{scope.row.trxId}}</router-link>
         </template>
       </el-table-column>
       <el-table-column
         align="center"
         :label="$t('transaction.block')"
-        width="100">
+        width="80"
+        >
         <template slot-scope="scope">
-          <router-link    :to="'/blockDetails/'+scope.row.blockNum">{{scope.row.blockNum}}</router-link>
+          <router-link class="yanse" :to="'/blockDetails/'+scope.row.blockNum">{{scope.row.blockNum}}</router-link>
         </template>
       </el-table-column>
-      <el-table-column
+      <!-- <el-table-column
         align="center"
         :formatter="getTypeName"
         :label="$t('transaction.types')"
         width="120"
         show-overflow-tooltip
       >
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column
         align="center"
         :label="$t('transaction.age')"
-        width="180"
+        
       >
         <template slot-scope="scope">
-          <timeago :since="scope.row.trxTime" :locale="getBusLocal" :auto-update="0.2"></timeago>
+          <div>
+            <!-- <timeago :since="scope.row.trxTime" :locale="getBusLocal" :auto-update="0.2"></timeago>
+            &nbsp; -->
+            <span>{{scope.row.trxTime}}</span>  
+          </div>
         </template>
       </el-table-column>
       <el-table-column
         align="center"
         :label="$t('transaction.from')"
-        show-overflow-tooltip
+        width="190"
       >
         <template slot-scope="scope">
-          <span class="link" @click="_mixin_address_jump(scope.row.fromAccount)">{{scope.row.fromAccount}}</span>
+          <span class="yanse"  @click="_mixin_address_jump(scope.row.fromAccount)">
+            {{scope.row.fromAccount !== null ? scope.row.fromAccount  : ($t('home.transaction.fromDeafult')) }}
+            </span>
         </template>
       </el-table-column>
       <el-table-column
         align="center"
         :label="$t('transaction.to')"
-        show-overflow-tooltip
+        width="180"
       >
         <template slot-scope="scope">
-          <span class="link" @click="_mixin_address_jump(scope.row.toAccount)">{{scope.row.toAccount}}</span>
+          <span class="yanse"  @click="_mixin_address_jump(scope.row.toAccount)">{{scope.row.toAccount !==null ? scope.row.toAccount :'--'}}</span>
         </template>
       </el-table-column>
         <el-table-column
           align="center"
           prop="amountStr"
           :label="$t('transaction.value')"
-          width="120"
-          show-overflow-tooltip
+          width="150"
         >
         </el-table-column>
           <el-table-column
             align="center"
             :label="$t('transaction.fee')"
-            width="140"
+            
           >
             <template slot-scope="scope">
               {{scope.row.feeStr}}
@@ -101,6 +106,6 @@
   }
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
 
 </style>

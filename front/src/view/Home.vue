@@ -1,185 +1,126 @@
 <template>
-  <div class="wrap">
-    <div class="head-part">
-      <div class="info-wrap">
-        <div class="info clear">
-          <section class="left">
-            <h3>{{$t('home.blockchinaInfo.title')}}</h3>
-            <div class="box -left-box" style>
-              <ul>
-                <li class="clear" style="border-bottom: 0; border-top: 0; border-radius: 10px;">
-                  <div class="name left">{{$t('home.blockchinaInfo.totalSupply')}}</div>
-                  <div class="value right">{{blockInfo.totalAmount}}</div>
-                </li>
-                <li class="clear" style="border-bottom: 0; border-top: 0;">
-                  <div class="name left">{{$t('home.blockchinaInfo.transactions')}}</div>
-                  <div class="value right">{{blockInfo.totalTxNum}}</div>
-                </li>
-                <li class="clear" style="border-bottom: 0; border-top: 0;">
-                  <div class="name left">{{$t('home.blockchinaInfo.blockHeight')}}</div>
-                  <div class="value right">{{blockInfo.height}}</div>
-                </li>
-                <li class="clear" style="border-bottom: 0; border-top: 0;">
-                  <div class="name left">{{$t('home.blockchinaInfo.blockReward')}}</div>
-                  <div class="value right">{{blockInfo.reward}}</div>
-                </li>
-              </ul>
-            </div>
-          </section>
-          <aside class="right">
-            <h3>{{$t('home.valueInfo.title')}}</h3>
-            <div class="box -right-box" style>
-              <ul>
-                <li class="clear" style="border-bottom: 0; border-top: 0;">
-                  <div class="name left">{{$t('home.valueInfo.price')}}</div>
-                  <div class="value right">
-                    <span v-if="mainCoinPrice.in_usdt">{{mainCoinPrice.in_usdt.price}} USDT</span>
-                    <span v-if="!mainCoinPrice.in_usdt">- -</span>
-                  </div>
-                </li>
-                <li class="clear" style="border-bottom: 0; border-top: 0;">
-                  <div class="name left">{{$t('home.valueInfo.priceBTC')}}</div>
-                  <div class="value right">
-                    <span v-if="mainCoinPrice.in_btc">{{mainCoinPrice.in_btc.price}} BTC</span>
-                    <span v-if="!mainCoinPrice.in_btc">- -</span>
-                  </div>
-                </li>
-                <li class="clear" style="border-bottom: 0; border-top: 0;">
-                  <div class="name left">{{$t('home.valueInfo.change')}}</div>
-                  <div class="value right">
-                    <span v-if="mainCoinPrice.in_usdt">{{mainCoinPrice.in_usdt.change}} %</span>
-                    <span v-if="!mainCoinPrice.in_usdt">- -</span>
-                  </div>
-                </li>
-              </ul>
-            </div>
-          </aside>
+  <div class="wrap" >
+    <div class="search">
+      <div class="search_con">
+        <div class="ser_left">
+          <h2>The Whitecoin Blockchain Explper</h2>
+          <Search/>
+          <p>Your friendly gate into the Whitecoin world</p>
         </div>
+        <div class="ser_right"><img src="../assets/img/ser_right.png" alt=""></div>
       </div>
     </div>
-    <main style="margin-top: 0;">
-      <!-- blocks -->
-      <div class="home-part">
-        <header>
-          <div class="title">{{$t('home.blocks.title')}}</div>
-          <div class="more" @click="moreClick(1)">
-            <router-link class="more-a" to="/blocks">
-              {{$t('home.blocks.more')}}
-              <i v-if="false" class="icon-color el-icon-caret-right"></i>
-            </router-link>
+    <div class="content_all">
+      <div class="head-part">
+        <div class="part_left">
+          <div class="part_con">
+            <div class="con_top">
+              <p class="p1">XWC {{$t('home.valueInfo.price')}}</p>
+              <p class="p2">${{mainCoinPrice.in_usdt.price}} <span>({{mainCoinPrice.in_usdt.change}}%)</span></p>
+            </div>
+            <div class="con_top">
+              <p class="p1">{{$t('home.blockchinaInfo.totalSupply')}}</p>
+              <p class="p2">{{blockInfo.totalAmount}}</p>
+            </div>
           </div>
-        </header>
-        <div class="table-wrap-home">
-          <el-table :data="blocks" style="width: 100%;">
-            <el-table-column align="center" :label="$t('home.blocks.height')">
-              <template slot-scope="scope">
-                <router-link :to="'/blockDetails/'+scope.row.blockNum">{{scope.row.blockNum}}</router-link>
-              </template>
-            </el-table-column>
-            <el-table-column align="center" prop="blockTime" :label="$t('home.blocks.age')">
-              <template slot-scope="scope">
-                <timeago :since="scope.row.blockTime" :locale="getBusLocal"></timeago>
-              </template>
-            </el-table-column>
-            <el-table-column align="center" :label="$t('home.blocks.miner')">
-              <template slot-scope="scope">
-                <router-link :to="'/address?minerName='+scope.row.minerName">{{scope.row.minerName}}</router-link>
-              </template>
-            </el-table-column>
-            <el-table-column align="center" prop="rewards" :label="$t('home.blocks.reward')"></el-table-column>
-          </el-table>
+          <div class="part_con">
+            <div class="con_top">
+              <p class="p1">{{$t('home.blockchinaInfo.blockHeight')}}</p>
+              <p class="p2">{{blockInfo.height}}</p>
+            </div>
+            <div class="con_top">
+              <p class="p1">{{$t('home.blockchinaInfo.blockReward')}}</p>
+              <p class="p2">{{blockInfo.reward}}</p>
+            </div>
+          </div>
+          <div class="part_con">
+            <div class="con_top">
+              <p class="p1">{{$t('home.blockchinaInfo.transactions')}}</p>
+              <p class="p2">{{blockInfo.totalTxNum}}</p>
+            </div>
+            <div class="con_top">
+              <p class="p1">{{$t('home.blockchinaInfo.accountCount')}}</p>
+              <p class="p2">1,000,000,000 XWC</p>
+            </div>
+          </div>
+        </div>
+        <div class="part_right">
+          <!-- echarts -->
+          <div class="line">
+            <div class="line-wrap">
+              <header>
+                <div class="line_tit">{{$t('home.transactionLine.summary')}}</div>
+                <div class="title">
+                  <span
+                    @click="timeChange(0)"
+                    :class="{'timeChioce':timeChoice===0}"
+                  >{{$t('home.transactionLine.today')}}</span>
+                  <span
+                    @click="timeChange(1)"
+                    :class="{'timeChioce':timeChoice===1}"
+                  >{{$t('home.transactionLine.week')}}</span>
+                  <span
+                    @click="timeChange(2)"
+                    :class="{'timeChioce':timeChoice===2}"
+                  >{{$t('home.transactionLine.month')}}</span>
+                </div>
+              </header>
+              <div ref="echarts" class="echarts"></div>
+            </div>
+          </div>
         </div>
       </div>
-
-      <!-- transaction -->
-      <div class="home-part">
-        <header>
-          <div class="title">{{$t('home.transaction.title')}}</div>
-          <div class="more" @click="moreClick(2)">
-            <router-link class="more-a" to="/transaction">
-              {{$t('home.transaction.more')}}
-              <i v-if="false" class="icon-color el-icon-caret-right"></i>
-            </router-link>
+      <main>
+        <div class="main_block">
+          <h2><router-link to="/blocks">{{$t('home.blocks.title')}}</router-link></h2>
+          <div class="block_ul">
+            <div class="block_li" v-for="(item,index) of blocks" :key="index">
+              <div class="block_img"><img src="../assets/img/block_img1.png" alt=""></div>
+              <div class="block_er">
+                <p><router-link :to="'/blockDetails/'+item.blockNum">{{item.blockNum}}</router-link></p>
+                <p><timeago :since="item.blockTime" :locale="getBusLocal" :auto-update="0.5"></timeago></p>
+              </div>
+              <div class="block_san">
+                <p><router-link :to="'/address?minerName='+item.minerName"><span>Miner</span> {{item.minerName}}</router-link></p>
+                <p>{{item.seconds}}s {{$t('home.blocks.over')}} {{item.trxCount}} {{$t('home.blocks.success')}}</p>
+              </div>
+              <div class="block_si">
+                <p><span>{{item.rewards}}</span></p>
+                <p>{{$t('home.blocks.minerFee')}}</p>
+              </div>
+            </div>
+            <div class="block_more">
+              <router-link to="/blocks">{{$t('home.blocks.more')}}</router-link>
+            </div>
           </div>
-        </header>
-        <div class="table-wrap-home">
-          <el-table :data="transaction" style="width: 100%;">
-            <el-table-column
-              align="center"
-              :label="$t('home.transaction.txHash')"
-              show-overflow-tooltip
-            >
-              <template slot-scope="scope">
-                <router-link
-                  :to="'/transfer_details/'+scope.row.trxId+'/'+scope.row.opType"
-                >{{scope.row.trxId}}</router-link>
-              </template>
-            </el-table-column>
-            <el-table-column align="center" :label="$t('home.transaction.block')" width="180">
-              <template slot-scope="scope">
-                <router-link :to="'/blockDetails/'+scope.row.blockNum">{{scope.row.blockNum}}</router-link>
-              </template>
-            </el-table-column>
-            <el-table-column
-              align="center"
-              :label="$t('home.transaction.types')"
-              width="180"
-              show-overflow-tooltip
-              :formatter="getTypeName"
-            ></el-table-column>
-            <el-table-column align="center" :label="$t('home.transaction.age')" width="180">
-              <template slot-scope="scope">
-                <timeago :since="scope.row.trxTime" :locale="getBusLocal" :auto-update="0.5"></timeago>
-              </template>
-            </el-table-column>
-            <el-table-column
-              align="center"
-              prop="amountStr"
-              :label="$t('home.transaction.value')"
-              width="180"
-            ></el-table-column>
-            <el-table-column align="center" :label="$t('home.transaction.fee')" width="180">
-              <template slot-scope="scope">
-                {{scope.row.feeStr}}
-                <img
-                  v-if="scope.row.guaranteeUse"
-                  class="feeShow"
-                  src="../assets/img/shouxufei.png"
-                />
-              </template>
-            </el-table-column>
-          </el-table>
         </div>
-      </div>
-    </main>
-    <!-- echarts -->
-    <div class="line">
-      <div class="line-wrap">
-        <header>
-          <div class="title">
-            <span
-              @click="timeChange(0)"
-              :class="{'timeChioce':timeChoice===0}"
-            >{{$t('home.transactionLine.today')}}</span>
-            <span
-              @click="timeChange(1)"
-              :class="{'timeChioce':timeChoice===1}"
-            >{{$t('home.transactionLine.week')}}</span>
-            <span
-              @click="timeChange(2)"
-              :class="{'timeChioce':timeChoice===2}"
-            >{{$t('home.transactionLine.month')}}</span>
+        <div class="main_block1">
+          <h2><router-link to="/blocks">{{$t('home.transaction.title')}}</router-link></h2>
+          <div class="block_ul">
+            <div class="block_li" v-for="(item,index) of transaction" :key="index">
+              <div class="block_img"><img src="../assets/img/block_img2.png" alt=""></div>
+              <div class="block_er">
+                <p><router-link
+                    :to="'/transfer_details/'+item.trxId+'/'+item.opType"
+                  >{{item.trxId.substring(0,15)}}...</router-link></p>
+                <p><timeago :since="item.trxTime" :locale="getBusLocal" :auto-update="0.5"></timeago></p>
+              </div> 
+              <div class="block_san">
+                <p><span>FROM:</span> <router-link :to="`/address?address=${item.fromAccount}`">{{item.fromAccount !== null ? ( item.fromAccount!=='Mining'? (item.fromAccount.substring(0,11) + ('...')) : item.fromAccount ) : ($t('home.transaction.fromDeafult')) }} </router-link></p>
+                <p class="toAccount"><span>TO:</span> <router-link :to="`/address?address=${item.toAccount}`"> {{item.toAccount!==null? (item.toAccount.substring(0,16) + '...') : '--'}} </router-link></p>
+              </div>
+              <div class="block_si">
+                <p><span>{{item.amountStr !== null ? item.amountStr : '--'}}</span></p>
+                <p>{{$t('home.transaction.numberss')}}</p>
+              </div>
+            </div>
+            <div class="block_more">
+              <router-link to="/transaction">{{$t('home.blocks.more')}}</router-link>
+            </div>
           </div>
-          <div class="time">
-            <span>{{$t('home.transactionLine.summary')}}</span>
-          </div>
-        </header>
-        <div ref="echarts" class="echarts"></div>
-      </div>
+        </div>
+      </main>
     </div>
-    <footer>
-      <div>Copyright @2018-2019 Whitecoin | All rights reserved</div>
-    </footer>
   </div>
 </template>
 
@@ -187,10 +128,15 @@
 import bus from "../utils/bus";
 import common from "../utils/common";
 import typeObj from "../utils/type";
+import Search from "../components/search/Search";
+import mixin from '../utils/mixin';
 
 var echarts = require("echarts");
 export default {
+  mixins: [mixin],
   name: "home",
+  // inject: ['isMobile'],
+  components:{Search},
   data() {
     return {
       blockInfo: {
@@ -200,8 +146,8 @@ export default {
         reward: null //奖金
       },
       mainCoinPrice: {
-        in_usdt: null, // 主链资产以USDT计价的价格
-        in_btc: null, // 主链资产以BTC计价的价格
+        in_usdt: 0, // 主链资产以USDT计价的价格
+        in_btc: 0, // 主链资产以BTC计价的价格
       },
       blocks: [],
       transaction: [],
@@ -211,11 +157,15 @@ export default {
         endTime: ""
       },
       option: {
-        background: "#ffffff",
+        background: "#D96EED",
         tooltip: {},
         grid: {
           width: "95%",
-          left: "3%"
+          left: "3%",
+          x: 0,
+          y: 10,
+          x2: 10,
+          y2: 10,
         },
         xAxis: {
           show: true,
@@ -282,10 +232,10 @@ export default {
             type: "line",
             name: "volumes of transactions",
             symbol: "circle",
-            symbolSize: 16,
+            symbolSize: 10,
             lineStyle: {
               color: "#7575b1",
-              width: 5
+              width: 2
             },
             itemStyle: {
               color: "#7575b1"
@@ -331,12 +281,21 @@ export default {
       let data = res.data;
       if (data.retCode === 200) {
         that.blocks = data.data;
+        console.log(data.data,'000')
       }
     });
     this.$axios.post("/getTrxance").then(function(res) {
       let data = res.data;
       if (data.retCode === 200) {
+        data.data.forEach(item=>{
+          // item.amountStr 截取小数点后四位
+          if(item.amountStr !==null && item.amountStr.indexOf('.') !== -1){
+            item.amountStr = parseFloat(item.amountStr) //吧字符串的数字取出
+            item.amountStr = (item.amountStr).toString().replace(/^(.*\..{4}).*$/,"$1") + ' XWC'  //进行截取
+          }       
+        })
         that.transaction = data.data;
+        console.log(data.data,'iii')
       }
     });
     this.$axios.get('/mainCoinPrice').then((res) => {
@@ -408,154 +367,223 @@ export default {
 
 <style lang="less" scoped>
 .wrap {
+  height: 100%;
+  .search{
+    background: url(../assets/img/search_bg.png) no-repeat top;
+    background-size: 100% 100%;
+    overflow: hidden;
+    padding: 40px 0 90px 0;
+    box-sizing: border-box;
+    .search_con{
+      width: 1140px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .ser_left{
+        h2{
+          color: #fff;
+          margin-bottom: 20px;
+          font-size: 28px;
+        }
+        p{
+          color: #fff;
+          margin-top: 20px;
+          font-weight: normal;
+          font-size: 18px;
+        }
+      }
+      .ser_right{
+        img{
+          width: 300px;
+        }
+      }
+    }
+  }
+  .content_all{
+    width: 1140px;
+    margin: 0 auto;
+  }
   .head-part {
     position: relative;
-    padding: 240px 0 100px;
-    background-image: white;
+    background:#fff;
+    box-shadow: 0px 2px 13px 0px rgba(0, 0, 0, 0.09);
+    border-radius: 5px;
     color: #0b0e2e;
     background-size: 100% 100%;
-    .info-wrap {
-      width: 77%;
-      min-width: 1160px;
-      margin: auto;
-      position: relative;
-      .search-wrap {
-        position: absolute;
-        top: -100px;
-        right: 0;
-      }
-      .info {
-        width: 70%;
-        min-width: 1080px;
-        margin: auto;
-        color: black;
-        h3 {
-          width: 165px;
-          font-size: 24px;
-          display: inline-block;
-          border-bottom: 2px solid white;
+    margin-top: -50px;
+    padding: 20px 0 0 10px ;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    .part_left{
+      display: flex;
+      width: 65%;
+      .part_con{
+        padding:0 20px;
+        border-right:1px solid #EEEEEE;
+        &:first-child{
+          width: 26%;
         }
-        ul {
-          position: relative;
+        &:nth-child(2){
+          width: 37%;
         }
-        li {
-          width: 428px;
-          padding: 24px 0 8px;
+        &:last-child{
+          width: 37%;
         }
-        .cross_asset {
-          position: absolute;
-          width: auto;
-          min-width: 1160px;
-          top: 100%;
-          left: 0;
-          /*white-space: nowrap;*/
-          .name,
-          .value {
-            display: inline-block;
-            vertical-align: top;
+        .con_top{
+          margin-bottom: 20px;
+          &:first-child{
+            border-bottom:1px #EEEEEE solid
           }
-          .value {
-            margin-left: 40px;
-            max-width: 1000px;
+          .p1{
+            font-size: 14px;
+            color: #677897;
+            margin-bottom: 15px;
           }
-        }
-        section li,
-        aside li {
-          border-bottom: 1px solid rgba(255, 255, 255, 0.18);
-          &:first-of-type {
-            border-top: 1px solid rgba(255, 255, 255, 0.18);
+          .p2{
+            font-size: 18px;
+            color: #333333; 
+            margin-bottom: 15px;
+            span{
+              color: #34BD5A;
+              font-size: 14px;
+              margin-left: 5px;
+            }
           }
-        }
-        .info section li {
-          border-bottom: 0 !important;
-          border-top: 0 !important;
         }
       }
+    }
+    .part_right{
+      width: 35%;
     }
   }
 }
 main {
-  width: 77%;
-  min-width: 1160px;
-  margin: 120px auto;
-  position: relative;
-  .home-part {
-    // margin-top: 60px;
-    header {
-      margin-bottom: 24px;
-      display: flex;
-      box-sizing: border-box;
-      div {
-        flex: 1;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 50px;
+  .main_block,.main_block1{
+    background: #FFFFFF;
+    box-shadow: 0px 2px 13px 0px rgba(0, 0, 0, 0.09);
+    border-radius: 5px;
+    padding: 20px 0;
+    box-sizing: border-box;
+    h2{
+      color: #333333;
+      font-size: 18px;
+      font-weight: bold;
+      padding:0 0 20px 20px;
+      border-bottom: 1px solid #EEEEEE;
+    }
+    .block_ul{
+      padding: 10px 20px 0px 20px;
+      .block_li{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid #EEEEEE;
+        padding: 10px 0;
+        .block_img{
+          width: 15%;
+          img{
+            width: 46px ;
+            height: 46px;
+          }
+        }
+        .block_er,.block_san,.block_si{
+          width: 27%;
+          p:first-child{
+            color: #0279FF;
+            font-size: 16px;
+            margin-bottom: 5px;
+            span{
+              color: #333333;
+            }
+          }
+          p:last-child{
+            color: #677897;
+            font-size: 14px;
+            &.toAccount{
+              color: #0279FF;
+              span{
+                color: #333333;
+              }
+            }
+          }
+        }
+        .block_san{
+          width: 35%;
+          P{
+            cursor: pointer;
+          }
+        }
+        .block_si{
+          width: 23%;
+        }
       }
-      .title {
-        color: #132241;
-        font-size: 36px;
-        font-weight: bold;
-      }
-      .more {
-        text-align: right;
-        cursor: pointer;
-        position: relative;
-        .more-a {
-          position: absolute;
+      .block_more{
+        margin-top: 20px;
+        a{
+          line-height: 46px;
           display: block;
-          bottom: 0;
-          right: 0;
+          background: #735DFF;
+          border-radius: 4px;
+          color: #fff;
+          text-align: center;
           font-size: 16px;
-          color: #160f2e;
-          padding: 6px 12px 6px 20px;
-          // border: 1px solid #8f50b4;
-          border-radius: 6px;
-          .icon-color {
-            color: #8f50b4;
+          &:hover{
+            background: #403682;
           }
         }
       }
     }
   }
+  .main_block{
+    width: 42%;
+  }
+  .main_block1{
+    width: 56%;
+  }
 }
 .line {
   box-sizing: border-box;
-  background: white;
   color: black;
-  margin-top: 60px;
-  padding: 40px 0;
   .line-wrap {
-    width: 77%;
-    min-width: 1160px;
-    margin: auto;
+    padding: 0 20px;
     header {
-      margin-bottom: 24px;
       display: flex;
-      padding: 0 30px;
       box-sizing: border-box;
-      div {
-        font-size: 16px;
+      justify-content: space-between;
+      align-items: center;
+      .line_tit{
+        color: #677897;
+        font-size: 14px;
       }
       .title {
-        flex: 1;
-        color: rgba(0, 0, 0, 0.5);
-        // border-bottom: 1px solid rgba(0, 0, 0, 0.32);
+        display: flex;
         span {
           display: inline-block;
-          padding: 12px 16px;
-          font-size: 16px;
+          font-size: 12px;
+          line-height: 25px;
+          padding: 0 8px;
           cursor: pointer;
+          background: #F5F5F5;
+          color: #808080;
         }
         .timeChioce {
           font-weight: bold;
           position: relative;
-          color: #6079b3;
-          background: #e8f1fc;
-          border-radius: 10px;
+          color: #4B4BF0;
+          background: #D5D5FF;
           &::after {
             position: absolute;
             display: block;
             content: "";
             width: 100%;
-            height: 5px;
-            background: white;
+            background: #D5D5FF;
             bottom: 0;
             left: 0;
             transform: translateY(50%);
@@ -576,36 +604,11 @@ main {
         }
       }
     }
-    .echarts {
-      height: 400px;
+    .echarts { 
+      width: 100%;
+      height: 130px;
     }
   }
 }
-footer {
-  width: 100%;
-  height: 200px;
-  line-height: 200px;
-  text-align: center;
-  background: rgba(11, 14, 46, 1);
-  color: #492d95;
-}
 
-.-left-box {
-  //  background:linear-gradient(108deg,rgba(65,64,125,1),rgba(94,106,179,1));
-  color: white;
-  padding: 20px;
-  border-radius: 10px;
-  height: 200px;
-  background-image: url(/static/img/browser_b_bg.png);
-  background-repeat: no-repeat;
-}
-.-right-box {
-  // background: linear-gradient(108deg, #395593, #4977b8);
-  color: white;
-  padding: 25px;
-  border-radius: 10px;
-  height: 200px;
-  background-image: url(/static/img/browser_v_bg.png);
-  background-repeat: no-repeat;
-}
 </style>

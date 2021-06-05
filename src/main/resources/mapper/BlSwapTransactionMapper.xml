@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.browser.dao.mapper.BlSwapTransactionMapper">
+    <resultMap id="BaseResultMap" type="com.browser.dao.entity.BlSwapTransaction">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="trx_id" property="trxId" jdbcType="VARCHAR"/>
+        <result column="block_id" property="blockId" jdbcType="VARCHAR"/>
+        <result column="block_num" property="blockNum" jdbcType="INTEGER"/>
+        <result column="caller_address" property="callerAddress" jdbcType="VARCHAR"/>
+        <result column="op_num" property="opNum" jdbcType="VARCHAR"/>
+        <result column="event_name" property="eventName" jdbcType="VARCHAR"/>
+        <result column="event_seq" property="eventSeq" jdbcType="BIGINT"/>
+        <result column="event_arg" property="eventArg" jdbcType="VARCHAR"/>
+        <result column="contract_address" property="contractAddress" jdbcType="VARCHAR"/>
+        <result column="trx_time" property="trxTime" jdbcType="TIMESTAMP"/>
+        <result column="change" property="change" jdbcType="DECIMAL"/>
+        <result column="reason" property="reason" jdbcType="VARCHAR"/>
+        <result column="symbol" property="symbol" jdbcType="VARCHAR"/>
+        <result column="change_address" property="changeAddress" jdbcType="VARCHAR"/>
+        <result column="liquidity_token1_change_amount" property="liquidityToken1ChangeAmount" jdbcType="DECIMAL"/>
+        <result column="liquidity_token2_change_amount" property="liquidityToken2ChangeAmount" jdbcType="DECIMAL"/>
+        <result column="liquidity_token1" property="liquidityToken1" jdbcType="VARCHAR"/>
+        <result column="liquidity_token2" property="liquidityToken2" jdbcType="VARCHAR"/>
+        <result column="exchange_fee" property="exchangeFee" jdbcType="DECIMAL"/>
+        <result column="buy_asset" property="buyAsset" jdbcType="VARCHAR"/>
+        <result column="sell_asset" property="sellAsset" jdbcType="VARCHAR"/>
+        <result column="buy_amount" property="buyAmount" jdbcType="DECIMAL"/>
+        <result column="sell_amount" property="sellAmount" jdbcType="DECIMAL"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, trx_id, block_id, block_num, caller_address, op_num, event_name, event_seq, event_arg,
+         contract_address, trx_time, `change`, `reason`, `symbol`, change_address,
+          liquidity_token1_change_amount, liquidity_token2_change_amount, liquidity_token1, liquidity_token2, exchange_fee, buy_asset, sell_asset,
+          buy_amount, sell_amount
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from bl_swap_transaction
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+
+    <select id="selectListByUserAddress" resultMap="BaseResultMap" parameterType="com.browser.dao.entity.BlSwapTransaction">
+        select
+        <include refid="Base_Column_List"/>
+        from bl_swap_transaction
+        where caller_address = #{address,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectAllByCond" resultMap="BaseResultMap" parameterType="com.browser.dao.entity.BlSwapTransaction">
+        select
+        <include refid="Base_Column_List"/>
+        from bl_swap_transaction
+        where 1 = 1
+        <trim suffixOverrides=",">
+            <if test="trxId!=null">
+                and trx_id = #{trxId,jdbcType=VARCHAR}
+            </if>
+            <if test="blockId!=null">
+                and block_id = #{blockId,jdbcType=VARCHAR}
+            </if>
+            <if test="blockNum!=null">
+                and `block_num` = #{blockNum,jdbcType=INTEGER}
+            </if>
+            <if test="callerAddress!=null">
+                and caller_address = #{callerAddress,jdbcType=VARCHAR}
+            </if>
+            <if test="opNum !=null">
+                and op_num = #{opNum,jdbcType=INTEGER}
+            </if>
+            <if test="eventName != null">
+                and `event_name` = #{eventName,jdbcType=VARCHAR}
+            </if>
+            <if test="eventSeq != null">
+                and `event_seq` = #{eventSeq,jdbcType=INTEGER}
+            </if>
+            <if test="eventArg != null">
+                and `event_arg` = #{eventArg,jdbcType=VARCHAR}
+            </if>
+            <if test="contractAddress != null">
+                and `contract_address` = #{contractAddress,jdbcType=VARCHAR}
+            </if>
+            <if test="trxTime!=null">
+                and `trx_time` = #{trxTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="change!=null">
+                and `change` = #{change,jdbcType=VARCHAR}
+            </if>
+            <if test="reason!=null">
+                and `reason` = #{reason,jdbcType=VARCHAR}
+            </if>
+            <if test="symbol!=null">
+                and `symbol` = #{symbol,jdbcType=VARCHAR}
+            </if>
+            <if test="changeAddress!=null">
+                and `change_address` = #{changeAddress,jdbcType=VARCHAR}
+            </if>
+            <if test="liquidityToken1ChangeAmount!=null">
+                and `liquidity_token1_change_amount` = #{liquidityToken1ChangeAmount,jdbcType=DECIMAL}
+            </if>
+            <if test="liquidityToken2ChangeAmount!=null">
+                and `liquidity_token2_change_amount` = #{liquidityToken2ChangeAmount,jdbcType=DECIMAL}
+            </if>
+            <if test="liquidityToken1!=null">
+                and `liquidity_token1` = #{liquidityToken1,jdbcType=VARCHAR}
+            </if>
+            <if test="liquidityToken2!=null">
+                and `liquidity_token2` = #{liquidityToken2,jdbcType=VARCHAR}
+            </if>
+            <if test="exchangeFee!=null">
+                and `exchange_fee` = #{exchangeFee,jdbcType=DECIMAL}
+            </if>
+            <if test="buyAsset!=null">
+                and `buy_asset` = #{buyAsset,jdbcType=VARCHAR}
+            </if>
+            <if test="sellAsset!=null">
+                and `sell_asset` = #{sellAsset,jdbcType=VARCHAR}
+            </if>
+            <if test="buyAmount!=null">
+                and `buy_amount` = #{buyAmount,jdbcType=DECIMAL}
+            </if>
+            <if test="sellAmount!=null">
+                and `sell_amount` = #{sellAmount,jdbcType=DECIMAL}
+            </if>
+        </trim>
+        order by id asc
+    </select>
+
+    <insert id="insert" parameterType="com.browser.dao.entity.BlSwapTransaction">
+    insert into bl_swap_transaction (trx_id, block_id, block_num, caller_address, op_num, event_name, event_seq, event_arg,
+         contract_address, trx_time, `change`, `reason`, `symbol`, change_address,
+          liquidity_token1_change_amount, liquidity_token2_change_amount, liquidity_token1, liquidity_token2, exchange_fee, buy_asset, sell_asset,
+          buy_amount, sell_amount)
+    values (#{trxId,jdbcType=VARCHAR}, #{blockId,jdbcType=VARCHAR},
+     #{blockNum, jdbcType=INTEGER}, #{callerAddress,jdbcType=VARCHAR}, #{opNum,jdbcType=INTEGER}, #{eventName,jdbcType=VARCHAR},
+     #{eventSeq,jdbcType=INTEGER}, #{eventArg,jdbcType=VARCHAR}, #{contractAddress,jdbcType=VARCHAR},
+      #{trxTime,jdbcType=TIMESTAMP}, #{change,jdbcType=VARCHAR}, #{reason,jdbcType=VARCHAR}, #{symbol,jdbcType=VARCHAR}
+      , #{changeAddress,jdbcType=VARCHAR}, #{liquidityToken1ChangeAmount,jdbcType=DECIMAL}
+      , #{liquidityToken1,jdbcType=VARCHAR}, #{liquidityToken2,jdbcType=VARCHAR}
+      , #{liquidityToken2ChangeAmount,jdbcType=DECIMAL}, #{exchangeFee,jdbcType=DECIMAL}
+      , #{buyAsset,jdbcType=VARCHAR}, #{sellAsset,jdbcType=VARCHAR}, #{buyAmount,jdbcType=DECIMAL}, #{sellAmount,jdbcType=DECIMAL}
+     )
+  </insert>
+</mapper>

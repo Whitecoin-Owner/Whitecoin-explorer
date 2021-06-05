@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.browser.dao.mapper.BlTxContractBalanceChangeMapper">
+    <resultMap id="BaseResultMap" type="com.browser.dao.entity.BlTxContractBalanceChange">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="trx_id" property="trxId" jdbcType="VARCHAR"/>
+        <result column="block_num" property="blockNum" jdbcType="INTEGER"/>
+        <result column="change_type" property="changeType" jdbcType="VARCHAR"/>
+        <result column="address" property="address" jdbcType="VARCHAR"/>
+        <result column="asset_id" property="assetId" jdbcType="VARCHAR"/>
+        <result column="amount" property="amount" jdbcType="BIGINT"/>
+        <result column="change_seq" property="changeSeq" jdbcType="INTEGER"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, trx_id, block_num, change_type, `address`, asset_id, `amount`, change_seq
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from bl_tx_contract_balance_change
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+
+    <select id="selectAllByCond" resultMap="BaseResultMap" parameterType="com.browser.dao.entity.BlTxContractBalanceChange">
+        select
+        <include refid="Base_Column_List"/>
+        from bl_tx_contract_balance_change
+        where
+        1 = 1
+        <trim suffixOverrides=",">
+            <if test="trxId != null">
+                and trx_id =#{trxId,jdbcType=VARCHAR}
+            </if>
+            <if test="blockNum != null">
+                and block_num =#{blockNum,jdbcType=INTEGER}
+            </if>
+            <if test="changeType != null">
+                and change_type =#{changeType,jdbcType=VARCHAR}
+            </if>
+            <if test="address != null">
+                and `address` =#{address,jdbcType=VARCHAR}
+            </if>
+            <if test="assetId != null">
+                and asset_id =#{assetId,jdbcType=VARCHAR}
+            </if>
+            <if test="amount != null">
+                and `amount` =#{amount,jdbcType=BIGINT}
+            </if>
+            <if test="changeSeq != null">
+                and change_seq =#{changeSeq,jdbcType=BIGINT}
+            </if>
+        </trim>
+         order by id asc
+    </select>
+
+    <insert id="insert" parameterType="com.browser.dao.entity.BlTxContractBalanceChange">
+    insert into bl_tx_contract_balance_change (trx_id, block_num, change_type, `address`, asset_id, `amount`, change_seq)
+    values (#{trxId,jdbcType=VARCHAR}, #{blockNum,jdbcType=INTEGER}, #{changeType, jdbcType=VARCHAR},
+     #{address,jdbcType=VARCHAR}, #{assetId,jdbcType=VARCHAR},
+    #{amount,jdbcType=BIGINT}, #{changeSeq,jdbcType=INTEGER}
+     )
+  </insert>
+</mapper>

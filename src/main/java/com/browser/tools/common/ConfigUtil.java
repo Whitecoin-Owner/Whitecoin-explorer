@@ -14,26 +14,11 @@ public class ConfigUtil {
 
 	private static final String CONF_PATH = "system.properties";
 
-	/**
-	 * 
-	 * <p>Description:获取属性值</p>
-	 * @author wanghaitao01@new4g.cn
-	 * @date 2016年5月25日 上午11:06:42
-	 * @param key
-	 * @return
-	 */
 	public static String getPropertyKey(String key) {
 		Properties st = getConxtions();
 		return st.getProperty(key);
 	}
 
-	/**
-	 * 
-	 * <p>Description:加载属性文件</p>
-	 * @author wanghaitao01@new4g.cn
-	 * @date 2016年5月25日 上午11:07:26
-	 * @return
-	 */
 	public static Properties getConxtions() {
 		Properties properties = null;
 		try {

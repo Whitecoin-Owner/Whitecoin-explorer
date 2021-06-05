@@ -16,14 +16,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * 
-* @ClassName: BeanUtil 
-* @Description: 
-* @author David
-* @date 2016年11月16日 上午11:28:12 
-*
- */
 public class BeanUtil {
 
 	private static final Logger logger = LoggerFactory.getLogger(BeanUtil.class);

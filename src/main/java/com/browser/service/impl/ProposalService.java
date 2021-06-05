@@ -2,7 +2,7 @@ package com.browser.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.browser.config.CitizenWeightsInit;
+import com.browser.config.MinerWeightsInit;
 import com.browser.dao.entity.*;
 import com.browser.dao.mapper.*;
 import com.browser.protocol.EUDataGridResult;
@@ -58,7 +58,7 @@ public class ProposalService {
     private RedisService redisService;
 
     @Autowired
-    private CitizenWeightsInit citizenWeightsInit;
+    private MinerWeightsInit minerWeightsInit;
 
     @Value("${proposal.senator.name}")
     private String name;
@@ -167,7 +167,7 @@ public class ProposalService {
                     JSONArray disapproved = proposalArray.getJSONObject(i).getJSONArray("disapproved_key_approvals");
                     JSONArray required = proposalArray.getJSONObject(i).getJSONArray("required_account_approvals");
 
-                    Map<String ,BigDecimal> weightMap =citizenWeightsInit.getWeightMap();
+                    Map<String ,BigDecimal> weightMap = minerWeightsInit.getWeightMap();
 
                     if (approved != null) {
 //                        approvedValue = new BigDecimal(approved.size());
@@ -175,7 +175,7 @@ public class ProposalService {
                             if(weightMap.containsKey(approved.getString(j))){
                                 approvedValue = approvedValue.add(weightMap.get(approved.getString(j)));
                             }else{
-                                BigDecimal value = updateCitizenWeight(approved.getString(j));
+                                BigDecimal value = updateMinerWeight(approved.getString(j));
                                 approvedValue = approvedValue.add(value);
                             }
                         }
@@ -186,7 +186,7 @@ public class ProposalService {
                             if(weightMap.containsKey(disapproved.getString(j))){
                                 disapprovedValue = disapprovedValue.add(weightMap.get(disapproved.getString(j)));
                             }else{
-                                BigDecimal value = updateCitizenWeight(disapproved.getString(j));
+                                BigDecimal value = updateMinerWeight(disapproved.getString(j));
                                 disapprovedValue = disapprovedValue.add(value);
                             }
                         }
@@ -197,7 +197,7 @@ public class ProposalService {
                             if(weightMap.containsKey(required.getString(j))){
                                 requiredValue = requiredValue.add(weightMap.get(required.getString(j)));
                             }else{
-                                BigDecimal value = updateCitizenWeight(required.getString(j));
+                                BigDecimal value = updateMinerWeight(required.getString(j));
                                 requiredValue = requiredValue.add(value);
                             }
                         }
@@ -389,16 +389,16 @@ public class ProposalService {
         return address;
     }
 
-    private BigDecimal updateCitizenWeight(String adddress){
+    private BigDecimal updateMinerWeight(String adddress){
         String accountName = redisService.getAccountName(adddress);
-        String citizenInfo = requestWalletService.getMiner(accountName);
-        if(StringUtils.isEmpty(citizenInfo)){
+        String minerInfo = requestWalletService.getMiner(accountName);
+        if(StringUtils.isEmpty(minerInfo)){
             return BigDecimal.ZERO;
         }
-        JSONObject citizenObject =JSONObject.parseObject(citizenInfo);
-        Map<String,BigDecimal> weightMap = citizenWeightsInit.getWeightMap();
-        weightMap.put(adddress,citizenObject.getBigDecimal("pledge_weight"));
+        JSONObject minerObject =JSONObject.parseObject(minerInfo);
+        Map<String,BigDecimal> weightMap = minerWeightsInit.getWeightMap();
+        weightMap.put(adddress,minerObject.getBigDecimal("pledge_weight"));
 
-        return citizenObject.getBigDecimal("pledge_weight");
+        return minerObject.getBigDecimal("pledge_weight");
     }
 }

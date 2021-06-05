@@ -55,8 +55,30 @@ public class BlockServiceImpl implements BlockService {
 	@Override
 	public EUDataGridResult getBlockInfoList(BlBlock blBlock) {
 		// 分页处理
-		PageHelper.startPage(blBlock.getPage(), blBlock.getRows());
-		List<BlBlock> list = blBlockMapper.getBlockInfoList(blBlock);
+		// PageHelper.startPage(blBlock.getPage(), blBlock.getRows());
+		// List<BlBlock> list = blBlockMapper.getBlockInfoList(blBlock); // 不能内存分页做
+		Integer limit = blBlock.getRows();
+		if(limit == null || limit<=0) {
+			limit = 10;
+		}
+		Integer offset = 0;
+		if(blBlock.getPage()!=null && blBlock.getPage()>0) {
+			offset = (blBlock.getPage()-1) * limit;
+		}
+		// 根据最新区块高度，offset, limit，推算出查询的block_num范围
+		Long latestBlockNumInDb = blBlockMapper.queryBlockNum();
+		if(latestBlockNumInDb == null) {
+			latestBlockNumInDb = 0L;
+		}
+		long endBlockNum = latestBlockNumInDb - offset+1;
+		if(endBlockNum<1L) {
+			endBlockNum = 1L;
+		}
+		long startBlockNum = latestBlockNumInDb - offset - limit+1;
+		if(startBlockNum<=0) {
+			startBlockNum = 1L;
+		}
+		List<BlBlock> list = blBlockMapper.getBlockInfoListByRange(startBlockNum, endBlockNum);
 		if (list != null && list.size() > 0) {
 			for (BlBlock block : list) {
 				if (null!=block.getReward()) {
@@ -70,7 +92,7 @@ public class BlockServiceImpl implements BlockService {
 		result.setRows(list);
 		// 取记录总条数
 		PageInfo<BlBlock> pageInfo = new PageInfo<>(list);
-		result.setTotal(pageInfo.getTotal());
+		result.setTotal(latestBlockNumInDb);
 		result.setPages(pageInfo.getPages());
 		return result;
 	}

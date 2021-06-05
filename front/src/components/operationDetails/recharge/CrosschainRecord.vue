@@ -113,7 +113,19 @@
 </script>
 
 <style lang="less" scoped>
-  .operation-details {
-
+.operation-details {
+  .text_area {
+    border-top: 1px solid #e5e5e5;
+    ul li {
+      border: none;
+      span {
+        text-align: left;
+        display: inline-block;
+        &:first-of-type {
+          width:160px;
+        }
+      }
+    }
   }
+}
 </style>

@@ -18,7 +18,7 @@
             {{$t('transferDetails.details.amount')}}
           </span>
           <span class="value">
-            <span class="balance" v-for="item in detail[0].balance">
+            <span class="balance" v-for="(item,index) in detail[0].balance" :key="index">
               {{item}}
             </span>
           </span>

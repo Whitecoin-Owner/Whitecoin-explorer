@@ -18,6 +18,9 @@ th, td { /* table elements 表格元素 */
   padding: 0;
 }
 
+li{
+  list-style-type: none;
+}
 ol, ul {
   margin: 0;
   padding: 0;
@@ -28,6 +31,7 @@ html, body, button, input, select, textarea {
   font: 1rem "Microsoft Yahei",
   STHeiTi, sans-serif;
   color: #333333;
+  background: #FDFDFD;
 }
 
 a {
@@ -53,6 +57,9 @@ img, input {
   border: 0 none;
 }
 
+li{
+  list-style: none;
+}
 /*@media screen and (max-width: 1550px) {*/
 /*html,*/
 /*body {*/

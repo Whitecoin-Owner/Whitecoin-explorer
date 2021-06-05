@@ -170,7 +170,7 @@
       </header>
       <div class="con">
         <ul>
-          <li v-for="(item,key) in detail[0]">
+          <li v-for="(item,key) in detail[0]" :key="key">
             <template v-if="key !== 'guarantee'">
             <span class="name">
             {{key}}:

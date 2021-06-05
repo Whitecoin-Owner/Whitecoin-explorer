@@ -5,7 +5,14 @@ const en = {
     blocks: 'Blocks',
     transactions: 'Transactions',
     contracts: 'Contracts',
-    richlist: 'Richlist'
+    richlist: 'Richlist',
+    tokens: 'Tokens',
+    ziyuan: 'Resource',
+    assets: 'Assets'
+  },
+  maxTitle:{
+    t1:'All Transactions',
+    t2:'Tokens Transactions',
   },
   alert: {
     noSpace:'No space can be available',
@@ -13,20 +20,22 @@ const en = {
     notSearch:'Not searching for relevant content'
   },
   search: {
-    placeholder: 'Address/TxHash/Contract/Height/Account Name'
+    placeholder: 'Address/TxHash/Contract/Height/Account Name',
+    placeholder2:'Please enter your token name/contract address',
   },
   home: {
     blockchinaInfo: {
       title: 'Blockchain Info',
-      totalSupply: 'Total Supply',
+      totalSupply: 'Circulating Supply',
       transactions: 'Transactions',
       blockHeight: 'Block Height',
       blockReward: 'Block Reward',
-      crossAsset: 'Cross Assets'
+      crossAsset: 'Cross Assets',
+      accountCount: 'Total Supply'
     },
     valueInfo: {
       title: 'Value Info',
-      price: 'Price($)',
+      price: 'Price',
       priceBTC: 'Price(BTC)',
       change: 'Change(24H)'
     },
@@ -38,7 +47,10 @@ const en = {
       transactions: 'Transactions',
       miner: 'Miner',
       size: 'Size',
-      reward: 'Reward'
+      reward: 'Reward',
+      minerFee:'Gas Fee',
+      over:'finished',
+      success:'ordes',
     },
     transaction: {
       title: 'Transaction',
@@ -48,14 +60,23 @@ const en = {
       types: 'Types',
       age: 'Age',
       value: 'Value',
-      fee: 'Fee'
+      fee: 'Fee',
+      numberss:'Amount',
+      fromDeafult:'Create Contract'
     },
     transactionLine: {
       today: 'Today',
       week: 'Week',
       month: 'Month',
       summary: 'Transaction Statistics'
-    }
+    },
+    footer: {
+      t1: 'Whitepaper',
+      t2: 'Contact',
+      t3: 'Event',
+      t4: 'Support',
+      t5: 'Links',
+    },
   },
   transferDetails: {
     tips: {
@@ -69,6 +90,25 @@ const en = {
       type: 'TxReceipt Type:',
       height: 'Block Height:',
       timeStamp: 'TimeStamp:'
+    },
+    tokenTransfers: {
+      title: 'Token Transfers',
+      transfer: 'Transfer',
+    },
+    contractBalanceChangeDetail: {
+      title: 'Contract Balance Changes',
+      contract_withdraw: 'Withdraw from contract',
+      deposit_contract: 'Deposit to contract',
+      deposit_to_address: 'Address Received from contract',
+    },
+    swapEvent: {
+      title: 'Swap Event',
+      NativeBalanceChange: 'Native Balance Change',
+      Exchanged: 'Exchange',
+      LiquidityTokenMinted: 'Minted Liquidity Token',
+      LiquidityTokenDestoryed: 'Destroyed Liquidity Token',
+      LiquidityAdded: 'Added Liquidity',
+      LiquidityRemoved: 'Removed Liquidity'
     },
     details: {
       title: 'Details',
@@ -137,7 +177,7 @@ const en = {
       rewards: 'Rewards:'
     },
     myTransactions: {
-      title: 'My Transactions',
+      title: 'Transfer',
       txHash: 'TxHash',
       block: 'Block',
       types: 'Types',
@@ -166,6 +206,20 @@ const en = {
     lastTime: 'The Last Time',
     total_span_before: 'A Total Of',
     total_span_after: 'verified contract source codes found'
+  },
+  tokens: {
+    title: 'Tokens',
+    contractAddress: 'Contract Address',
+    types: 'Types',
+    authorAddress: 'Author Address',
+    callTimes: 'CallTimes',
+    createTime: 'Create Time',
+    lastTime: 'The Last Time',
+    total_span_before: 'A Total Of',
+    total_span_after: 'verified tokens found',
+    tokenSymbol: 'Symbol',
+    precision: 'Precision',
+    tokenSupply: 'Supply'
   },
   richlist: {
     title: 'Rich List',
@@ -252,7 +306,7 @@ const en = {
   },
   address: {
     overview: {
-      title: 'Address Overview',
+      title: 'Address',
       name: 'Name:',
       address: 'Address:',
       contracts: 'Contracts:',
@@ -261,7 +315,8 @@ const en = {
       balances: 'Balances:',
       lockBalance:'Mortgaged assets:',
       paybackBalances: 'Payback:',
-      abnormal_address: 'Abnormal Address'
+      abnormal_address: 'Abnormal Address',
+      tokenBalances: 'Token Balances:',
     },
     myTransactions: {
       title: 'My Transactions',
@@ -274,6 +329,31 @@ const en = {
       value: 'Value',
       fee: 'Fee'
     },
+    myTokenTransactions: {
+      title: 'My Token Transactions',
+      txHash: 'TxHash',
+      block: 'Block',
+      types: 'Types',
+      age: 'Age',
+      from: 'From',
+      to: 'To',
+      value: 'Value',
+      fee: 'Fee',
+      symbol: 'Symbol'
+    },
+    mySwapTransactions: {
+      address: 'Address',
+      title: 'My Swap Transactions',
+      txHash: 'TxHash',
+      block: 'Block',
+      types: 'Types',
+      age: 'Age',
+      from: 'From',
+      to: 'To',
+      value: 'Value',
+      fee: 'Fee',
+      symbol: 'Symbol'
+    },
     myContracts: {
       title: 'My Contracts',
       address: 'Contract Address',
@@ -282,6 +362,10 @@ const en = {
       create: 'Create Times',
       last: 'The Last Time'
     }
+  },
+  message:{
+    success:'Copy successfully!',
+    failed:'Copy failed!'
   },
   ...enLocale
 }

@@ -61,8 +61,14 @@ public class RpcLink {
 
 	//调合约获取锁仓数量
 	public static final String INVOKE_CONTRACT_OFFLINE = "invoke_contract_offline";
-	//查询所有citizen
-	public static final String LIST_CITIZENS = "list_miners";
+	//查询所有miner
+	public static final String LIST_MINERS = "list_miners";
+
+	// 获取合约交易的receipt
+	public static final String GET_CONTRACT_RECEIPT = "get_contract_invoke_object";
+
+	// 获取合约的基本信息
+	public static final String GET_SIMPLE_CONTRACT_INFO = "get_simple_contract_info";
 }
 
 

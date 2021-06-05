@@ -33,6 +33,15 @@
     block_num, miner_name, block_time, trx_count,reward
     from bl_block order by block_num DESC
   </select>
+  <select id="getBlockInfoListByRange" resultMap="BaseResultMap">
+    select
+    block_num, miner_name, block_time, trx_count,reward
+    from bl_block where
+    <![CDATA[
+     block_num >= #{startBlockNum,jdbcType=INTEGER} and block_num < #{endBlockNum,jdbcType=INTEGER}
+      ]]>
+    order by block_num DESC
+  </select>
   
   <!-- 获取最大的快号 -->
   <select id="queryBlockNum" resultType="java.lang.Long">
@@ -99,6 +108,13 @@
       #{trxCount,jdbcType=INTEGER}, #{amount,jdbcType=BIGINT}, #{fee,jdbcType=DECIMAL}, 
       #{reward,jdbcType=DECIMAL}, #{merkleRoot,jdbcType=VARCHAR}, #{createdTime,jdbcType=TIMESTAMP}
       )
+    ON DUPLICATE KEY UPDATE created_time =
+    <if test="createdTime != null" >
+      #{createdTime,jdbcType=TIMESTAMP}
+    </if>
+    <if test="createdTime == null" >
+      now()
+    </if>
   </insert>
    <insert id="insertBatch" parameterType="java.util.List">
      insert into bl_block (block_id, block_num, block_size, 
@@ -115,6 +131,13 @@
       #{item.reward,jdbcType=DECIMAL}, #{item.merkleRoot,jdbcType=VARCHAR}, #{item.createdTime,jdbcType=TIMESTAMP}
       )
     </foreach>
+     ON DUPLICATE KEY UPDATE created_time =
+     <if test="createdTime != null" >
+       #{createdTime,jdbcType=TIMESTAMP}
+     </if>
+     <if test="createdTime == null" >
+       now()
+     </if>
   </insert>
   <insert id="insertSelective" parameterType="com.browser.dao.entity.BlBlock" >
     insert into bl_block
@@ -212,6 +235,14 @@
         #{createdTime,jdbcType=TIMESTAMP},
       </if>
     </trim>
+
+    ON DUPLICATE KEY UPDATE created_time =
+    <if test="createdTime != null" >
+      #{createdTime,jdbcType=TIMESTAMP}
+    </if>
+    <if test="createdTime == null" >
+      now()
+    </if>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.browser.dao.entity.BlBlock" >
     update bl_block

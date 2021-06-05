@@ -1,38 +1,46 @@
 import zhLocale from 'element-ui/lib/locale/lang/zh-CN'
 const cn = {
   nav: {
-    home: '主页',
+    home: '首页',
     blocks: '区块',
-    transactions: '交易记录',
+    transactions: '交易',
     contracts: '合约',
-    richlist: '富豪榜'
+    richlist: '地址',
+    tokens: '代币',
+    ziyuan: '资源',
+    assets: '资产'
+  },
+  maxTitle:{
+    t1:'全部交易',
+    t2:'代币交易',
   },
   alert: {
     noSpace:'没有足够空间',
-    enterContent:'请输入',
+    enterContent:'请输入内容',
     notSearch:'没找到对应的搜索结果'
   },
   search: {
-    placeholder: '地址/交易hash/合约地址/块高/账户名'
+    placeholder: '地址/交易hash/合约地址/块高/账户名',
+    placeholder2:'请输入代币名称或合约地址', 
   },
   home: {
     blockchinaInfo: {
       title: '区块信息',
       totalSupply: '供应量',
-      transactions: '交易数',
+      transactions: '交易量',
       blockHeight: '区块高度',
       blockReward: '区块奖励',
       crossAsset: '其他资产',
-      accountCount: '账户数量'
+      accountCount: '总发行量'
     },
     valueInfo: {
       title: 'Value Info',
-      price: '价格($)',
+      price: '价格',
       priceBTC: '价格(BTC)',
       change: '涨幅(24H)'
     },
     blocks: {
-      title: '区块',
+      title: '最新区块',
       more: '更多',
       all: '全部',
       height: '高度',
@@ -40,25 +48,37 @@ const cn = {
       transactions: '交易',
       miner: '播报方',
       size: '大小',
-      reward: '奖励'
+      reward: '奖励',
+      minerFee:'矿工费',
+      over:'完成',
+      success:'笔订单',
     },
     transaction: {
-      title: '交易',
+      title: '最新交易',
       more: '更多',
       all: '全部',
-      txHash: '交易hash',
-      block: '区块',
+      txHash: '交易',
+      block: '高度',
       types: '类型',
       age: '时间',
       value: '金额',
-      fee: '手续费'
+      fee: '手续费',
+      numberss:'数量',
+      fromDeafult:'创建合约'
     },
     transactionLine: {
       today: '今天',
       week: '本周',
       month: '本月',
       summary: '交易统计'
-    }
+    },
+    footer: {
+      t1: '白皮书',
+      t2: '联系我们',
+      t3: '历史',
+      t4: '支持',
+      t5: '友情链接',
+    },
   },
   transferDetails: {
     tips: {
@@ -72,6 +92,25 @@ const cn = {
       type: '交易结果类型:',
       height: '区块高度:',
       timeStamp: '时间:'
+    },
+    tokenTransfers: {
+      title: '代币转账',
+      transfer: '转账',
+    },
+    contractBalanceChangeDetail: {
+      title: '合约余额变化',
+      contract_withdraw: '从合约转出',
+      deposit_contract: '充入合约',
+      deposit_to_address: '合约提现到地址',
+    },
+    swapEvent: {
+      title: 'Swap事件',
+      NativeBalanceChange: '基础资产余额变化',
+      Exchanged: '兑换',
+      LiquidityTokenMinted: '流动性代币增加',
+      LiquidityTokenDestoryed: '流动性代币销毁',
+      LiquidityAdded: '添加流动性',
+      LiquidityRemoved: '移除流动性'
     },
     details: {
       title: '明细',
@@ -136,7 +175,7 @@ const cn = {
       name: '名称:',
       address: '地址:',
       contracts: '合约:',
-      transaction: '交易:',
+      transaction: '交易数:',
       rewards: '奖励:'
     },
     myTransactions: {
@@ -170,6 +209,20 @@ const cn = {
     total_span_before: '一共发现',
     total_span_after: '个合约'
   },
+  tokens: {
+    title: '代币',
+    contractAddress: '合约地址',
+    types: '类型',
+    authorAddress: '创建人',
+    callTimes: '调用次数',
+    createTime: '创建时间',
+    lastTime: '最后使用时间',
+    total_span_before: '一共发现',
+    total_span_after: '个合约',
+    tokenSymbol: '代币符号',
+    precision: '精度',
+    tokenSupply: '供应量'
+  },
   richlist: {
     title: '富豪榜',
     address: '地址',
@@ -196,7 +249,7 @@ const cn = {
     title: '区块',
     height: '高度',
     age: '时间',
-    txn: '交易数',
+    txn: '交易',
     miner: '播报者',
     size: '大小',
     reward: '奖励',
@@ -236,7 +289,7 @@ const cn = {
     mortgage: '投票',
     other:'其他',
     txHash:'交易hash',
-    block:'区块',
+    block:'高度',
     types:'类型',
     age:'时间',
     from:'发送方',
@@ -255,20 +308,21 @@ const cn = {
   },
   address: {
     overview: {
-      title: '地址概览',
+      title: '地址',
       name: '账户名:',
       address: '地址:',
       contracts: '合约:',
-      transaction: '交易:',
+      transaction: '交易:', 
       rewards: '奖励:',
       balances: '余额:',
-      lockBalance:'投票资产:',
+      lockBalance:'质押资产:',
       paybackBalances: '奖励金额:',
-      abnormal_address: '异常地址'
+      abnormal_address: '异常地址',
+      tokenBalances: '代币余额:',
     },
     myTransactions: {
-      title: '我的交易',
-      txHash: '交易hash',
+      title: '转账',
+      txHash: '交易',
       block: '高度',
       types: '类型',
       age: '时间',
@@ -276,6 +330,31 @@ const cn = {
       to: '接收方',
       value: '金额',
       fee: '手续费'
+    },
+    myTokenTransactions: {
+      title: '我的代币交易',
+      txHash: '交易hash',
+      block: '高度',
+      types: '类型',
+      age: '时间',
+      from: '发送方',
+      to: '接收方',
+      value: '金额',
+      fee: '手续费',
+      symbol: '代币'
+    },
+    mySwapTransactions: {
+      address: '地址',
+      title: '我的swap交易',
+      txHash: '交易hash',
+      block: '高度',
+      types: '类型',
+      age: '时间',
+      from: '发送方',
+      to: '接收方',
+      value: '金额',
+      fee: '手续费',
+      symbol: '代币'
     },
     myContracts: {
       title: '我的合约',
@@ -285,6 +364,10 @@ const cn = {
       create: '创建时间',
       last: '最后使用时间'
     }
+  },
+  message:{
+    success:'复制成功!',
+    failed:'复制失败!'
   },
   ...zhLocale
 }

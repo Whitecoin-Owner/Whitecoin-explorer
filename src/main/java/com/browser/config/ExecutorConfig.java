@@ -8,17 +8,14 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;
 
-/** 异步线程池
- * Created by mayakui on 2017/4/1.
+/**
+ * async task thread pool config
  */
 @Configuration
 @EnableAsync
 public class ExecutorConfig {
-    /** 核心线程数大小 */
     private static int corePoolSize =50;
-    /** 最大线程数 */
     private static int maxPoolSize = 500;
-    /** 缓冲队列 */
     private static int queueCapacity = 200;
 
     @Bean
