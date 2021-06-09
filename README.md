@@ -13,3 +13,6 @@ xwc-explorer
 # deploy
 
 * `deploy.md`
+
+# description
+The jdk version uses 1.8 version, not too high.
