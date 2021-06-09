@@ -1,12 +1,11 @@
 package com.browser.service.impl;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import com.browser.tools.TimeTool;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONArray;
@@ -27,6 +26,12 @@ import org.springframework.util.CollectionUtils;
 
 @Service
 public class ContractService {
+
+    @Value("${utcTimeZone}")
+    private String TIME_ZONE;
+
+    @Value("${utcTimeInterval}")
+    private int TIME_INTERVAL;
 
     @Autowired
     private RealData realData;
@@ -70,7 +75,28 @@ public class ContractService {
         }
         List<BlContractInfo> list = blContractInfoMapper.selectContractListPage(blContractInfo, offset, limit);
         if (!CollectionUtils.isEmpty(list)) {
+            Date createTime;
+            Date regTime;
+            Date lastTime;
+            Date trxTime;
+            String intervalTime;
             for (BlContractInfo contractInfo : list) {
+                contractInfo.setTimeZone(TIME_ZONE);
+                regTime = contractInfo.getRegTime();
+                if (null != regTime) {
+                    regTime = new Date(regTime.getTime() - TIME_INTERVAL * 60 * 60 * 1000L);
+                    contractInfo.setRegTime(regTime);
+                }
+                createTime = contractInfo.getCreateTime();
+                if (null != createTime) {
+                    createTime = new Date(createTime.getTime() - TIME_INTERVAL * 60 * 60 * 1000L);
+                    contractInfo.setCreateTime(createTime);
+                }
+//                lastTime = contractInfo.getLastTime();
+//                if (null != lastTime) {
+//                    lastTime = new Date(lastTime.getTime() - TIME_INTERVAL * 60 * 60 * 1000L);
+//                    contractInfo.setLastTime(lastTime);
+//                }
 //				BlContractStatis blContractStatis=new BlContractStatis();
                 contractInfo.setContractAddress(contractInfo.getContractId());
                 contractInfo.setOnwerAddress(contractInfo.getOwnerAddress());
@@ -82,7 +108,13 @@ public class ContractService {
                 List<BlTransaction> trxList = transactionService.selectCalledContract(transaction);
                 if (!CollectionUtils.isEmpty(trxList)) {
                     contractInfo.setCallTimes(trxList.size());
-                    contractInfo.setLastTime(trxList.get(0).getTrxTime());
+                    trxTime = trxList.get(0).getTrxTime();
+                    if (null != trxTime) {
+                        intervalTime = TimeTool.getIntervalTimeStr(trxTime, new Date());
+                        contractInfo.setIntervalTime(intervalTime);
+                        trxTime = new Date(trxTime.getTime() - TIME_INTERVAL * 60 * 60 * 1000L);
+                        contractInfo.setLastTime(trxTime);
+                    }
                 } else {
                     contractInfo.setCallTimes(0);
                 }

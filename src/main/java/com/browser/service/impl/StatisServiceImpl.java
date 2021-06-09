@@ -1,43 +1,34 @@
 package com.browser.service.impl;
 
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import com.alibaba.fastjson.JSONObject;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Service;
-
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.browser.config.RealData;
-import com.browser.dao.entity.BlAsset;
-import com.browser.dao.entity.BlBlock;
-import com.browser.dao.entity.BlContractBalance;
-import com.browser.dao.entity.BlContractDetail;
-import com.browser.dao.entity.BlContractInfo;
-import com.browser.dao.entity.BlMinerStatis;
-import com.browser.dao.entity.BlStatis;
-import com.browser.dao.entity.BlTransaction;
-import com.browser.dao.entity.BlTrxStatis;
-import com.browser.dao.mapper.BlBlockMapper;
-import com.browser.dao.mapper.BlContractBalanceMapper;
-import com.browser.dao.mapper.BlContractInfoMapper;
-import com.browser.dao.mapper.BlTransactionMapper;
-import com.browser.dao.mapper.BlTrxStatisMapper;
+import com.browser.dao.entity.*;
+import com.browser.dao.mapper.*;
 import com.browser.service.StatisService;
 import com.browser.tools.Constant;
+import com.browser.tools.TimeTool;
 import com.browser.tools.common.DateUtil;
 import com.browser.tools.common.StringUtil;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 public class StatisServiceImpl implements StatisService {
+
+    @Value("${utcTimeZone}")
+    private String TIME_ZONE;
+
+    @Value("${utcTimeInterval}")
+    private int TIME_INTERVAL;
 
     @Autowired
     private BlTransactionMapper blTransactionMapper;
@@ -65,25 +56,50 @@ public class StatisServiceImpl implements StatisService {
     @Override
     public List<BlBlock> newBlockStatic() {
         List<BlBlock> blockList = blBlockMapper.selectNewBlockInfo();
-        if (null != blockList && blockList.size() > 0) {
-            for (int i=0;i<blockList.size();i++) {
-                if (null != blockList.get(i).getReward()) {
-                    blockList.get(i).setRewards(blockList.get(i).getReward().divide(new BigDecimal(Constant.PRECISION)).stripTrailingZeros()
+        if (!CollectionUtils.isEmpty(blockList)) {
+            BlBlock blBlock;
+            BigDecimal reward;
+            Date createdTime;
+            Date currentBlockTime;
+            Date beforeBlockTime;
+            Long intervalMileSeconds;
+            String intervalTimeStr;
+            for (int i = 0, size = blockList.size(); i < size; i++) {
+                blBlock = blockList.get(i);
+                reward = blBlock.getReward();
+                if (null != reward) {
+                    blBlock.setRewards(reward.divide(new BigDecimal(Constant.PRECISION)).stripTrailingZeros()
                             .toPlainString() + " " + Constant.SYMBOL);
                 }
 
-                if(blockList.size() > 1) {
-
+                if (size > 1) {
+                    blBlock.setTimeZone(TIME_ZONE);
+                    createdTime = blBlock.getCreatedTime();
+                    // 时间统一使用UTC，减去8小时
+                    if (null != createdTime) {
+                        createdTime = new Date(createdTime.getTime() - TIME_INTERVAL * 60 * 60 * 1000L);
+                        blBlock.setCreatedTime(createdTime);
+                    }
                     //计算完成时间，当前条数据blockTime减上一条数据blockTime
-                    if(i != blockList.size()-1) {
-                        Date currentBlockTime = blockList.get(i).getBlockTime();
-                        Date beforeBlockTime = blockList.get(i+1).getBlockTime();
-                        if(null != currentBlockTime && null != beforeBlockTime) {
-                            Long intervalMileSeconds = currentBlockTime.getTime() - beforeBlockTime.getTime();
-                            blockList.get(i).setSeconds(intervalMileSeconds/1000);
+                    currentBlockTime = blBlock.getBlockTime();
+                    // 时间统一使用UTC，减去8小时
+                    if (null != currentBlockTime) {
+                        intervalTimeStr = TimeTool.getIntervalTimeStr(currentBlockTime, new Date());
+                        blBlock.setIntervalTime(intervalTimeStr);
+                        currentBlockTime = new Date(currentBlockTime.getTime() - TIME_INTERVAL * 60 * 60 * 1000L);
+                        blBlock.setBlockTime(currentBlockTime);
+                    }
+                    if (i != size - 1) {
+                        beforeBlockTime = blockList.get(i + 1).getBlockTime();
+                        if (null != beforeBlockTime) {
+                            beforeBlockTime = new Date(beforeBlockTime.getTime() - TIME_INTERVAL * 60 * 60 * 1000L);
                         }
-                    } else if(i == blockList.size()-1) {
-                        blockList.get(i).setSeconds(0L);
+                        if (null != currentBlockTime && null != beforeBlockTime) {
+                            intervalMileSeconds = currentBlockTime.getTime() - beforeBlockTime.getTime();
+                            blBlock.setSeconds(intervalMileSeconds / 1000);
+                        }
+                    } else if (i == size - 1) {
+                        blBlock.setSeconds(0L);
                     }
                 }
             }
@@ -95,11 +111,23 @@ public class StatisServiceImpl implements StatisService {
     @Override
     public List<BlTransaction> newTransactionStatic() {
         List<BlTransaction> txList = blTransactionMapper.selectNewTrxInfo();
-        if (null != txList && txList.size() > 0) {
+        if (!CollectionUtils.isEmpty(txList)) {
+            Integer opType;
+            Date txTime;
+            String intervalTime;
             for (BlTransaction trx : txList) {
                 handleAmountData(trx);
-
-                if(null != trx.getOpType() && trx.getOpType() == 73) {
+                trx.setTimeZone(TIME_ZONE);
+                // 时间统一使用UTC，减去8小时
+                txTime = trx.getTrxTime();
+                if (null != txTime) {
+                    intervalTime = TimeTool.getIntervalTimeStr(txTime, new Date());
+                    trx.setIntervalTime(intervalTime);
+                    txTime = new Date(txTime.getTime() - TIME_INTERVAL * 60 * 60 * 1000L);
+                }
+                trx.setTrxTime(txTime);
+                opType = trx.getOpType();
+                if (null != opType && opType == 73) {
                     trx.setFromAccount("Mining");
                 }
             }
@@ -112,7 +140,7 @@ public class StatisServiceImpl implements StatisService {
         BlStatis blStatis = new BlStatis();
 
         BigDecimal totalReward = redisService.getTotalReward();
-        if(totalReward ==null){
+        if (totalReward == null) {
             totalReward = blBlockMapper.queryBlockRewards();
         }
         if (null != totalReward) {
@@ -122,14 +150,14 @@ public class StatisServiceImpl implements StatisService {
         }
 
         Integer trxNums = redisService.getTotalTrx();
-        if(trxNums ==null){
+        if (trxNums == null) {
             trxNums = blTransactionMapper.countTrxNum();
         }
 
         Long blockNum = blBlockMapper.queryBlockNum();
 
         BigDecimal totalSupply = redisService.getCurIssueNum();
-        if(totalSupply==null){
+        if (totalSupply == null) {
             totalSupply = requestWalletService.getAssetImp(Constant.SYMBOL);
         }
 
@@ -138,35 +166,35 @@ public class StatisServiceImpl implements StatisService {
         blStatis.setTotalAmount(totalSupply);
 
         String crossAssets = redisService.getCrossAssetNum();
-        if(crossAssets==null){
+        if (crossAssets == null) {
             //获取跨链资产
             List<BlAsset> aList = redisService.getCrossAsset();
-            StringBuffer sb =new StringBuffer();
-            if(aList!=null && aList.size()>0){
-                for (BlAsset blAsset: aList) {
-                    if(!Constant.SYMBOL.equals(blAsset.getSymbol())){
+            StringBuffer sb = new StringBuffer();
+            if (aList != null && aList.size() > 0) {
+                for (BlAsset blAsset : aList) {
+                    if (!Constant.SYMBOL.equals(blAsset.getSymbol())) {
                         BigDecimal crossSupply = requestWalletService.getAssetImp(blAsset.getSymbol());
-                        if(crossSupply!=null){
-                            if("ERCPAX".equals(blAsset.getSymbol())){
+                        if (crossSupply != null) {
+                            if ("ERCPAX".equals(blAsset.getSymbol())) {
                                 blAsset.setSymbol("PAX");
                             }
-                            if("ERCELF".equals(blAsset.getSymbol())){
+                            if ("ERCELF".equals(blAsset.getSymbol())) {
                                 blAsset.setSymbol("ELF");
                             }
 
-                            if(!StringUtils.contains(sb.toString(),blAsset.getSymbol())){
-                                sb.append(crossSupply+" "+blAsset.getSymbol()+", ");
+                            if (!StringUtils.contains(sb.toString(), blAsset.getSymbol())) {
+                                sb.append(crossSupply + " " + blAsset.getSymbol() + ", ");
                             }
                         }
                     }
                 }
                 String crossAssetStr = sb.toString();
-                if(crossAssetStr.length()>=crossAssetStr.length()-2 && crossAssetStr.length()>2) {
-                    redisService.putCrossAssetNum(crossAssetStr.substring(0,crossAssetStr.length()-2));
-                    blStatis.setCrossAsset(crossAssetStr.substring(0,crossAssetStr.length()-2));
+                if (crossAssetStr.length() >= crossAssetStr.length() - 2 && crossAssetStr.length() > 2) {
+                    redisService.putCrossAssetNum(crossAssetStr.substring(0, crossAssetStr.length() - 2));
+                    blStatis.setCrossAsset(crossAssetStr.substring(0, crossAssetStr.length() - 2));
                 }
             }
-        }else {
+        } else {
             blStatis.setCrossAsset(crossAssets);
         }
 
@@ -174,8 +202,6 @@ public class StatisServiceImpl implements StatisService {
 
         return blStatis;
     }
-
-
 
 
     @Override
@@ -186,7 +212,7 @@ public class StatisServiceImpl implements StatisService {
         for (String day : date) {
             BlTrxStatis trxStatis = trxStatisMapper.selectByTime(day);
             if (trxStatis != null) {
-                updateTrxStatis(day, array, trxStatis.getTrxNum(),maxDay);
+                updateTrxStatis(day, array, trxStatis.getTrxNum(), maxDay);
 
             } else {
                 insertTrxStatis(day, array);
@@ -234,37 +260,11 @@ public class StatisServiceImpl implements StatisService {
         }
     }
 
-    private void updateTrxStatis(String day, JSONArray array, Integer trxNum,String maxDay) {
+    private void updateTrxStatis(String day, JSONArray array, Integer trxNum, String maxDay) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            if(maxDay!=null){
-                if(maxDay.equals(sdf.format(new Date()))){
-                    if(maxDay.equals(day)){
-                        BlTransaction transaction = new BlTransaction();
-                        transaction.setStartTime(DateUtil.getStartTime(day));
-                        transaction.setEndTime(DateUtil.getEndTime(day));
-                        BlTransaction tx = blTransactionMapper.countTrxNumByDate(transaction);
-                        if (tx != null) {
-                            BlTrxStatis trxStatis = new BlTrxStatis();
-                            trxStatis.setStatisTime(tx.getQueryTime());
-                            trxStatis.setTrxNum(Integer.valueOf(tx.getTrxNum()));
-                            trxStatisMapper.updateByTime(trxStatis);
-                            JSONArray data = new JSONArray();
-                            data.add(tx.getQueryTime());
-                            data.add(Integer.valueOf(tx.getTrxNum()));
-                            array.add(data);
-                        } else {
-                            JSONArray data = new JSONArray();
-                            data.add(day);
-                            data.add(trxNum);
-                            array.add(data);
-                        }
-                    }else{
-                        JSONArray data = new JSONArray();
-                        data.add(day);
-                        data.add(trxNum);
-                        array.add(data);
-                    }
-                }else{
+        if (maxDay != null) {
+            if (maxDay.equals(sdf.format(new Date()))) {
+                if (maxDay.equals(day)) {
                     BlTransaction transaction = new BlTransaction();
                     transaction.setStartTime(DateUtil.getStartTime(day));
                     transaction.setEndTime(DateUtil.getEndTime(day));
@@ -284,8 +284,34 @@ public class StatisServiceImpl implements StatisService {
                         data.add(trxNum);
                         array.add(data);
                     }
+                } else {
+                    JSONArray data = new JSONArray();
+                    data.add(day);
+                    data.add(trxNum);
+                    array.add(data);
+                }
+            } else {
+                BlTransaction transaction = new BlTransaction();
+                transaction.setStartTime(DateUtil.getStartTime(day));
+                transaction.setEndTime(DateUtil.getEndTime(day));
+                BlTransaction tx = blTransactionMapper.countTrxNumByDate(transaction);
+                if (tx != null) {
+                    BlTrxStatis trxStatis = new BlTrxStatis();
+                    trxStatis.setStatisTime(tx.getQueryTime());
+                    trxStatis.setTrxNum(Integer.valueOf(tx.getTrxNum()));
+                    trxStatisMapper.updateByTime(trxStatis);
+                    JSONArray data = new JSONArray();
+                    data.add(tx.getQueryTime());
+                    data.add(Integer.valueOf(tx.getTrxNum()));
+                    array.add(data);
+                } else {
+                    JSONArray data = new JSONArray();
+                    data.add(day);
+                    data.add(trxNum);
+                    array.add(data);
                 }
             }
+        }
 
     }
 
@@ -331,11 +357,11 @@ public class StatisServiceImpl implements StatisService {
 //            minerStatis.setRewards(rewards);
 
             BigDecimal reward = blTransactionMapper.selectRewards(block.getMinerAddress());
-            if(reward!=null){
-                minerStatis.setRewards(reward.divide(new BigDecimal(Constant.PRECISION),5,BigDecimal.ROUND_HALF_UP).
-                        stripTrailingZeros().toPlainString()+" "+Constant.SYMBOL);
-            }else {
-                minerStatis.setRewards("0 "+Constant.SYMBOL);
+            if (reward != null) {
+                minerStatis.setRewards(reward.divide(new BigDecimal(Constant.PRECISION), 5, BigDecimal.ROUND_HALF_UP).
+                        stripTrailingZeros().toPlainString() + " " + Constant.SYMBOL);
+            } else {
+                minerStatis.setRewards("0 " + Constant.SYMBOL);
             }
 
             Integer contracts = blContractInfoMapper.countContracts(block.getMinerAddress());
@@ -458,7 +484,7 @@ public class StatisServiceImpl implements StatisService {
         if (!StringUtil.isEmpty(address)) {
             addrStatis.setName(blMinerStatis.getAddress());
             addrStatis.setAddress(address);
-        }else {
+        } else {
             addrStatis.setAddress(blMinerStatis.getAddress());
         }
 
@@ -470,11 +496,11 @@ public class StatisServiceImpl implements StatisService {
         }
 
         BigDecimal reward = blTransactionMapper.selectRewards(addrStatis.getAddress());
-        if(reward!=null){
-            addrStatis.setRewards(reward.divide(new BigDecimal(Constant.PRECISION),5,BigDecimal.ROUND_HALF_UP).
-                    stripTrailingZeros().toPlainString()+" "+Constant.SYMBOL);
-        }else {
-            addrStatis.setRewards("0 "+Constant.SYMBOL);
+        if (reward != null) {
+            addrStatis.setRewards(reward.divide(new BigDecimal(Constant.PRECISION), 5, BigDecimal.ROUND_HALF_UP).
+                    stripTrailingZeros().toPlainString() + " " + Constant.SYMBOL);
+        } else {
+            addrStatis.setRewards("0 " + Constant.SYMBOL);
         }
 
         Integer contracts = blContractInfoMapper.countContracts(addrStatis.getAddress());
@@ -491,7 +517,7 @@ public class StatisServiceImpl implements StatisService {
                         divide(new BigDecimal(blAsset.getPrecision()), 8, BigDecimal.ROUND_HALF_UP).
                         stripTrailingZeros().toPlainString();
 
-                if("XWC".equals(blAsset.getSymbol())) {
+                if ("XWC".equals(blAsset.getSymbol())) {
                     balanceList.add(balance + " " + blAsset.getSymbol());
                 } else {
                     balanceList.add(balance + " " + blAsset.getSymbol() + " " + blAsset.getAssetId());
@@ -503,10 +529,10 @@ public class StatisServiceImpl implements StatisService {
 
         String accountName = redisService.getAccountName(addrStatis.getAddress());
 
-        if(accountName == null || accountName.isEmpty()) {
+        if (accountName == null || accountName.isEmpty()) {
             try {
                 String foundAccountName = requestWalletService.getAccountNameByAddr(addrStatis.getAddress());
-                if(foundAccountName!=null && !foundAccountName.isEmpty()) {
+                if (foundAccountName != null && !foundAccountName.isEmpty()) {
                     accountName = foundAccountName;
                     redisService.putAccountName(addrStatis.getAddress(), accountName);
                 }
@@ -515,12 +541,12 @@ public class StatisServiceImpl implements StatisService {
             }
         }
 
-        if(addrStatis.getName()==null && accountName!=null && accountName.length()>0){
+        if (addrStatis.getName() == null && accountName != null && accountName.length() > 0) {
             addrStatis.setName(accountName);
         }
 
         List<String> lockList = new ArrayList<>();
-        if(accountName!=null&&accountName.length()>0) {
+        if (accountName != null && accountName.length() > 0) {
             Map<String, BigDecimal> map = new HashMap<>();
             String lockBalanceStr = requestWalletService.getLockBalance(accountName);
             if (lockBalanceStr != null) {
@@ -548,7 +574,7 @@ public class StatisServiceImpl implements StatisService {
             }
         }
         List<String> paybackList = new ArrayList<>();
-        if(accountName!=null&&accountName.length()>0) {
+        if (accountName != null && accountName.length() > 0) {
             Map<String, BigDecimal> paybackMap = new HashMap<>();
             String paybackStr = requestWalletService.getPaybackBalance(addrStatis.getAddress());
             if (paybackStr != null) {
@@ -579,7 +605,7 @@ public class StatisServiceImpl implements StatisService {
         addrStatis.setBalances(balanceList);
         addrStatis.setLockBalances(lockList);
         addrStatis.setPaybackBalances(paybackList);
-        if(addrStatis.getName()==null && addrTrxNum == 0){
+        if (addrStatis.getName() == null && addrTrxNum == 0) {
             return null;
         }
 
@@ -594,11 +620,11 @@ public class StatisServiceImpl implements StatisService {
             addrStatis.setName(blMinerStatis.getAddress());
             addrStatis.setAddress(address);
             return addrStatis;
-        }else {
+        } else {
             addrStatis.setAddress(blMinerStatis.getAddress());
         }
         BlTransaction addr = blTransactionMapper.judgeAddr(addrStatis.getAddress());
-        if(addr==null){
+        if (addr == null) {
             return null;
         }
 
@@ -610,10 +636,10 @@ public class StatisServiceImpl implements StatisService {
         if (!StringUtil.isEmpty(trx.getAssetId())) {
             BlAsset blAsset = realData.getSymbolByAssetId(trx.getAssetId());
 
-            if(trx.getOpType() == Constant.ASSET_MORGAGE || trx.getOpType() == Constant.ASSET_REDEEM){
+            if (trx.getOpType() == Constant.ASSET_MORGAGE || trx.getOpType() == Constant.ASSET_REDEEM) {
                 trx.setAmountStr(trx.getAmount().divide(new BigDecimal(blAsset.getPrecision())).stripTrailingZeros()
-                        .toPlainString()  +" " + blAsset.getSymbol());
-            }else{
+                        .toPlainString() + " " + blAsset.getSymbol());
+            } else {
                 if (null != trx.getAmount() && Constant.SYMBOL.equals(blAsset.getSymbol())) {
                     trx.setAmountStr(trx.getAmount().divide(new BigDecimal(blAsset.getPrecision())).stripTrailingZeros()
                             .toPlainString() + " " + blAsset.getSymbol());
@@ -650,12 +676,12 @@ public class StatisServiceImpl implements StatisService {
     }
 
     @Override
-    public void indexEcharts(){
-        BlTransaction record =new BlTransaction();
+    public void indexEcharts() {
+        BlTransaction record = new BlTransaction();
         SimpleDateFormat result = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         record.setStartTime(DateUtil.getStartTime(result.format(new Date())));
         record.setEndTime(result.format(new Date()));
-        JSONArray hour =this.newTrxNumByHourStatic(record);
+        JSONArray hour = this.newTrxNumByHourStatic(record);
         realData.setToday(hour);
 
 
@@ -673,12 +699,12 @@ public class StatisServiceImpl implements StatisService {
 
     @Async("myAsync")
     @Override
-    public void statisReward(BlBlock block){
+    public void statisReward(BlBlock block) {
         BigDecimal totalReward = redisService.getTotalReward();
-        if(totalReward!=null){
-            totalReward =totalReward.add(block.getReward());
+        if (totalReward != null) {
+            totalReward = totalReward.add(block.getReward());
             redisService.putTotalReward(totalReward);
-        }else{
+        } else {
             BigDecimal reward = blBlockMapper.queryBlockRewards();
             redisService.putTotalReward(reward);
         }
@@ -687,13 +713,13 @@ public class StatisServiceImpl implements StatisService {
 
     @Async("myAsync")
     @Override
-    public void statisTrxNum(Integer trxNum){
+    public void statisTrxNum(Integer trxNum) {
 
         Integer trxNums = redisService.getTotalTrx();
-        if(trxNums!=null){
-            trxNums =trxNums+trxNum;
+        if (trxNums != null) {
+            trxNums = trxNums + trxNum;
             redisService.putTotalTrx(trxNums);
-        }else{
+        } else {
             Integer statisNum = blTransactionMapper.countTrxNum();
             redisService.putTotalTrx(statisNum);
         }

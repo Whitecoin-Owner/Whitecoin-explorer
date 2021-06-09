@@ -64,6 +64,8 @@ public class BlTransaction {
 
     private String memo;
 
+    private String intervalTime;
+
     private Boolean fail = false; // 是否失败交易
 
     // 这个不直接存入数据库，取数据后的暂存值
@@ -89,6 +91,8 @@ public class BlTransaction {
     private Integer rewards;
     private String address;
     private String eventArg;
+    private String timeZone;
+    private Integer sortByIdOrBlockNum;
 
     private Set<String> toAddrList;
     private Set<String> fromAddrList;
@@ -461,4 +465,27 @@ public class BlTransaction {
         this.fail = fail;
     }
 
+    public String getTimeZone() {
+        return timeZone;
+    }
+
+    public void setTimeZone(String timeZone) {
+        this.timeZone = timeZone;
+    }
+
+    public String getIntervalTime() {
+        return intervalTime;
+    }
+
+    public void setIntervalTime(String intervalTime) {
+        this.intervalTime = intervalTime;
+    }
+
+    public Integer getSortByIdOrBlockNum() {
+        return sortByIdOrBlockNum;
+    }
+
+    public void setSortByIdOrBlockNum(Integer sortByIdOrBlockNum) {
+        this.sortByIdOrBlockNum = sortByIdOrBlockNum;
+    }
 }

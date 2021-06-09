@@ -68,19 +68,25 @@
 		select
 		<include refid="Base_Column_List" />
 		from bl_transaction
-		where 1=1
-		<if test="trxId != null">
-			and trx_id =#{trxId,jdbcType=VARCHAR}
+		<where>
+			<if test="trxId != null">
+				and trx_id =#{trxId,jdbcType=VARCHAR}
+			</if>
+			<if test="opType != null">
+				and op_type =#{opType,jdbcType=INTEGER}
+			</if>
+			<if test="parentOpType != null">
+				and parent_op_type =#{parentOpType,jdbcType=INTEGER}
+			</if>
+		</where>
+		<if test="sortByIdOrBlockNum == 1">
+			order by ID DESC
 		</if>
-		<if test="opType != null">
-			and op_type =#{opType,jdbcType=INTEGER}
+		<if test="sortByIdOrBlockNum == 2">
+			order by block_num DESC
 		</if>
-		<if test="parentOpType != null">
-			and parent_op_type =#{parentOpType,jdbcType=INTEGER}
-		</if>
-		order by ID DESC
 	</select>
-	
+
 	<!-- 根据交易id和op类型查询交易信息-->
 	<select id="getTransactionByTxId" resultMap="BaseResultMap"
 		parameterType="com.browser.dao.entity.BlTransaction">

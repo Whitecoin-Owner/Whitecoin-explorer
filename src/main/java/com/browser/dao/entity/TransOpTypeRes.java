@@ -11,109 +11,129 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class TransOpTypeRes {
 
-	private String txHash;
-	
-	private Integer txStatus;
-	
-	private Integer txType;
-	
-	private Long blockHeight;
-	
-	private Date timeStamp;
-	
-	private Object operationData;
+    private String txHash;
 
-	private List<BlTxEvents> events;
-	private List<BlTxContractBalanceChange> txContractBalanceChanges;
-	private List<BlTokenTransaction> tokenTransactions;
-	private List<BlSwapTransaction> swapTransactions;
-	private Boolean fail;
+    private Integer txStatus;
 
-	public String getTxHash() {
-		return txHash;
-	}
+    private Integer txType;
 
-	public void setTxHash(String txHash) {
-		this.txHash = txHash;
-	}
+    private Long blockHeight;
 
-	public Integer getTxStatus() {
-		return txStatus;
-	}
+    private Date timeStamp;
 
-	public void setTxStatus(Integer txStatus) {
-		this.txStatus = txStatus;
-	}
+    private Object operationData;
 
-	public Integer getTxType() {
-		return txType;
-	}
+    private String timeZone;
 
-	public void setTxType(Integer txType) {
-		this.txType = txType;
-	}
+    private String intervalTime;
 
-	public Long getBlockHeight() {
-		return blockHeight;
-	}
+    private List<BlTxEvents> events;
+    private List<BlTxContractBalanceChange> txContractBalanceChanges;
+    private List<BlTokenTransaction> tokenTransactions;
+    private List<BlSwapTransaction> swapTransactions;
+    private Boolean fail;
 
-	public void setBlockHeight(Long blockHeight) {
-		this.blockHeight = blockHeight;
-	}
+    public String getTxHash() {
+        return txHash;
+    }
 
-	public Date getTimeStamp() {
-		return timeStamp;
-	}
+    public void setTxHash(String txHash) {
+        this.txHash = txHash;
+    }
 
-	public void setTimeStamp(Date timeStamp) {
-		this.timeStamp = timeStamp;
-	}
+    public Integer getTxStatus() {
+        return txStatus;
+    }
 
-	public Object getOperationData() {
-		return operationData;
-	}
+    public void setTxStatus(Integer txStatus) {
+        this.txStatus = txStatus;
+    }
 
-	public void setOperationData(Object operationData) {
-		this.operationData = operationData;
-	}
+    public Integer getTxType() {
+        return txType;
+    }
 
-	public List<BlTxEvents> getEvents() {
-		return events;
-	}
+    public void setTxType(Integer txType) {
+        this.txType = txType;
+    }
 
-	public void setEvents(List<BlTxEvents> events) {
-		this.events = events;
-	}
+    public Long getBlockHeight() {
+        return blockHeight;
+    }
 
-	public List<BlTxContractBalanceChange> getTxContractBalanceChanges() {
-		return txContractBalanceChanges;
-	}
+    public void setBlockHeight(Long blockHeight) {
+        this.blockHeight = blockHeight;
+    }
 
-	public void setTxContractBalanceChanges(List<BlTxContractBalanceChange> txContractBalanceChanges) {
-		this.txContractBalanceChanges = txContractBalanceChanges;
-	}
+    public Date getTimeStamp() {
+        return timeStamp;
+    }
 
-	public List<BlTokenTransaction> getTokenTransactions() {
-		return tokenTransactions;
-	}
+    public void setTimeStamp(Date timeStamp) {
+        this.timeStamp = timeStamp;
+    }
 
-	public void setTokenTransactions(List<BlTokenTransaction> tokenTransactions) {
-		this.tokenTransactions = tokenTransactions;
-	}
+    public Object getOperationData() {
+        return operationData;
+    }
 
-	public List<BlSwapTransaction> getSwapTransactions() {
-		return swapTransactions;
-	}
+    public void setOperationData(Object operationData) {
+        this.operationData = operationData;
+    }
 
-	public void setSwapTransactions(List<BlSwapTransaction> swapTransactions) {
-		this.swapTransactions = swapTransactions;
-	}
+    public List<BlTxEvents> getEvents() {
+        return events;
+    }
 
-	public Boolean getFail() {
-		return fail;
-	}
+    public void setEvents(List<BlTxEvents> events) {
+        this.events = events;
+    }
 
-	public void setFail(Boolean fail) {
-		this.fail = fail;
-	}
+    public List<BlTxContractBalanceChange> getTxContractBalanceChanges() {
+        return txContractBalanceChanges;
+    }
+
+    public void setTxContractBalanceChanges(List<BlTxContractBalanceChange> txContractBalanceChanges) {
+        this.txContractBalanceChanges = txContractBalanceChanges;
+    }
+
+    public List<BlTokenTransaction> getTokenTransactions() {
+        return tokenTransactions;
+    }
+
+    public void setTokenTransactions(List<BlTokenTransaction> tokenTransactions) {
+        this.tokenTransactions = tokenTransactions;
+    }
+
+    public List<BlSwapTransaction> getSwapTransactions() {
+        return swapTransactions;
+    }
+
+    public void setSwapTransactions(List<BlSwapTransaction> swapTransactions) {
+        this.swapTransactions = swapTransactions;
+    }
+
+    public Boolean getFail() {
+        return fail;
+    }
+
+    public void setFail(Boolean fail) {
+        this.fail = fail;
+    }
+
+    public String getTimeZone() {
+        return timeZone;
+    }
+
+    public void setTimeZone(String timeZone) {
+        this.timeZone = timeZone;
+    }
+
+    public String getIntervalTime() {
+        return intervalTime;
+    }
+
+    public void setIntervalTime(String intervalTime) {
+        this.intervalTime = intervalTime;
+    }
 }

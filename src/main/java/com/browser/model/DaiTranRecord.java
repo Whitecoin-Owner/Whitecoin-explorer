@@ -104,4 +104,5 @@ public class DaiTranRecord {
     public void setStableTokeCoinType(String stableTokeCoinType) {
         this.stableTokeCoinType = stableTokeCoinType;
     }
+
 }

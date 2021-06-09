@@ -9,11 +9,13 @@ import com.browser.model.DaiTranRequest;
 import com.browser.model.DaiTransaction;
 import com.browser.protocol.EUDataGridResult;
 import com.browser.service.TokenTransactionService;
+import com.browser.tools.TimeTool;
 import com.browser.tools.common.DateUtil;
 import com.browser.tools.common.StringUtil;
 import com.browser.wallet.PrecisionUtils;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -23,11 +25,19 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class TokenTransactionServiceImpl implements TokenTransactionService {
+
+    @Value("${utcTimeZone}")
+    private String TIME_ZONE;
+
+    @Value("${utcTimeInterval}")
+    private int TIME_INTERVAL;
+
     @Resource
     private BlTokenTransactionMapper blTokenTransactionMapper;
     @Resource
@@ -87,9 +97,19 @@ public class TokenTransactionServiceImpl implements TokenTransactionService {
         // 分页处理
         PageHelper.startPage(transaction.getPage(), transaction.getRows());
         List<BlTokenTransaction> list = blTokenTransactionMapper.selectAllByCond(transaction);
-        if (list != null && list.size() > 0) {
+        if (!CollectionUtils.isEmpty(list)) {
+            Date txTime;
+            String intervalTime;
             for (BlTokenTransaction trx : list) {
                 handleAmountData(trx);
+                trx.setTimeZone(TIME_ZONE);
+                txTime = trx.getTrxTime();
+                if (null != txTime) {
+                    intervalTime = TimeTool.getIntervalTimeStr(txTime, new Date());
+                    trx.setIntervalTime(intervalTime);
+                    txTime = new Date(txTime.getTime() - TIME_INTERVAL * 60 * 60 * 1000L);
+                    trx.setTrxTime(txTime);
+                }
             }
         }
         // 创建一个返回值对象
@@ -482,8 +502,18 @@ public class TokenTransactionServiceImpl implements TokenTransactionService {
         List<BlTokenTransaction> list = blTokenTransactionMapper.selectListByUserAddress(transaction);
         int size = 0;
         if (!CollectionUtils.isEmpty(list)) {
+            Date txTime;
+            String intervalTime;
             for (BlTokenTransaction trx : list) {
                 handleAmountData(trx);
+                trx.setTimeZone(TIME_ZONE);
+                txTime = trx.getTrxTime();
+                if (null != txTime) {
+                    intervalTime = TimeTool.getIntervalTimeStr(txTime, new Date());
+                    trx.setIntervalTime(intervalTime);
+                    txTime = new Date(txTime.getTime() - TIME_INTERVAL * 60 * 60 * 1000L);
+                    trx.setTrxTime(txTime);
+                }
             }
             size = list.size();
             list = list.stream()
@@ -507,8 +537,16 @@ public class TokenTransactionServiceImpl implements TokenTransactionService {
         // 分页处理
         PageHelper.startPage(transaction.getPage(), transaction.getRows());
         List<BlTokenTransaction> list = blTokenTransactionMapper.selectTrxList(transaction);
-        if (list != null && list.size() > 0) {
+        if (!CollectionUtils.isEmpty(list)) {
+            Date txTime;
             for (BlTokenTransaction trx : list) {
+                trx.setTimeZone(TIME_ZONE);
+                txTime = trx.getTrxTime();
+                // 时间统一使用UTC，减去8小时
+                if (null != txTime) {
+                    txTime = new Date(txTime.getTime() - TIME_INTERVAL * 60 * 60 * 1000L);
+                    trx.setTrxTime(txTime);
+                }
                 handleAmountData(trx);
             }
         }

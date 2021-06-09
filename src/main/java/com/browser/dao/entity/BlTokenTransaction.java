@@ -35,4 +35,6 @@ public class BlTokenTransaction {
     private BlToken tokenInfo;
     private String amountStr;
     private String feeStr;
+    private String timeZone;
+    private String intervalTime;
 }

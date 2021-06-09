@@ -19,6 +19,8 @@ public class BlToken {
     private Date createAt;
     private Integer topSort;
     private Integer tokenAddressNum;
+    private String timeZone;
+    private String intervalTime;
 
     // 暂存的查询参数
     private Integer page;

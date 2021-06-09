@@ -1,13 +1,12 @@
 package com.browser.service.impl;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
+import com.browser.tools.TimeTool;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONArray;
@@ -26,9 +25,16 @@ import com.browser.tools.Constant;
 import com.browser.tools.common.StringUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.springframework.util.CollectionUtils;
 
 @Service
 public class TransactionServiceImpl implements TransactionService {
+
+    @Value("${utcTimeZone}")
+    private String TIME_ZONE;
+
+    @Value("${utcTimeInterval}")
+    private int TIME_INTERVAL;
 
     @Autowired
     private RealData realData;
@@ -89,11 +95,29 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public EUDataGridResult getTransactionList(BlTransaction transaction) {
+        Integer sortByIdOrBlockNum = transaction.getSortByIdOrBlockNum();
+        if (null == sortByIdOrBlockNum) {
+            sortByIdOrBlockNum = 1;
+        } else {
+            sortByIdOrBlockNum = 2;
+        }
+        transaction.setSortByIdOrBlockNum(sortByIdOrBlockNum);
         // 分页处理
         PageHelper.startPage(transaction.getPage(), transaction.getRows());
         List<BlTransaction> list = blTransactionMapper.getTransactionList(transaction);
-        if (list != null && list.size() > 0) {
+        if (!CollectionUtils.isEmpty(list)) {
+            Date txTime;
+            String intervalTime;
             for (BlTransaction trx : list) {
+                trx.setTimeZone(TIME_ZONE);
+                txTime = trx.getTrxTime();
+                // 时间统一使用UTC，减去8小时
+                if (null != txTime) {
+                    intervalTime = TimeTool.getIntervalTimeStr(txTime, new Date());
+                    trx.setIntervalTime(intervalTime);
+                    txTime = new Date(txTime.getTime() - TIME_INTERVAL * 60 * 60 * 1000L);
+                    trx.setTrxTime(txTime);
+                }
                 handleAmountData(trx);
                 handleDiffOpTypeData(trx);
                 trx.setGuaranteeUse(false);
@@ -101,7 +125,7 @@ public class TransactionServiceImpl implements TransactionService {
                     trx.setGuaranteeUse(true);
                 }
 
-                if(null != trx.getOpType() && trx.getOpType() == 73) {
+                if (null != trx.getOpType() && trx.getOpType() == 73) {
                     trx.setFromAccount("Mining");
                 }
 
@@ -126,10 +150,26 @@ public class TransactionServiceImpl implements TransactionService {
         // 分页处理
         PageHelper.startPage(transaction.getPage(), transaction.getRows());
         List<BlTransaction> list = blTransactionMapper.selectMinerTrxList(transaction.getAddress());
-        if (list != null && list.size() > 0) {
+        if (!CollectionUtils.isEmpty(list)) {
+            Date txTime;
+            Date createTime;
+            String intervalTime;
             for (BlTransaction trx : list) {
                 handleAmountData(trx);
-                if(StringUtils.isEmpty(trx.getFromAccount())) {
+                trx.setTimeZone(TIME_ZONE);
+                txTime = trx.getTrxTime();
+                if (null != txTime) {
+                    intervalTime = TimeTool.getIntervalTimeStr(txTime, new Date());
+                    trx.setIntervalTime(intervalTime);
+                    txTime = new Date(txTime.getTime() - TIME_INTERVAL * 60 * 60 * 1000L);
+                    trx.setTrxTime(txTime);
+                }
+                createTime = trx.getCreatedTime();
+                if (null != createTime) {
+                    createTime = new Date(createTime.getTime() - TIME_INTERVAL * 60 * 60 * 1000L);
+                    trx.setCreatedTime(createTime);
+                }
+                if (StringUtils.isEmpty(trx.getFromAccount())) {
                     trx.setFromAccount("Mining");
                 }
             }
@@ -179,7 +219,9 @@ public class TransactionServiceImpl implements TransactionService {
         List<JSONObject> data = new ArrayList<JSONObject>();
         // List<String> dataStr = new ArrayList<String>();
         List<BlTransaction> trx = blTransactionMapper.getTransactionByTxId(transaction);
-        if (trx != null && trx.size() > 0) {
+        if (!CollectionUtils.isEmpty(trx)) {
+            Date txTime;
+            String intervalTime;
             for (BlTransaction trans : trx) {
                 transOpTypeRes = new TransOpTypeRes();
                 transOpTypeRes.setTxHash(trans.getTrxId());
@@ -189,7 +231,15 @@ public class TransactionServiceImpl implements TransactionService {
                         || Constant.GURANTEE_CREATE_OPERATION == trans.getOpType()) {
                     transOpTypeRes.setTxStatus(trans.getExtension1());
                 }
-                transOpTypeRes.setTimeStamp(trans.getTrxTime());
+                // 时间统一使用UTC，减去8小时
+                txTime = trans.getTrxTime();
+                if (null != txTime) {
+                    intervalTime = TimeTool.getIntervalTimeStr(txTime, new Date());
+                    transOpTypeRes.setIntervalTime(intervalTime);
+                    txTime = new Date(txTime.getTime() - TIME_INTERVAL * 60 * 60 * 1000L);
+                }
+                transOpTypeRes.setTimeStamp(txTime);
+                transOpTypeRes.setTimeZone(TIME_ZONE);
                 transOpTypeRes.setBlockHeight(trans.getBlockNum());
                 handleAmountData(trans);
 
@@ -306,7 +356,7 @@ public class TransactionServiceImpl implements TransactionService {
     private void handleDiffOpTypeData(BlTransaction trx) {
         if (Constant.PARENT_CONTRACT == trx.getParentOpType()) {
             BlContractInfo contractInfo = blContractInfoMapper.selectByPrimaryKey(trx.getContractId());
-            if(contractInfo != null) {
+            if (contractInfo != null) {
                 trx.setAuthorAddr(contractInfo.getOwnerAddress());
             }
         }

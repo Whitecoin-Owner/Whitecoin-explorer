@@ -38,8 +38,11 @@ public class BlBlock {
     private String merkleRoot;
 
     private Date createdTime;
-    
-    
+
+    private String timeZone;
+
+    private String intervalTime;
+
     //查询页码
     private Integer page;
     private Integer rows;
@@ -57,46 +60,46 @@ public class BlBlock {
     }
 
     public BigDecimal getCountRewards() {
-		return countRewards;
-	}
+        return countRewards;
+    }
 
-	public void setCountRewards(BigDecimal countRewards) {
-		this.countRewards = countRewards;
-	}
+    public void setCountRewards(BigDecimal countRewards) {
+        this.countRewards = countRewards;
+    }
 
-	public Integer getTransactions() {
-		return transactions;
-	}
+    public Integer getTransactions() {
+        return transactions;
+    }
 
-	public void setTransactions(Integer transactions) {
-		this.transactions = transactions;
-	}
+    public void setTransactions(Integer transactions) {
+        this.transactions = transactions;
+    }
 
-	public String getRewards() {
-		return rewards;
-	}
+    public String getRewards() {
+        return rewards;
+    }
 
-	public void setRewards(String rewards) {
-		this.rewards = rewards;
-	}
+    public void setRewards(String rewards) {
+        this.rewards = rewards;
+    }
 
-	public Integer getPage() {
-		return page;
-	}
+    public Integer getPage() {
+        return page;
+    }
 
-	public void setPage(Integer page) {
-		this.page = page;
-	}
+    public void setPage(Integer page) {
+        this.page = page;
+    }
 
-	public Integer getRows() {
-		return rows;
-	}
+    public Integer getRows() {
+        return rows;
+    }
 
-	public void setRows(Integer rows) {
-		this.rows = rows;
-	}
+    public void setRows(Integer rows) {
+        this.rows = rows;
+    }
 
-	public String getBlockId() {
+    public String getBlockId() {
         return blockId;
     }
 
@@ -214,5 +217,21 @@ public class BlBlock {
 
     public void setCreatedTime(Date createdTime) {
         this.createdTime = createdTime;
+    }
+
+    public String getTimeZone() {
+        return timeZone;
+    }
+
+    public void setTimeZone(String timeZone) {
+        this.timeZone = timeZone;
+    }
+
+    public String getIntervalTime() {
+        return intervalTime;
+    }
+
+    public void setIntervalTime(String intervalTime) {
+        this.intervalTime = intervalTime;
     }
 }

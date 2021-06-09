@@ -5,21 +5,31 @@ import com.browser.dao.mapper.BlTokenBalanceMapper;
 import com.browser.dao.mapper.BlTokenMapper;
 import com.browser.protocol.EUDataGridResult;
 import com.browser.service.TokenService;
+import com.browser.tools.TimeTool;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 public class TokenServiceImpl implements TokenService {
+
+    @Value("${utcTimeZone}")
+    private String TIME_ZONE;
+
+    @Value("${utcTimeInterval}")
+    private int TIME_INTERVAL;
+
     @Resource
     private BlTokenMapper blTokenMapper;
     @Resource
@@ -45,7 +55,17 @@ public class TokenServiceImpl implements TokenService {
         EUDataGridResult result = new EUDataGridResult();
         if (!CollectionUtils.isEmpty(list)) {
             Integer count;
+            Date createAt;
+            String intervalTime;
             for (BlToken blToken : list) {
+                blToken.setTimeZone(TIME_ZONE);
+                createAt = blToken.getCreateAt();
+                if (null != createAt) {
+                    intervalTime = TimeTool.getIntervalTimeStr(createAt, new Date());
+                    blToken.setIntervalTime(intervalTime);
+                    createAt = new Date(createAt.getTime() - TIME_INTERVAL * 60 * 60 * 1000L);
+                    blToken.setCreateAt(createAt);
+                }
                 count = blTokenBalanceMapper.getAddressCountByContractIdAndTokenSymbol(blToken.getContractAddress(), blToken.getTokenSymbol());
                 if (null == count) {
                     blToken.setTokenAddressNum(0);

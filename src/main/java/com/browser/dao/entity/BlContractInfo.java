@@ -30,6 +30,8 @@ public class BlContractInfo {
     private Integer callTimes;
     private Date createTime;
     private Date lastTime;
+    private String timeZone;
+    private String intervalTime;
     
     private Integer page;
     private Integer rows;
@@ -176,5 +178,21 @@ public class BlContractInfo {
 
     public void setOnwerAddress(String onwerAddress) {
         this.onwerAddress = onwerAddress;
+    }
+
+    public String getTimeZone() {
+        return timeZone;
+    }
+
+    public void setTimeZone(String timeZone) {
+        this.timeZone = timeZone;
+    }
+
+    public String getIntervalTime() {
+        return intervalTime;
+    }
+
+    public void setIntervalTime(String intervalTime) {
+        this.intervalTime = intervalTime;
     }
 }
