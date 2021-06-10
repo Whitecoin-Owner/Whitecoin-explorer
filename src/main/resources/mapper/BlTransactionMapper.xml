@@ -140,7 +140,7 @@
 		(SELECT
 		id, trx_id, block_num, from_account, to_account, miner_address,
 		symbol,asset_id, amount, fee,
-		trx_time, extra_trx_id,guarantee_id, op_type, parent_op_type
+		trx_time, extra_trx_id,guarantee_id, op_type, parent_op_type,memo
 		FROM bl_transaction
 		where from_account =#{minerAddress,jdbcType=VARCHAR}
 		ORDER BY id DESC)
@@ -148,7 +148,7 @@
 		(SELECT
 		id, trx_id, block_num, from_account, to_account, miner_address,
 		symbol,asset_id, amount, fee,
-		trx_time, extra_trx_id,guarantee_id, op_type, parent_op_type
+		trx_time, extra_trx_id,guarantee_id, op_type, parent_op_type,memo
 		FROM bl_transaction
 		where  to_account =#{minerAddress,jdbcType=VARCHAR}
 		ORDER BY id DESC)

@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.alibaba.fastjson.JSONObject;
 import com.browser.config.RealData;
 import com.browser.dao.entity.*;
+import com.browser.service.BlockService;
 import com.browser.service.impl.AddressBalanceServiceImpl;
 import com.browser.service.impl.RedisService;
 import com.browser.task.vo.PriceInfo;
@@ -39,6 +40,8 @@ public class IndexController extends BaseController {
 
     @Autowired
     private StatisService statisService;
+    @Autowired
+    private BlockService blockService;
     @Autowired
     private AddressBalanceServiceImpl addressBalanceService;
     @Autowired
@@ -153,6 +156,8 @@ public class IndexController extends BaseController {
         ResultMsg resultMsg = new ResultMsg();
         try {
             BlStatis data = realData.getBlStatis();
+            Long blockNum = blockService.queryBlockNum();
+            data.setHeight(blockNum);
             resultMsg.setRetCode(ResultMsg.HTTP_OK);
             resultMsg.setData(data);
         } catch (Exception e) {

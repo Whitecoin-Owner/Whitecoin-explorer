@@ -3,6 +3,7 @@ package com.browser.service.impl;
 import java.math.BigDecimal;
 import java.util.*;
 
+import com.browser.tools.DecodeMemo;
 import com.browser.tools.TimeTool;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -154,8 +155,14 @@ public class TransactionServiceImpl implements TransactionService {
             Date txTime;
             Date createTime;
             String intervalTime;
+            String memo;
             for (BlTransaction trx : list) {
                 handleAmountData(trx);
+                memo = trx.getMemo();
+                if (!StringUtil.isEmpty(memo)) {
+                    memo = new String(DecodeMemo.toByteArray(memo));
+                    trx.setMemo(memo.trim());
+                }
                 trx.setTimeZone(TIME_ZONE);
                 txTime = trx.getTrxTime();
                 if (null != txTime) {
