@@ -63,7 +63,7 @@ public class TransTypeResolveService {
 
             jsb = (JSONObject) method.invoke(bean, new Object[]{json, transaction});
         } catch (Exception e) {
-            logger.error("交易类型解析失败,op类型："+opType, e);
+            logger.error("交易类型解析失败,op类型：" + opType, e);
         }
         return jsb;
     }
@@ -192,6 +192,7 @@ public class TransTypeResolveService {
         }
         return result;
     }
+
     /**
      * 提现交易广播
      *
@@ -206,11 +207,12 @@ public class TransTypeResolveService {
         result.put("assetSymbol", json.getString("asset_symbol"));
 
         JSONObject minerInfo = redisService.getMinerInfo(json.getString("miner_broadcast"));
-        if(minerInfo!=null){
+        if (minerInfo != null) {
             result.put("minerBroadcast", minerInfo.getString("name"));
         }
         return result;
     }
+
     /**
      * 提现交易签名
      *
@@ -225,6 +227,7 @@ public class TransTypeResolveService {
 
         return result;
     }
+
     /**
      * 矿工确认
      *
@@ -238,7 +241,7 @@ public class TransTypeResolveService {
         result.put("minerAddress", json.getString("miner_address"));
 
         JSONObject minerInfo = redisService.getMinerInfo(json.getString("miner_broadcast"));
-        if(minerInfo!=null){
+        if (minerInfo != null) {
             result.put("minerBroadcast", minerInfo.getString("name"));
         }
         return result;
@@ -343,10 +346,10 @@ public class TransTypeResolveService {
         JSONObject result = new JSONObject();
         result.put("tunnelAddress", json.getString("tunnel_address"));
         String asset = json.getString("crosschain_type");
-        if("ERCPAX".equals(asset)){
+        if ("ERCPAX".equals(asset)) {
             asset = "PAX";
         }
-        if("ERCELF".equals(asset)){
+        if ("ERCELF".equals(asset)) {
             asset = "ELF";
         }
         result.put("asset", asset);
@@ -618,7 +621,7 @@ public class TransTypeResolveService {
         String account_id = json.getString("account");
         String accountInfo = requestWalletService.getAccount(account_id);// 获取name
         if (accountInfo != null) {
-            JSONObject jsonObject =JSONObject.parseObject(accountInfo);
+            JSONObject jsonObject = JSONObject.parseObject(accountInfo);
             result.put("accountName", jsonObject.getString("name"));
         }
 
@@ -662,7 +665,7 @@ public class TransTypeResolveService {
         result.put("feePayingAccount", json.getString("fee_paying_account"));
 
         Date date = DateUtil.parseDate(json.getString("expiration_time"), "yyyy-MM-dd'T'HH:mm:ss");
-        result.put("expirationTime", new Date(date.getTime() + 8 * 60 * 60 * 1000L));
+        result.put("expirationTime", new Date(date.getTime() + Constant.UTC_WAREHOUSING_TIME_INTERVAL * 60 * 60 * 1000L));
 
         String account_id = json.getString("proposer");
         String accountInfo = requestWalletService.getAccount(account_id);// 获取name
@@ -692,13 +695,14 @@ public class TransTypeResolveService {
     }
 
     //TODO
+
     /**
      * 创建HIOU资产
      *
      * @param json
      * @return
      */
-    public JSONObject transOpType75 (JSONObject json, BlTransaction transaction) {
+    public JSONObject transOpType75(JSONObject json, BlTransaction transaction) {
         JSONObject result = new JSONObject();
         result.put("fee", feeStr(json.getJSONObject("fee").getBigDecimal("amount")));
         result.put("symbol", json.getString("symbol"));
@@ -715,13 +719,14 @@ public class TransTypeResolveService {
     }
 
     //TODO
+
     /**
      * 创建eth 合约
      *
      * @param json
      * @return
      */
-    public JSONObject transOpType95 (JSONObject json, BlTransaction transaction) {
+    public JSONObject transOpType95(JSONObject json, BlTransaction transaction) {
         JSONObject result = new JSONObject();
         result.put("fee", feeStr(json.getJSONObject("fee").getBigDecimal("amount")));
 
@@ -731,20 +736,21 @@ public class TransTypeResolveService {
         result.put("chainType", json.getString("chain_type"));
 
         JSONObject minerInfo = redisService.getMinerInfo(json.getString("miner_broadcast"));
-        if(minerInfo!=null){
+        if (minerInfo != null) {
             result.put("minerBroadcast", minerInfo.getString("name"));
         }
 
         return result;
     }
     //TODO
+
     /**
      * eth多签合约创建
      *
      * @param json
      * @return
      */
-    public JSONObject transOpType96 (JSONObject json, BlTransaction transaction) {
+    public JSONObject transOpType96(JSONObject json, BlTransaction transaction) {
         JSONObject result = new JSONObject();
         result.put("fee", feeStr(json.getJSONObject("fee").getBigDecimal("amount")));
         result.put("miner_address", json.getString("miner_address"));
@@ -752,20 +758,21 @@ public class TransTypeResolveService {
         result.put("multiPubkeyType", json.getString("multi_pubkey_type"));
 
         JSONObject minerInfo = redisService.getMinerInfo(json.getString("miner_broadcast"));
-        if(minerInfo!=null){
+        if (minerInfo != null) {
             result.put("minerBroadcast", minerInfo.getString("name"));
         }
 
         return result;
     }
     //TODO
+
     /**
      * eth 多签合约签名
      *
      * @param json
      * @return
      */
-    public JSONObject transOpType97 (JSONObject json, BlTransaction transaction) {
+    public JSONObject transOpType97(JSONObject json, BlTransaction transaction) {
         JSONObject result = new JSONObject();
         result.put("fee", feeStr(json.getJSONObject("fee").getBigDecimal("amount")));
         result.put("guardSignAddress", json.getString("guard_sign_address"));
@@ -775,13 +782,14 @@ public class TransTypeResolveService {
     }
 
     //TODO
+
     /**
      * eth 多签合约确认签名
      *
      * @param json
      * @return
      */
-    public JSONObject transOpType98 (JSONObject json, BlTransaction transaction) {
+    public JSONObject transOpType98(JSONObject json, BlTransaction transaction) {
         JSONObject result = new JSONObject();
         result.put("fee", feeStr(json.getJSONObject("fee").getBigDecimal("amount")));
         result.put("chainType", json.getString("chain_type"));

@@ -2,8 +2,10 @@ package com.browser.tools.common;
 
 import com.alibaba.fastjson.JSONObject;
 import com.browser.dao.entity.BlBlock;
+import com.browser.tools.Constant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
@@ -191,7 +193,7 @@ public class StringUtil {
 
         Date date = DateUtil.parseDate(bc.getString("timestamp"), "yyyy-MM-dd'T'HH:mm:ss");
         //utc时间转北京时间，解决链上时间的时间差问题
-        block.setBlockTime(new Date(date.getTime() + 8 * 60 * 60 * 1000L));
+        block.setBlockTime(new Date(date.getTime() + Constant.UTC_WAREHOUSING_TIME_INTERVAL * 60 * 60 * 1000L));
         return block;
     }
 
@@ -223,6 +225,6 @@ public class StringUtil {
 //    public static void main(String[] args) {
 //        Date date = DateUtil.parseDate("2021-05-26T09:17:24", "yyyy-MM-dd'T'HH:mm:ss");
 //        //utc时间转北京时间
-//        System.out.println(new Date(date.getTime() + 8 * 60 * 60 * 1000L));
+//        System.out.println(new Date(date.getTime() + Constant.UTC_WAREHOUSING_TIME_INTERVAL * 60 * 60 * 1000L));
 //    }
 }

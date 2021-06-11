@@ -137,4 +137,6 @@ public class Constant {
     //Senator安全员标识
     public static final int SENATOR_SAFE = 1;
 
+    public static final int UTC_WAREHOUSING_TIME_INTERVAL = 0;
+
 }

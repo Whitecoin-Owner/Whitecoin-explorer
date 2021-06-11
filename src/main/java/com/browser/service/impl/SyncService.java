@@ -636,7 +636,7 @@ public class SyncService {
                     } else {
                         date = DateUtil.parseDate(new Date(), "yyyy-MM-dd'T'HH:mm:ss");
                     }
-                    contractInfo.setRegTime(new Date(date.getTime() + 8 * 60 * 60 * 1000L));
+                    contractInfo.setRegTime(new Date(date.getTime() + Constant.UTC_WAREHOUSING_TIME_INTERVAL * 60 * 60 * 1000L));
                     String contractMsg = requestWalletService.getContractInfo(contractTrx.getContractId());
                     if (!StringUtil.isEmpty(contractMsg) && contractMsg.startsWith("{") && contractMsg.startsWith("}")) {
                         JSONObject contractJson = JSON.parseObject(contractMsg);
@@ -696,7 +696,7 @@ public class SyncService {
                 contractInfo.setContractId(contractTrx.getContractId());
                 // 时间转换
                 Date date = DateUtil.parseDate(jsa.getString("register_time"), "yyyy-MM-dd'T'HH:mm:ss");
-                contractInfo.setRegTime(new Date(date.getTime() + 8 * 60 * 60 * 1000L));
+                contractInfo.setRegTime(new Date(date.getTime() + Constant.UTC_WAREHOUSING_TIME_INTERVAL * 60 * 60 * 1000L));
                 contractInfo.setName(contractJson.getString("name"));
                 contractInfo.setOwner(contractJson.getString("owner"));
                 contractInfo.setOwnerAddress(contractJson.getString("owner_address"));
